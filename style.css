@@ -1,0 +1,36 @@
+.scroll-down {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #555;
+  animation: float 2s infinite;
+}
+
+.scroll-down::after {
+  content: "↓";
+  display: block;
+  font-size: 20px;
+  margin-top: 4px;
+}
+
+@keyframes float {
+  0% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 8px); }
+  100% { transform: translate(-50%, 0); }
+}
+html {
+  scroll-behavior: smooth;
+}
+.scroll-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-section.show {
+  opacity: 1;
+  transform: translateY(0);
+}

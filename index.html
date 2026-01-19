@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title> Home |  いろいろGroup</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>いろいろ Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      line-height: 1.7;
+      scroll-behavior: smooth;
+
+      /* 背景画像 */
+      background-image: url("https://cdn.phototourl.com/uploads/2026-01-16-f49a3659-db6c-48c1-a012-861edcd64341.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(200, 200, 200, 0.25);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+    }
+
+    header {
+      padding: 140px 20px 100px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    section {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
+
+    .card, .status-card {
+      border: 1px solid #eee;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .slide-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .slide-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .clock {
+      font-size: 1.8rem;
+      padding: 16px 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .status-up { color: green; font-weight: bold; }
+    .status-down { color: red; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      .clock { font-size: 1.5rem; padding: 12px 24px; }
+      .card, .status-card { padding: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#company">Company</a></li>
+    <li><a href="#link">Link</a></li>
+    <li><a href="#Video">Merchandise</a></li>
+    <li><a href="#status">Service Information</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header id="home">
+  <h1>いろいろ Group</h1>
+  <p>グループサイト</p>
+</header>
+
+<section id="services">
+  <h2>Services</h2>
+  <div class="card">
+    <p>
+      オンラインストア運営、いろいろ会社サービス運営、  
+      カフート制作＆発表、スライド、Scratchゲーム開発＆発表
+    </p>
+  </div>
+</section>
+
+<section id="company">
+  <h2>Group会社情報</h2>
+
+  <div class="card">
+    <p><strong>会社名:</strong> いろいろ会社</p>
+    <p><strong>設立:</strong> 2025年5月</p>
+    <p><strong>事業内容:</strong> スライド、Scratchゲーム開発＆発表</p>
+  </div>
+
+  <div class="card">
+    <p><strong>会社名:</strong> いろテム</p>
+    <p><strong>設立:</strong> 2026年1月</p>
+    <p><strong>事業内容:</strong> オンラインストア運営、いろいろ会社サービス運営、カフート制作＆発表</p>
+  </div>
+</section>
+
+<section id="link">
+  <h2>Link</h2>
+
+  <div class="slide-wrapper">
+    <iframe 
+      src="https://padlet.com/ryo15542/padlet-sv90umm5ug1zh6p7" 
+      allow="camera; microphone; geolocation">
+    </iframe>
+  </div>
+</section>
+
+<section id="Video">
+  <h2>商品</h2>
+
+  <div class="slide-wrapper">
+    <iframe
+      src="https://drive.google.com/file/d/1UTwCbJJQSSmCURbRfFjm2rWfXxHD0ztA/preview"
+      allow="autoplay"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="card">
+    <p>商品紹介用スライド／動画</p>
+  </div>
+</section>
+
+<section id="status">
+  <h2></h2>
+  <img src="https://cdn.phototourl.com/uploads/2026-01-17-0ee98468-82d9-48d7-8bfa-4de38817d35c.png" 
+     alt="サービス稼働情報" 
+display:block; margin:auto;">
+
+
+  <!-- ライブ時間 -->
+<div class="clock" id="clock-container" style="display:flex; align-items:center; justify-content:center; gap:10px; font-size:1.8rem; padding:16px; background: rgba(255,255,255,0.9); border-radius:12px; margin-bottom:24px;">
+  <div id="clock">--:--:--</div>
+  <span>現在</span>
+</div>
+  
+  <h6>※5秒ごとに更新</h6>
+
+
+  <!-- サービスカード -->
+  <div class="status-card">
+    
+    <h3>オンラインストア</h3>
+    <p>現在: <span class="status-up">稼働中</span></p>
+  </div>
+
+  <div class="status-card">
+    <h3>いろいろサービス</h3>
+    <p>現在: <span class="status-up">稼働中</span></p>
+  </div>
+
+  <div class="status-card">
+    <h3>デジスタ</h3>
+    <p>現在: <span class="status-up">稼働中</span></p>
+  </div>
+
+  <div class="status-card">
+    <h3>カード残高確認</h3>
+    <p>現在: <span class="status-up">稼働中</span></p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <iframe
+    src="https://docs.google.com/forms/d/e/1FAIpQLSdvGETERdwgVhkldihjoEiZk6djO0OfyX2Y8s8hBKtH7S_WOw/viewform?embedded=true"
+    width="100%" height="650" frameborder="0">
+  </iframe>
+</section>
+
+<footer>
+  © 2026 いろいろ Group　All Rights Reserved. <br>
+  このサイトは実在する企業・団体とは無関係です。
+</footer>
+
+<script>
+  // ライブ時間を5秒ごとに更新
+  function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2,'0');
+    const minutes = String(now.getMinutes()).padStart(2,'0');
+    const seconds = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+  }
+
+  updateClock(); // ページ読み込み時に即表示
+  setInterval(updateClock, 5000); // 5秒ごとに更新
+</script>
+
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
