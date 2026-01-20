@@ -86,31 +86,30 @@ html {
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   transform: translateY(-2px);
 }
-.pdf-button {
-  display: inline-block;
-  padding: 18px 36px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #fff;
-  background: #d32f2f;          /* PDFらしい赤 */
-  border-radius: 12px;
+/* 黒背景を無効化 */
+.pdf-area {
+  background: transparent;
+  padding-top: 0;
+  height: auto;
   text-align: center;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.pdf-button:hover {
-  background: #b71c1c;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+/* 小さめ・明るいPDFボタン */
+.pdf-button-small {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d32f2f;
+  background: #fff;
+  border: 2px solid #d32f2f;
+  border-radius: 999px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
-.pdf-button:active {
-  transform: translateY(0);
-}
-
-.pdf-button::after {
-  content: "（PDF）";
-  font-size: 0.85rem;
-  margin-left: 8px;
-  opacity: 0.9;
+/* ホバー */
+.pdf-button-small:hover {
+  background: #d32f2f;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
