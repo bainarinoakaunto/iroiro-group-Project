@@ -21,6 +21,54 @@
   50% { transform: translate(-50%, 8px); }
   100% { transform: translate(-50%, 0); }
 }
+/* PDFリンク全体 */
+.pdf-link {
+  display: block;
+}
+
+/* お知らせカード（PDF） */
+.pdf-link .card {
+  border-left: 6px solid #d32f2f; /* PDFカラー（赤） */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* ホバー時 */
+.pdf-link:hover .card {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: #fff5f5;
+}
+
+/* PDFアイコン */
+.pdf-icon {
+  font-size: 1.2em;
+  margin-right: 6px;
+}
+
+/* 「PDFが開きます」などの補足文 */
+.pdf-note {
+  font-size: 13px;
+  color: #555;
+}
+
+/* NEWバッジ（未作成なら） */
+.news-new {
+  background: #e53935;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+  .pdf-note {
+    font-size: 12px;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
