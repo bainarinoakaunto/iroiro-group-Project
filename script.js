@@ -14,4 +14,20 @@
       observer.observe(section);
     });
   });
-</script>
+function onScroll() {
+  const sections = document.querySelectorAll('section');
+  const triggerBottom = window.innerHeight * 0.85;
+
+  sections.forEach(section => {
+    const top = section.getBoundingClientRect().top;
+
+    if (top < triggerBottom) {
+      section.classList.add('visible');
+    } else {
+      section.classList.remove('visible'); // 任意で消す
+    }
+  });
+}
+
+window.addEventListener('scroll', onScroll);
+window.addEventListener('load', onScroll);
