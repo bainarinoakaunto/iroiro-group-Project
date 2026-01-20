@@ -113,3 +113,16 @@ html {
   color: #fff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+/* 初期状態：透明で下にずらしておく */
+section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* 表示されたら透明度1、位置リセット */
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
