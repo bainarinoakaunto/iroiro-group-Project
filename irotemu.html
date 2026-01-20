@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>いろテム| いろいろ Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      line-height: 1.7;
+      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
+      scroll-behavior: smooth;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    nav a { text-decoration: none; color: #222; font-weight: bold; }
+
+    header {
+      padding: 120px 20px 80px;
+      text-align: center;
+      background: #4a90e2;
+      color: #fff;
+    }
+
+    header h1 { font-size: 3rem; margin-bottom: 12px; }
+    header p { font-size: 1.2rem; }
+
+    section {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 40px 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 { font-size: 2rem; margin-bottom: 24px; text-align: center; }
+
+    .card {
+      border: 1px solid #eee;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: #f9f9ff;
+    }
+
+    .highlight {
+      color: #e94e77;
+      font-weight: bold;
+    }
+
+    .slide-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .slide-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+      background: #f0f4ff;
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 2rem; }
+      .card { padding: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#news">News</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#company">Company</a></li>
+    <li><a href="index.html#link">Link</a></li>
+  </ul>
+</nav>
+
+<header>
+  <h1>いろテム</h1>
+<section id="news">
+  <h2>お知らせ</h2>
+
+  <div class="card">
+    <p>
+      <strong>2026.01.20.pm:18:49</strong><br>
+      <span style="color:red; font-weight:bold;">NEW</span><br>
+      いろいろ会社の中のサービスの経営を分けます（投票終了後）
+    </p>
+  </div>
+
+
+</section>
+
+ 
