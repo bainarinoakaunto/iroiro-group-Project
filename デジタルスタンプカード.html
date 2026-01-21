@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>QR・バーコードスタンプラリー＋じゃんけん</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body{
+  font-family:"Comic Sans MS",sans-serif;
+  text-align:center;
+  padding:20px;
+  background:#fdf2e9;
+}
+#reader{
+  width:300px;margin:20px auto;
+  border:3px dashed #c59f7b;border-radius:12px;
+  padding:10px;background:#fff8f0;
+}
+.stamp-area{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:15px;margin-top:20px;
+}
+.stamp{
+  border:2px dashed #c59f7b;padding:5px;width:130px;
+  border-radius:10px;background:#fff8f0;
+  box-shadow:2px 2px 8px rgba(0,0,0,0.2);
+}
+.stamp img{width:100%;border-radius:8px;}
+.stamp-number{font-size:14px;font-weight:bold;color:#b3561c;}
+.stamp-date{font-size:12px;color:#8b5a2b;}
+button{
+  margin-top:6px;padding:6px 10px;
+  font-size:14px;border-radius:6px;
+  border:1px solid #c59f7b;
+  background:#fff2e0;cursor:pointer;
+}
+button:hover{background:#ffd8b0;}
+#stampCount{font-weight:bold;margin-top:10px;color:#b3561c;}
+#jankenArea{
+  margin-top:40px;padding:20px;
+  border:3px dashed #c59f7b;
+  border-radius:15px;background:#fff8f0;
+}
+#roulette{font-size:70px;height:90px;margin-bottom:10px;}
+#jankenResult{font-size:18px;font-weight:bold;color:#b3561c;}
+#adminStatus{color:#c0392b;font-weight:bold;margin-top:10px;}
+</style>
+</head>
+
+<body>
+<h1>デジスタ</h1>
+
+<button onclick="enterAdmin()">管理者モード</button>
+<div id="adminStatus"></div>
+
+<div id="reader"></div>
+<button onclick="restartScan()">再読み取り</button>
+
+<p id="stampCount">合計スタンプ数: 0</p>
+<div id="stampArea" class="stamp-area"></div>
+
+<h2>じゃんけん（1日1回）</h2>
+<div id="jankenArea">
+  <div id="roulette">❓</div>
+  <div>
+    <button onclick="startJanken('rock')">✊</button>
+    <button onclick="startJanken('scissors')">✌️</button>
+    <button onclick="startJanken('paper')">✋</button>
+  </div>
+  <p id="jankenResult"></p>
+</div>
+
+<script>
+/* ===== 管理者設定 ===== */
+const ADMIN_PASSWORD = "1430";
+let isAdmin = false;
+
+function enterAdmin(){
+  if(prompt("管理者パスワード") === ADMIN_PASSWORD){
+    isAdmin = true;
+    document.getElementById("adminStatus").textContent = "👑 管理者モード中";
+    alert("管理者モードになりました");
+  }else{
+    alert("パスワードが違います");
+  }
+}
+
+/* ===== QRコード対応 ===== */
+const QR_VALUE_INFO_MAP = {
+  "https://codepen.io/bainarinoakaunto/pen/emZaZLr":{
+    img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
+    number:"001"
+  },
+  "https://bc.benesse.ne.jp/nzm/redirect?code=FsUPBNRukK":{
+    img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
+    number:"002"
+  },
+  "https://maps.app.goo.gl/Fp1J9vefnib7n3AaA":{
+    img:"https://cdn2.scratch.mit.edu/get_image/project/1261979082_100x80.png",
+    number:"003"
+  }
+};
+
+const USE_PASSWORD="0430";
+const JANKEN_STAMP={
+  img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
+  number:"じゃんけん"
+};
+
+let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
+let scanning=true;
+let scanner;
+
+/* ===== 日付 ===== */
+function today(){
+  const d=new Date();
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+}
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+/* ===== 表示 ===== */
+function render(){
+  const area=document.getElementById("stampArea");
+  area.innerHTML="";
+  document.getElementById("stampCount").textContent =
+    "合計スタンプ数: "+stamps.filter(s=>!s.used).length;
+
+  stamps.forEach((s,i)=>{
+    if(s.used) return;
+    area.insertAdjacentHTML("beforeend",`
+      <div class="stamp">
+        <img src="${s.img}">
+        <div class="stamp-number">担当者No.${s.number}</div>
+        <div class="stamp-date">取得日：${s.date}</div>
+        <button onclick="useStamp(${i})">使用</button>
+      </div>
+    `);
+  });
+}
+
+/* ===== QR読み取り ===== */
+function onScanSuccess(text){
+  if(!scanning) return;
+  const info=QR_VALUE_INFO_MAP[text];
+  if(!info){alert("コードが違います");return;}
+
+  stamps.push({img:info.img,number:info.number,date:today(),used:false});
+  localStorage.setItem("stamps",JSON.stringify(stamps));
+  render();
+  scanning=false;
+  scanner.clear();
+}
+
+function restartScan(){
+  if(scanning) return;
+  scanning=true;
+  scanner.render(onScanSuccess);
+}
+
+/* ===== スタンプ使用 ===== */
+function useStamp(i){
+  if(prompt("使用パスワード")===USE_PASSWORD){
+    stamps[i].used=true;
+    localStorage.setItem("stamps",JSON.stringify(stamps));
+    render();
+  }else alert("パスワードが違います");
+}
+
+/* ===== じゃんけん ===== */
+const JANKEN_HANDS=[
+  {key:"rock",emoji:"✊"},
+  {key:"scissors",emoji:"✌️"},
+  {key:"paper",emoji:"✋"}
+];
+
+function startJanken(player){
+
+  if(!isAdmin && localStorage.getItem("jankenDate")===todayKey()){
+    alert("今日はもうじゃんけんできません");
+    return;
+  }
+
+  let i=0;
+  const timer=setInterval(()=>{
+    document.getElementById("roulette").textContent=
+      JANKEN_HANDS[i++%3].emoji;
+  },100);
+
+  setTimeout(()=>{
+    clearInterval(timer);
+    const cpu=JANKEN_HANDS[Math.floor(Math.random()*3)];
+    document.getElementById("roulette").textContent=cpu.emoji;
+
+    const r=judge(player,cpu.key);
+    document.getElementById("jankenResult").textContent="結果："+r;
+
+    if(r!=="あいこ" && !isAdmin){
+      localStorage.setItem("jankenDate",todayKey());
+    }
+
+    if(r==="勝ち 🎉"){
+      stamps.push({
+        img:JANKEN_STAMP.img,
+        number:JANKEN_STAMP.number,
+        date:today(),
+        used:false
+      });
+      localStorage.setItem("stamps",JSON.stringify(stamps));
+      render();
+      alert("勝ち！スタンプを1個ゲット！");
+    }
+  },2000);
+}
+
+function judge(p,c){
+  if(p===c) return "あいこ";
+  if(
+    (p==="rock"&&c==="scissors")||
+    (p==="scissors"&&c==="paper")||
+    (p==="paper"&&c==="rock")
+  ) return "勝ち 🎉";
+  return "負け 😢";
+}
+
+/* ===== カメラ起動 ===== */
+scanner=new Html5QrcodeScanner("reader",{fps:8,qrbox:250},false);
+scanner.render(onScanSuccess);
+render();
+</script>
+</body>
+</html>
