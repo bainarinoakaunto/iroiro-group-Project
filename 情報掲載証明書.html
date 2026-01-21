@@ -13,9 +13,36 @@
       color: #222;
     }
 
+    a { text-decoration: none; color: inherit; }
+
+    /* ナビゲーション */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    nav li a {
+      font-weight: bold;
+      color: #222;
+    }
+
     section {
       max-width: 800px;
-      margin: 80px auto;
+      margin: 140px auto 80px;
       padding: 40px 20px;
       background: rgba(255,255,255,0.95);
       border-radius: 12px;
@@ -50,16 +77,33 @@
       color: #fff;
       font-weight: bold;
       border-radius: 8px;
-      text-decoration: none;
     }
 
     .pdf-button:hover {
       background: #357abd;
     }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 
 <body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="irotemu.html">いろテム</a></li>
+    <li><a href="index.html#news">News</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#company">Company</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
 
 <section>
   <h1>更新証明書</h1>
@@ -71,13 +115,20 @@
       <span>（PDFが開きます）</span>
     </p>
 
-    <a href="./2026.01.20.pm1627 NEW いろいろ Group 公式サイトの機能を追加しました。（NEWS機能）.pdf"
-       target="_blank"
-       class="pdf-button">
+    <a
+      href="./2026.01.20.pm1627 NEW いろいろ Group 公式サイトの機能を追加しました。（NEWS機能）.pdf"
+      target="_blank"
+      class="pdf-button">
       PDFを開く
     </a>
   </div>
 </section>
 
+<footer>
+  © 2026 いろいろ Group　All Rights Reserved.<br>
+  このサイトは実在する企業・団体とは無関係です。
+</footer>
+
 </body>
 </html>
+
