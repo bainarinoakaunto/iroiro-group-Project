@@ -93,18 +93,149 @@
 </head>
 
 <body>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      line-height: 1.7;
+      scroll-behavior: smooth;
+      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(200, 200, 200, 0.25);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    header {
+      padding: 140px 20px 100px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 3rem; margin-bottom: 16px; }
+
+    section {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+    }
+
+    h2 { font-size: 2rem; margin-bottom: 24px; }
+
+    .card, .status-card {
+      border: 1px solid #eee;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .slide-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .slide-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .clock {
+      font-size: 1.8rem;
+      padding: 16px 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .status-up { color: green; font-weight: bold; }
+    .status-down { color: red; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      .clock { font-size: 1.5rem; padding: 12px 24px; }
+      .card, .status-card { padding: 16px; }
+    }
+
+    img.responsive-img {
+      display: block;
+      margin: 0 auto 24px auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
 
 <nav>
   <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="irotemu.html">いろテム</a></li>
-    <li><a href="index.html#news">News</a></li>
-    <li><a href="index.html#services">Services</a></li>
-    <li><a href="index.html#company">Company</a></li>
-    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#company">Company</a></li>
+    <li><a href="#link">Link</a></li>
+    <li><a href="#Video">Merchandise</a></li>
+    <li><a href="#status">Service Information</a></li>
+    <li><a href="#contact">Contact</a></li>
+     <li><a href="irotemu.html">いろテック</a></li>    
+    <li><a href="いろいろ通信.html">いろいろ通信</a></li>    
+    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li> 
   </ul>
 </nav>
-
 <section>
   <h1>更新証明書</h1>
   <h2>必要な場合、ダウンロードしてください。</h2>
