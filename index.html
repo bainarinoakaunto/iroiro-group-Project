@@ -240,6 +240,39 @@ body {
      alt="いろいろgroup"
      style="display:block; margin:0 auto; width:20%;">
 
+  
+<div class="section">
+  <h1> ↓</h1>
+</div>
+
+<div class="section scroll">
+  <h2>スクロール</h2>
+</div>
+
+<div class="section scroll">
+  <img src="ledsb_result (1).gif"
+       alt="GIF"
+       style="max-width:70%; border-radius:12px;">
+</div>
+
+<script>
+const elements = document.querySelectorAll('.scroll');
+
+function scrollAnimation() {
+  elements.forEach(el => {
+    const pos = el.getBoundingClientRect().top;
+    if (pos < window.innerHeight - 100) {
+      el.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', scrollAnimation);
+window.addEventListener('load', scrollAnimation);
+</script>
+
+</body>
+</html>
 </header>
 
 <section id="news">
