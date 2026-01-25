@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ログイン</title>
+</head>
+<body>
+
+<h2>ログイン</h2>
+<input type="text" id="loginInput" placeholder="カード番号 or 出席番号">
+<button onclick="login()">ログイン</button>
+
+<script>
+const cardData = [
+  {cardNo:"o7y81wmr", attendance:"1", balance:500, currency:"IRO", active:true},
+  {cardNo:"bob5wcvt", attendance:"2", balance:300, currency:"IRO", active:true},
+  {cardNo:"zebfp139", attendance:"4", balance:800, currency:"IRO", active:false}
+];
+
+function login() {
+  const input = document.getElementById("loginInput").value.trim();
+
+  const user = cardData.find(c =>
+    c.cardNo === input || c.attendance === input
+  );
+
+  if (!user) {
+    alert("カードが見つかりません");
+    return;
+  }
+
+  // ✅ 有効・無効は一切見ない
+  // 🔐 ログイン情報をそのまま保存
+  localStorage.setItem("loginInfo", JSON.stringify(user));
+
+  // ▶ 次のページへ
+  location.href = "next.html";
+}
+</script>
+
+</body>
+</html>
