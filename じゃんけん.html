@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>じゃんけん | ryo15542</title>
-
   <style>
     body {
       margin: 0;
       font-family: "Segoe UI", system-ui, sans-serif;
-      color: #fff;
       text-align: center;
+      color: #fff;
 
-      /* 背景画像設定 */
       background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%20(1).png");
       background-size: cover;
       background-position: center;
@@ -20,12 +18,13 @@
 
     header {
       padding: 20px;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: bold;
+      color: #000; /* ヘッダー文字を黒に */
     }
 
     .container {
-      background: rgba(255,255,255,0.9); /* 半透明で見やすく */
+      background: rgba(255,255,255,0.9);
       color: #333;
       max-width: 420px;
       margin: 40px auto;
@@ -34,15 +33,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
-    .status {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .remain {
-      color: #666;
-      margin-bottom: 20px;
-    }
+    .status { font-size: 18px; margin-bottom: 10px; }
+    .remain { color: #666; margin-bottom: 20px; }
 
     button {
       background: #2a5298;
@@ -56,31 +48,17 @@
       transition: 0.2s;
     }
 
-    button:hover:not(:disabled) {
-      background: #1e3c72;
-    }
+    button:hover:not(:disabled) { background: #1e3c72; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
 
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
+    #result { font-size: 20px; font-weight: bold; margin-top: 20px; }
+    #roulette { font-size: 36px; margin-top: 15px; font-weight: bold; }
 
-    #result {
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 20px;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 13px;
-      color: #ddd;
-    }
+    footer { margin-top: 30px; font-size: 13px; color: #333; }
   </style>
 </head>
 
 <body>
-
 <header>✊✌✋ じゃんけん</header>
 
 <div class="container">
@@ -91,57 +69,77 @@
   <button onclick="play('チョキ')">✌ チョキ</button>
   <button onclick="play('パー')">✋ パー</button>
 
+  <div id="roulette">-</div>
   <div id="result"></div>
 </div>
 
 <footer>1日6回まで（あいこは消費しません）</footer>
 
 <script>
-  let winCount = Number(localStorage.getItem("jankenWinCount")) || 0;
+let winCount = Number(localStorage.getItem("jankenWinCount")) || 0;
+const today = new Date().toISOString().slice(0,10);
+const countKey = "jankenPlayCount_" + today;
+let count = Number(localStorage.getItem(countKey)) || 0;
 
-  const today = new Date().toISOString().slice(0, 10);
-  const countKey = "jankenPlayCount_" + today;
-  let count = Number(localStorage.getItem(countKey)) || 0;
+const hands = ["✊ グー", "✌ チョキ", "✋ パー"];
 
-  const hands = ["グー", "チョキ", "パー"];
+update();
 
-  update();
+function update() {
+  document.getElementById("winCount").textContent = winCount;
+  document.getElementById("remain").textContent = 6 - count;
+}
 
-  function update() {
-    document.getElementById("winCount").textContent = winCount;
-    document.getElementById("remain").textContent = 6 - count;
-  }
+// じゃんけんプレイ＋ルーレット演出
+function play(myHand) {
+  if(count >= 6) { alert("今日はもう6回プレイしました"); return; }
 
-  function play(myHand) {
-    if (count >= 6) {
-      alert("今日はもう6回プレイしました");
-      return;
+  const rouletteEl = document.getElementById("roulette");
+  const resultEl = document.getElementById("result");
+
+  // ボタン連打防止
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+
+  let i = 0;
+  const interval = setInterval(() => {
+    rouletteEl.textContent = hands[Math.floor(Math.random()*3)];
+    i++;
+    if(i>10){ // 10回でルーレット終了
+      clearInterval(interval);
+
+      // CPUの手を決定
+      const cpu = hands[Math.floor(Math.random()*3)];
+      rouletteEl.textContent = cpu;
+
+      // 勝敗判定
+      let message = "";
+      if(myHand === cpu.slice(2)) { // あいこ
+        message = `あいこ！（相手：${cpu.slice(2)}）`;
+      } else if(
+        (myHand==="グー" && cpu.slice(2)==="チョキ") ||
+        (myHand==="チョキ" && cpu.slice(2)==="パー") ||
+        (myHand==="パー" && cpu.slice(2)==="グー")
+      ){
+        message = `勝ち！🎉（相手：${cpu.slice(2)}）`;
+        winCount++;
+        count++;
+      } else {
+        message = `負け…（相手：${cpu.slice(2)}）`;
+        count++;
+      }
+
+      localStorage.setItem("jankenWinCount", winCount);
+      localStorage.setItem(countKey, count);
+
+      resultEl.textContent = message;
+      update();
+
+      // ボタン再度有効化
+      buttons.forEach(b => b.disabled = false);
     }
-
-    const cpu = hands[Math.floor(Math.random() * 3)];
-    let message = "";
-
-    if (myHand === cpu) {
-      message = `あいこ！（相手：${cpu}）`;
-    } else if (
-      (myHand === "グー" && cpu === "チョキ") ||
-      (myHand === "チョキ" && cpu === "パー") ||
-      (myHand === "パー" && cpu === "グー")
-    ) {
-      message = `勝ち！🎉（相手：${cpu}）`;
-      winCount++;
-      count++;
-    } else {
-      message = `負け…（相手：${cpu}）`;
-      count++;
-    }
-
-    localStorage.setItem("jankenWinCount", winCount);
-    localStorage.setItem(countKey, count);
-
-    document.getElementById("result").textContent = message;
-    update();
-  }
+  }, 100);
+}
 </script>
 
 </body>
