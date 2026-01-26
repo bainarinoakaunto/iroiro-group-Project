@@ -2,88 +2,335 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>じゃんけん|ryo15542(bainari)</title>
+<title>ポイントルーレット|ryo15542</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    button { margin: 5px; font-size: 18px; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      background: #ffffff;
+      color: #333;
+      max-width: 420px;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .point {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .remain {
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ルーレット */
+    .roulette {
+      font-size: 40px;
+      font-weight: bold;
+      border: 4px solid #2a5298;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      height: 60px;
+      line-height: 60px;
+    }
+
+    button {
+      background: #2a5298;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background: #1e3c72;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #ccc;
+    }
+    <link rel="icon" type="image/png" href="ダウンロード (1).png">
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    section {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 40px 20px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      border: 1px solid #eee;
+      padding: 24px;
+      border-radius: 12px;
+      background: #fff;
+      text-align: center;
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+    }
+
+    .pdf-button {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 28px;
+      background: #4a90e2;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
+    .pdf-button:hover {
+      background: #357abd;
+    }
+
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      line-height: 1.7;
+      scroll-behavior: smooth;
+      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(200, 200, 200, 0.25);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    header {
+      padding: 140px 20px 100px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 3rem; margin-bottom: 16px; }
+
+    section {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+    }
+
+    h2 { font-size: 2rem; margin-bottom: 24px; }
+
+    .card, .status-card {
+      border: 1px solid #eee;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .slide-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .slide-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .clock {
+      font-size: 1.8rem;
+      padding: 16px 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .status-up { color: green; font-weight: bold; }
+    .status-down { color: red; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      .clock { font-size: 1.5rem; padding: 12px 24px; }
+      .card, .status-card { padding: 16px; }
+    }
+
+    img.responsive-img {
+      display: block;
+      margin: 0 auto 24px auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  <style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.7;
+  background: #f5f5f5;
+}
+
+</style>
+</head>
+
   </style>
 </head>
 <body>
 
-<h2>じゃんけん</h2>
+<header>🎰 ポイントルーレット</header>
 
-<div id="info"></div>
-<p>今日の残り回数：<span id="remain"></span></p>
+<div class="container">
+  <div class="point">ポイント：<span id="point"></span></div>
+  <div class="remain">今日の残り回数：<span id="remain"></span></div>
 
-<button onclick="play('グー')">✊ グー</button>
-<button onclick="play('チョキ')">✌ チョキ</button>
-<button onclick="play('パー')">✋ パー</button>
+  <div class="roulette" id="roulette">-</div>
 
-<p id="result"></p>
+  <button id="spinBtn" onclick="spin()">回す！</button>
+</div>
+
+<footer>1日6回までチャレンジできます</footer>
 
 <script>
-// ===== 端末に保存されているログイン情報を取得 =====
-const user = JSON.parse(localStorage.getItem("loginInfo"));
+/* ===== ポイント（端末保存）===== */
+let point = Number(localStorage.getItem("roulettePoint")) || 0;
 
-if (!user) {
-  document.body.innerHTML = "<p>ログイン情報が端末にありません</p>";
-  throw new Error("loginInfo not found");
-}
-
-// ===== 1日6回制限 =====
-const today = new Date().toISOString().slice(0, 10);
-const countKey = "jankenCount_" + today;
+/* ===== 1日6回制限 ===== */
+const today = new Date().toISOString().slice(0,10);
+const countKey = "rouletteCount_" + today;
 let count = Number(localStorage.getItem(countKey)) || 0;
 
-// 初期表示
+/* ===== ルーレット設定 ===== */
+const rewards = [0, 5, 10, 20, 50];
+const rouletteEl = document.getElementById("roulette");
+const spinBtn = document.getElementById("spinBtn");
+
 update();
 
+/* 表示更新 */
 function update() {
-  document.getElementById("info").innerHTML = `
-    <p>カード番号：${user.cardNo}</p>
-    <p>出席番号：${user.attendance}</p>
-    <p>ポイント：${user.balance}</p>
-  `;
+  document.getElementById("point").textContent = point;
   document.getElementById("remain").textContent = 6 - count;
+  spinBtn.disabled = count >= 6;
 }
 
-// ===== じゃんけん処理 =====
-function play(myHand) {
-  if (count >= 6) {
-    alert("今日はもう6回プレイしました");
-    return;
-  }
+/* ルーレット演出 */
+function spin() {
+  if (count >= 6) return;
 
-  const hands = ["グー", "チョキ", "パー"];
-  const cpu = hands[Math.floor(Math.random() * 3)];
-
-  let message = "";
-
-  // あいこ（回数消費なし）
-  if (myHand === cpu) {
-    message = `あいこ！（相手：${cpu}）`;
-  }
-  // 勝ち
-  else if (
-    (myHand === "グー" && cpu === "チョキ") ||
-    (myHand === "チョキ" && cpu === "パー") ||
-    (myHand === "パー" && cpu === "グー")
-  ) {
-    message = `勝ち！（相手：${cpu}） +10ポイント`;
-    user.balance += 10;
-    count++;
-  }
-  // 負け
-  else {
-    message = `負け…（相手：${cpu}）`;
-    count++;
-  }
-
-  // ===== 端末に保存 =====
-  localStorage.setItem("loginInfo", JSON.stringify(user));
+  count++;
   localStorage.setItem(countKey, count);
 
-  document.getElementById("result").textContent = message;
+  spinBtn.disabled = true;
+
+  let i = 0;
+  const interval = setInterval(() => {
+    rouletteEl.textContent =
+      rewards[Math.floor(Math.random() * rewards.length)] + " pt";
+    i++;
+    if (i > 20) {
+      clearInterval(interval);
+      finish();
+    }
+  }, 100);
+}
+
+/* 結果確定 */
+function finish() {
+  const reward = rewards[Math.floor(Math.random() * rewards.length)];
+  rouletteEl.textContent = reward + " pt";
+
+  point += reward;
+  localStorage.setItem("roulettePoint", point);
+
   update();
 }
 </script>
