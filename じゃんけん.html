@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>じゃんけん|ryo15542(bainari)</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { margin: 5px; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<h2>じゃんけん</h2>
+
+<div id="info"></div>
+<p>今日の残り回数：<span id="remain"></span></p>
+
+<button onclick="play('グー')">✊ グー</button>
+<button onclick="play('チョキ')">✌ チョキ</button>
+<button onclick="play('パー')">✋ パー</button>
+
+<p id="result"></p>
+
+<script>
+// ===== 端末に保存されているログイン情報を取得 =====
+const user = JSON.parse(localStorage.getItem("loginInfo"));
+
+if (!user) {
+  document.body.innerHTML = "<p>ログイン情報が端末にありません</p>";
+  throw new Error("loginInfo not found");
+}
+
+// ===== 1日6回制限 =====
+const today = new Date().toISOString().slice(0, 10);
+const countKey = "jankenCount_" + today;
+let count = Number(localStorage.getItem(countKey)) || 0;
+
+// 初期表示
+update();
+
+function update() {
+  document.getElementById("info").innerHTML = `
+    <p>カード番号：${user.cardNo}</p>
+    <p>出席番号：${user.attendance}</p>
+    <p>ポイント：${user.balance}</p>
+  `;
+  document.getElementById("remain").textContent = 6 - count;
+}
+
+// ===== じゃんけん処理 =====
+function play(myHand) {
+  if (count >= 6) {
+    alert("今日はもう6回プレイしました");
+    return;
+  }
+
+  const hands = ["グー", "チョキ", "パー"];
+  const cpu = hands[Math.floor(Math.random() * 3)];
+
+  let message = "";
+
+  // あいこ（回数消費なし）
+  if (myHand === cpu) {
+    message = `あいこ！（相手：${cpu}）`;
+  }
+  // 勝ち
+  else if (
+    (myHand === "グー" && cpu === "チョキ") ||
+    (myHand === "チョキ" && cpu === "パー") ||
+    (myHand === "パー" && cpu === "グー")
+  ) {
+    message = `勝ち！（相手：${cpu}） +10ポイント`;
+    user.balance += 10;
+    count++;
+  }
+  // 負け
+  else {
+    message = `負け…（相手：${cpu}）`;
+    count++;
+  }
+
+  // ===== 端末に保存 =====
+  localStorage.setItem("loginInfo", JSON.stringify(user));
+  localStorage.setItem(countKey, count);
+
+  document.getElementById("result").textContent = message;
+  update();
+}
+</script>
+
+</body>
+</html>
