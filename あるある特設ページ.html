@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カード管理 |iroiroGroup</title>
+  <link rel="icon" type="image/png" href="いろいろ.png">
+<style>
+body {
+  font-family:"Segoe UI",sans-serif;
+  background:#f5f5f5;
+  margin:0;
+  padding:20px 20px 120px 20px;
+}
+h2 { margin-top:20px; }
+h5 { margin:6px 0; }
+h6 { margin:4px 0; color:#666; }
+h7 { margin:4px 0; color:#666; display:block; }
+.card { border:1px solid #9ccc9c; border-radius:6px; padding:8px; margin-bottom:8px; background-color:#d4fdd4; }
+.inactive { background-color:#eee; border-color:#ccc; }
+#warning { color:red; font-weight:bold; margin-top:10px; }
+.qa { display:none; margin-bottom:15px; }
+.question { font-weight:bold; }
+.answer { margin-left:20px; color:#555; }
+#noResult { color:red; display:none; }
+#footer { position:fixed; bottom:0; left:0; width:100%; background:#f8f8f8; border-top:1px solid #ccc; text-align:center; padding:10px 0; font-size:14px; color:#777; }
+
+#chatWidget { position:fixed; right:20px; bottom:20px; width:360px; max-height:520px; background:#fff; border-radius:12px; box-shadow:0 8px 25px rgba(0,0,0,0.2); display:flex; flex-direction:column; z-index:9999; }
+#chatHeader { background:#0b57d0; color:#fff; padding:10px; border-radius:12px 12px 0 0; text-align:center; font-weight:bold; }
+#chat { flex:1; padding:10px; overflow-y:auto; }
+.message { margin-bottom:10px; word-wrap:break-word; }
+.user { text-align:right; color:#0b57d0; }
+.ai { text-align:left; color:#188038; }
+#inputArea { display:flex; gap:6px; padding:8px; border-top:1px solid #ddd; }
+#input { flex:1; padding:6px; }
+button { padding:6px 10px; cursor:pointer; }
+
+iframe { width:100%; border:none; }
+
+.box {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 420px;
+  margin: 20px auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.code {
+  background: #eee;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  word-break: break-all;
+  border-radius: 4px;
+}
+small { color: #666; }
+</style>
+</head>
+    <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      line-height: 1.7;
+      scroll-behavior: smooth;
+      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(200, 200, 200, 0.25);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    header {
+      padding: 140px 20px 100px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 3rem; margin-bottom: 16px; }
+
+    section {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+    }
+
+    h2 { font-size: 2rem; margin-bottom: 24px; }
+
+    .card, .status-card {
+      border: 1px solid #eee;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .slide-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .slide-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .clock {
+      font-size: 1.8rem;
+      padding: 16px 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .status-up { color: green; font-weight: bold; }
+    .status-down { color: red; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (max-width: 600px) {
+      .clock { font-size: 1.5rem; padding: 12px 24px; }
+      .card, .status-card { padding: 16px; }
+    }
+
+    img.responsive-img {
+      display: block;
+      margin: 0 auto 24px auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#news">News</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#company">Company</a></li>
+    <li><a href="index.html#link">Link</a></li>
+    <li><a href="index.html#Video">Merchandise</a></li>
+    <li><a href="index.html#status">Service Information</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+     <li><a href="irotemu.html">いろテック</a></li>    
+    <li><a href="いろいろ通信.html">いろいろ通信</a></li>    
+    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li> 
+  </ul>
+</nav>
+<h2>
+</h2>
+  <video class="video" src="宮しょうあるある1.mp4"></video>
+.video {
+  width: 500px;
+}
+ 
+<footer>
+  <p>2026 いろいろ Group.<br>このサイトは実在する企業・団体とは無関係です。</p>
+
+  <div class="footer-links">
+    <a href="irotemu.html">新会社</a> |
+    <a href="いろいろ通信.html">いろいろ通信</a> |
+    <a href="情報掲載証明書.html">掲載証明</a> |
+    <a href="デジタルスタンプカード.html">デジスタk</a> |
+    <a href="いろいろ会社サービス.html">通貨管理|</a> 
+    <a href="くじ.html">くじ</a>
+  </div>
+</footer>
+
+
+</body>
+</html>
