@@ -5,7 +5,7 @@
   <title>いろいろ Group</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="いろいろ.png">
-   <link rel="stylesheet" href="style.css">
+  
 
   <style>
 
@@ -218,19 +218,25 @@ body {
   </ul>
 </nav>
 
-<div class="slider">
-  <div class="slides">
-    <a href="https://example.com/1">
-      <img src="Screenshot%202026-01-23%2006.36.02.png" alt="いろいろgroup">
+<div class="hero">
+  <div class="hero-slides">
+    <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" class="hero-slide">
+      <img src="Screenshot%202026-01-23%2006.36.02.png" alt="">
+      <div class="">
+        <h2>ホームページへようこそ</h2>
+        <p></p>
+      </div>
     </a>
-    <a href="https://example.com/2">
-      <img src="img2.jpg" alt="画像2">
+
+    <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%82%E3%82%8B%E3%81%82%E3%82%8B%E7%89%B9%E8%A8%AD%E3%83%9A%E3%83%BC%E3%82%B8.html" class="hero-slide">
+      <img src="あ.png" alt="あるある特設ページ">
+      <div class="hero-text">
+        <h2></h2>
+        <p></p>
+      </div>
     </a>
-    <a href="https://example.com/3">
-      <img src="img3.jpg" alt="画像3">
-    </a>
-  </div>
-</div>
+
+  
 
 <button onclick="prev()">◀</button>
 <button onclick="next()">▶</button>
@@ -238,8 +244,7 @@ body {
 <script src="script.js"></script>
 </body>
 </html>
-<h3>↓</h3>
-<h3>スクロール<h3>
+
 
 
 
@@ -382,6 +387,30 @@ body {
   </iframe>
 </section>
 <footer>
+  <script>
+let index = 0;
+const slides = document.querySelector('.hero-slides');
+const total = document.querySelectorAll('.hero-slide').length;
+
+function update() {
+  slides.style.transform = `translateX(${-100 * index}vw)`;
+}
+
+function next() {
+  index = (index + 1) % total;
+  update();
+}
+
+function prev() {
+  index = (index - 1 + total) % total;
+  update();
+}
+
+/* 自動切り替え */
+setInterval(() => {
+  next();
+}, 5000); // 5秒ごと
+</script>
 
 <footer>
   <p>2026 いろいろ Group.<br>このサイトは実在する企業・団体とは無関係です。</p>
