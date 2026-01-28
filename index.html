@@ -5,6 +5,7 @@
   <title>いろいろ Group</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="いろいろ.png">
+   <link rel="stylesheet" href="style.css">
 
   <style>
 
@@ -217,10 +218,26 @@ body {
   </ul>
 </nav>
 
-<header id="home">
-<img src="Screenshot%202026-01-23%2006.36.02.png"
-     alt="いろいろgroup"
-     style="display:block; margin:0 auto; width:50%;">
+<div class="slider">
+  <div class="slides">
+    <a href="https://example.com/1">
+      <img src="Screenshot%202026-01-23%2006.36.02.png" alt="いろいろgroup">
+    </a>
+    <a href="https://example.com/2">
+      <img src="img2.jpg" alt="画像2">
+    </a>
+    <a href="https://example.com/3">
+      <img src="img3.jpg" alt="画像3">
+    </a>
+  </div>
+</div>
+
+<button onclick="prev()">◀</button>
+<button onclick="next()">▶</button>
+
+<script src="script.js"></script>
+</body>
+</html>
 <h3>↓</h3>
 <h3>スクロール<h3>
 
