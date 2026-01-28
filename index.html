@@ -1,206 +1,167 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>いろいろ Group</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="いろいろ.png">
-  
-
-  <style>
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f6f8;
-      color: #222;
-    }
-
-    section {
-      max-width: 800px;
-      margin: 80px auto;
-      padding: 40px 20px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 12px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .card {
-      border: 1px solid #eee;
-      padding: 24px;
-      border-radius: 12px;
-      background: #fff;
-      text-align: center;
-      transition: box-shadow 0.3s, transform 0.3s;
-    }
-
-    .card:hover {
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-      transform: translateY(-4px);
-    }
-
-    .pdf-button {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 12px 28px;
-      background: #4a90e2;
-      color: #fff;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-
-    .pdf-button:hover {
-      background: #357abd;
-    }
-  </style>
-</head>
+<meta charset="UTF-8">
+<title>いろいろ Group</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="いろいろ.png">
 
 <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #222;
-      line-height: 1.7;
-      scroll-behavior: smooth;
-      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center center;
-      background-attachment: fixed;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(200, 200, 200, 0.25);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    a { text-decoration: none; color: inherit; }
-
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.95);
-      border-bottom: 1px solid #eee;
-      z-index: 100;
-    }
-
-    nav ul {
-      display: flex;
-      justify-content: center;
-      list-style: none;
-      margin: 0;
-      padding: 16px;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-
-    header {
-      padding: 140px 20px 100px;
-      text-align: center;
-    }
-
-    header h1 { font-size: 3rem; margin-bottom: 16px; }
-
-    section {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 60px 20px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-    }
-
-    h2 { font-size: 2rem; margin-bottom: 24px; }
-
-    .card, .status-card {
-      border: 1px solid #eee;
-      padding: 24px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      background: rgba(255,255,255,0.95);
-    }
-
-    .slide-wrapper {
-      position: relative;
-      padding-top: 56.25%;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .slide-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .clock {
-      font-size: 1.8rem;
-      padding: 16px 32px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .status-up { color: green; font-weight: bold; }
-    .status-down { color: red; font-weight: bold; }
-
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      font-size: 14px;
-      color: #666;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px 12px 0 0;
-    }
-
-    @media (max-width: 600px) {
-      .clock { font-size: 1.5rem; padding: 12px 24px; }
-      .card, .status-card { padding: 16px; }
-    }
-
-    img.responsive-img {
-      display: block;
-      margin: 0 auto 24px auto;
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-  <style>
-body {
+* {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  line-height: 1.7;
-  background: #f5f5f5;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.7;
+  color: #222;
+  background: #f4f6f8;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid #eee;
+  z-index: 100;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  list-style: none;
+  padding: 16px;
+  flex-wrap: wrap;
+}
+
+/* ===== HERO ===== */
+.hero {
+  width: 100%;
+  height: 80vh;
+  margin-top: 80px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-slides {
+  display: flex;
+  height: 100%;
+  transition: transform 1s ease;
+}
+
+.hero-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.hero-text {
+  position: absolute;
+  left: 8%;
+  bottom: 20%;
+  color: #fff;
+  z-index: 2;
+}
+
+.hero-text h2 {
+  font-size: 42px;
+}
+
+/* ===== インジケーター ===== */
+.indicators {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  z-index: 3;
+}
+
+.indicators span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+}
+
+.indicators span.active {
+  background: #fff;
+}
+
+/* ===== CONTENT ===== */
+section {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 40px 20px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+.card {
+  border: 1px solid #eee;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  background: #fff;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: #666;
+  background: #fff;
+}
+
+.footer-links {
+  margin-top: 16px;
+}
+
+.footer-links a {
+  margin: 0 6px;
+  color: #333;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+  .hero { height: 60vh; }
+  .hero-text h2 { font-size: 28px; }
+}
 </style>
 </head>
 
 <body>
 
-  </style>
-</head>
-
-<body>
-
+<!-- ===== NAV ===== -->
 <nav>
   <ul>
     <li><a href="index.html">Home</a></li>
@@ -211,174 +172,181 @@ body {
     <li><a href="index.html#Video">Merchandise</a></li>
     <li><a href="index.html#status">Service Information</a></li>
     <li><a href="index.html#contact">Contact</a></li>
-     <li><a href="irotemu.html">いろテック</a></li>    
-    <li><a href="いろいろ通信.html">いろいろ通信</a></li>    
-    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li> 
-    
+    <li><a href="irotemu.html">いろテック</a></li>
+    <li><a href="いろいろ通信.html">いろいろ通信</a></li>
+    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li>
   </ul>
 </nav>
 
+<!-- ===== HERO ===== -->
 <div class="hero">
   <div class="hero-slides">
-    <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" class="hero-slide">
-      <img src="Screenshot%202026-01-23%2006.36.02.png" alt="">
-      <div class="">
-        <h2>ホームページへようこそ</h2>
-        <p></p>
-      </div>
-    </a>
-
-    <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%82%E3%82%8B%E3%81%82%E3%82%8B%E7%89%B9%E8%A8%AD%E3%83%9A%E3%83%BC%E3%82%B8.html" class="hero-slide">
-      <img src="あ.png" alt="あるある特設ページ">
+    <a href="index.html" class="hero-slide">
+      <img src="Screenshot 2026-01-23 06.36.02.png">
       <div class="hero-text">
-        <h2></h2>
-        <p></p>
+        <h2>ホームページへようこそ</h2>
       </div>
     </a>
 
-  
+    <a href="あるある特設ページ.html" class="hero-slide">
+      <img src="あ.png">
+      <div class="hero-text">
+        <h2>あるある特設ページ</h2>
+      </div>
+    </a>
 
-<button onclick="prev()">◀</button>
-<button onclick="next()">▶</button>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-
-
-
-</html>
-</header>
-
-<section id="news">
-  <h2>お知らせ</h2>
-
-  <div class="card">
-    <p>
-      <strong>2026.01.20.pm:16:27</strong><br>
-      <span style="color:red; font-weight:bold;">NEW</span><br>
-      いろいろ Group 公式サイトの機能を追加しました。（NEWS機能）
-    </p>
+    <a href="irotemu.html" class="hero-slide">
+      <img src="いろいろ.png">
+      <div class="hero-text">
+        <h2>いろテック</h2>
+      </div>
+    </a>
   </div>
 
-  <a href="./年末年始の受付 (2).pdf.pdf" target="_blank" class="card" style="display:block;">
-    <p>
-      <strong>2025.12.10.pm:16:30</strong>
-      <span>📄</span>
-      <strong>年末年始の受付について</strong><br>
-      <span>（PDFが開きます）</span>
-    </p>
-  </a>
+  <div class="indicators">
+    <span onclick="goSlide(0)"></span>
+    <span onclick="goSlide(1)"></span>
+    <span onclick="goSlide(2)"></span>
+  </div>
+</div>
+
+  
+<section id="news">
+<h2>お知らせ</h2>
+
+<div class="card">
+<p>
+<strong>2026.01.20.pm:16:27</strong><br>
+<span style="color:red; font-weight:bold;">NEW</span><br>
+いろいろ Group 公式サイトの機能を追加しました。（NEWS機能）
+</p>
+</div>
+
+<a href="./年末年始の受付 (2).pdf.pdf" target="_blank" class="card" style="display:block;">
+<p>
+<strong>2025.12.10.pm:16:30</strong>
+<span>📄</span>
+<strong>年末年始の受付について</strong><br>
+<span>（PDFが開きます）</span>
+</p>
+</a>
 </section>
 
 <section id="services">
-  <h2>Services</h2>
-  <div class="status-card">
-    <h3>スタッフじゃんけん</h3>
-    <p>本日: <span class="status-up">可能</span></p> 
-    <button onclick="location.href='スタッフじゃんけん詳細.html'">詳細</button>
-  </div>
-  <div class="card">
-    <p>
-      オンラインストア運営、いろいろ会社サービス運営、  
-      カフート制作＆発表、スライド、Scratchゲーム開発＆発表
-    </p>
-  </div>
+<h2>Services</h2>
+<div class="status-card">
+<h3>スタッフじゃんけん</h3>
+<p>本日: <span class="status-up">可能</span></p>
+<button onclick="location.href='スタッフじゃんけん詳細.html'">詳細</button>
+</div>
+<div class="card">
+<p>
+オンラインストア運営、いろいろ会社サービス運営、
+カフート制作＆発表、スライド、Scratchゲーム開発＆発表
+</p>
+</div>
 </section>
 
 <section id="company">
-  <h2>Group会社情報</h2>
-  <div class="card">
-    <p><strong>会社名:</strong> いろいろ会社</p>
-    <p><strong>設立:</strong> 2025年5月</p>
-    <p><strong>事業内容:</strong> スライド、Scratchゲーム開発＆発表</p>
-  </div>
-  <div class="card">
-    <p><strong>会社名:</strong> いろテム</p>
-    <p><strong>設立:</strong> 2026年1月</p>
-    <p><strong>事業内容:</strong> オンラインストア運営、いろいろ会社サービス運営、カフート制作＆発表</p>
-  </div>
+<h2>Group会社情報</h2>
+<div class="card">
+<p><strong>会社名:</strong> いろいろ会社</p>
+<p><strong>設立:</strong> 2025年5月</p>
+<p><strong>事業内容:</strong> スライド、Scratchゲーム開発＆発表</p>
+</div>
+<div class="card">
+<p><strong>会社名:</strong> いろテム</p>
+<p><strong>設立:</strong> 2026年1月</p>
+<p><strong>事業内容:</strong> オンラインストア運営、いろいろ会社サービス運営、カフート制作＆発表</p>
+</div>
 </section>
 
 <section id="link">
-  <h2>Link</h2>
-  <button onclick="location.href='irotemu.html'">いろテック</button>
-  <button onclick="location.href='いろいろ通信.html'">いろいろ通信</button>
-  <button onclick="location.href='情報掲載証明書.html'">掲載証明</button>
-  <button onclick="location.href='デジタルスタンプカード.html'">デジスタk</button>
-  <button onclick="location.href='いろいろ会社サービス.html'">通貨管理</button>
-  <button onclick="location.href='いろいろスタッフ.html'">いろいろ通信デジタル📶</button>
-  <button onclick="location.href='あるある特設ページ.html'">あるあるページ</button>
-  <button onclick="location.href='スタッフログイン.html'">スタッフ専用ページ</button>
-  <button onclick="location.href='login.html'">通貨カードlogin</button>
+<h2>Link</h2>
+<button onclick="location.href='irotemu.html'">いろテック</button>
+<button onclick="location.href='いろいろ通信.html'">いろいろ通信</button>
+<button onclick="location.href='情報掲載証明書.html'">掲載証明</button>
+<button onclick="location.href='デジタルスタンプカード.html'">デジスタk</button>
+<button onclick="location.href='いろいろ会社サービス.html'">通貨管理</button>
+<button onclick="location.href='いろいろスタッフ.html'">いろいろ通信デジタル📶</button>
+<button onclick="location.href='あるある特設ページ.html'">あるあるページ</button>
+<button onclick="location.href='スタッフログイン.html'">スタッフ専用ページ</button>
+<button onclick="location.href='login.html'">通貨カードlogin</button>
 </section>
 
 
 <section id="Video">
-  <h2>商品</h2>
+<h2>商品</h2>
 
-  <div class="card">
-    <p>商品紹介用資料をPDFでご覧いただけます。（新商品、情報掲載は、時間を要する場合があります。）</p>
-    <a href="./準備中・・・.pdf
-" target="_blank" class="pdf-button">PDFを開く</a>
-  </div>
+<div class="card">
+<p>商品紹介用資料をPDFでご覧いただけます。（新商品、情報掲載は、時間を要する場合があります。）</p>
+<a href="./準備中・・・.pdf
+ target=_blank" class="pdf-button">PDFを開く</a>
+</div>
 
 </section>
 
 <style>
-  .pdf-button {
-    display: inline-block;
-    padding: 12px 24px;
-    margin-top: 16px;
-    background-color: #4a90e2;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
+.pdf-button {
+display: inline-block;
+padding: 12px 24px;
+margin-top: 16px;
+background-color: #4a90e2;
+color: #fff;
+font-weight: bold;
+border-radius: 8px;
+text-decoration: none;
+transition: background-color 0.3s ease;
+}
 
-  .pdf-button:hover {
-    background-color: #357ABD;
-  }
+.pdf-button:hover {
+background-color: #357ABD;
+}
 </style>
 
-  <div class="card">
-    <p>商品紹介用スライド／動画</p>
-  </div>
+<div class="card">
+<p>商品紹介用スライド／動画</p>
+</div>
 </section>
 
 <section id="status">
-  <h2>サービス稼働情報</h2>
-  <img class="responsive-img"
-       src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-01-17%2009.34.31.png"
-       alt="サービス稼働情報">
+<h2>サービス稼働情報</h2>
+<img class="responsive-img"
+src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-01-17%2009.34.31.png"
+alt="サービス稼働情報">
 
-  <div class="clock" id="clock-container">
-    <div id="clock">--:--:--</div>
-    <span>現在</span>
-  </div>
-  <h6>※5秒ごとに更新</h6>
+<div class="clock" id="clock-container">
+<div id="clock">--:--:--</div>
+<span>現在</span>
+</div>
+<h6>※5秒ごとに更新</h6>
 
-  <div class="status-card">
-    <h3>オンラインストア</h3>
-    <p>現在: <span class="status-up">稼働中</span></p>
-  </div>
-  <div class="status-card">
-    <h3>いろいろサービス</h3>
-    <p>現在: <span class="status-up">稼働中</span></p>
-  </div>
-  <div class="status-card">
-    <h3>デジスタ</h3>
-    <p>現在: <span class="status-up">稼働中</span></p>
-  </div>
-  <div class="status-card">
-    <h3>カード残高確認</h3>
-    <p>現在: <span class="status-up">稼働中</span></p>
-  </div>
+<div class="status-card">
+<h3>オンラインストア</h3>
+<p>現在: <span class="status-up">稼働中</span></p>
+</div>
+<div class="status-card">
+<h3>いろいろサービス</h3>
+<p>現在: <span class="status-up">稼働中</span></p>
+</div>
+<div class="status-card">
+<h3>デジスタ</h3>
+<p>現在: <span class="status-up">稼働中</span></p>
+</div>
+<div class="status-card">
+<h3>カード残高確認</h3>
+<p>現在: <span class="status-up">稼働中</span></p>
+</div>
 </section>
 
+<section id="contact">
+<h2>Contact</h2>
+<iframe
+src="https://docs.google.com/forms/d/e/1FAIpQLSdvGETERdwgVhkldihjoEiZk6djO0OfyX2Y8s8hBKtH7S_WOw/viewform?embedded=true"
+width="100%" height="650" frameborder="0">
+</iframe>
+</section>
+<!-- ===== CONTACT（提出内容そのまま） ===== -->
 <section id="contact">
   <h2>Contact</h2>
   <iframe
@@ -386,14 +354,39 @@ body {
     width="100%" height="650" frameborder="0">
   </iframe>
 </section>
+
+<!-- ===== FOOTER（提出内容そのまま） ===== -->
 <footer>
-  <script>
+  <p>
+    2026 いろいろ Group.<br>
+    このサイトは実在する企業・団体とは無関係です。
+  </p>
+
+  <a href="https://ryo15542sabu.my.canva.site/ryo15542web">
+    ryo15542サイトへ
+  </a>
+
+  <div class="footer-links">
+    <a href="irotemu.html">新会社</a> |
+    <a href="いろいろ通信.html">いろいろ通信</a> |
+    <a href="情報掲載証明書.html">掲載証明</a> |
+    <a href="デジタルスタンプカード.html">デジスタk</a> |
+    <a href="いろいろ会社サービス.html">通貨管理</a> |
+    <a href="くじ.html">くじ</a> |
+    <a href="じゃんけん.html">じゃんけんP</a>
+  </div>
+</footer>
+
+<script>
 let index = 0;
 const slides = document.querySelector('.hero-slides');
-const total = document.querySelectorAll('.hero-slide').length;
+const dots = document.querySelectorAll('.indicators span');
+const total = dots.length;
 
 function update() {
-  slides.style.transform = `translateX(${-100 * index}vw)`;
+  slides.style.transform = `translateX(${-100 * index}%)`;
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[index].classList.add('active');
 }
 
 function next() {
@@ -401,30 +394,15 @@ function next() {
   update();
 }
 
-function prev() {
-  index = (index - 1 + total) % total;
+function goSlide(n) {
+  index = n;
   update();
 }
 
-/* 自動切り替え */
-setInterval(() => {
-  next();
-}, 5000); // 5秒ごと
+update();
+setInterval(next, 5000);
 </script>
 
-<footer>
-  <p>2026 いろいろ Group.<br>このサイトは実在する企業・団体とは無関係です。</p>
-  <a href="https://ryo15542sabu.my.canva.site/ryo15542web">ryo15542サイトへ</a>
-
-
-  <div class="footer-links">
-    <a href="irotemu.html">新会社</a> |
-    <a href="いろいろ通信.html">いろいろ通信</a> |
-    <a href="情報掲載証明書.html">掲載証明</a> |
-    <a href="デジタルスタンプカード.html">デジスタk</a> |
-    <a href="いろいろ会社サービス.html">通貨管理|</a> 
-    <a href="くじ.html">くじ</a>
-    <a href="じゃんけん.html">じゃんけんP</a>
-  </div>
-</footer>
+</body>
+</html>
 
