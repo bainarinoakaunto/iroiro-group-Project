@@ -67,6 +67,12 @@
     } else {
       alert("パスワードが違います");
     }
+    if (history.length > 1) {
+  history.back();
+} else {
+  location.href = "index.html"; // トップページ
+}
+
   </script>
 </head>
 
