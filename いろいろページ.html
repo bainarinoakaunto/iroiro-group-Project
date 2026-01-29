@@ -20,17 +20,6 @@
       text-align: center;
     }
 
-    nav a {
-      color: #ecf0f1;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
     main {
       max-width: 800px;
       margin: 40px auto;
@@ -41,38 +30,38 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    article h3 {
-      margin-top: 0;
-      color: #2c3e50;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #777;
     }
   </style>
 
   <script>
-    const password = "89281";
-    const input = prompt("パスワードを入力してください");
+    const PASSWORD = "89281";
 
-    if (input === password) {
-      document.addEventListener("DOMContentLoaded", function () {
+    // すでにログイン済みか？
+    if (localStorage.getItem("loginOK") === "true") {
+      document.addEventListener("DOMContentLoaded", () => {
         document.body.style.display = "block";
       });
     } else {
-      alert("パスワードが違います");
-    }
-    if (history.length > 1) {
-  history.back();
-} else {
-  location.href = "index.html"; // トップページ
-}
+      const input = prompt("パスワードを入力してください");
 
+      if (input === PASSWORD) {
+        // ログイン情報を保存
+        localStorage.setItem("loginOK", "true");
+
+        document.addEventListener("DOMContentLoaded", () => {
+          document.body.style.display = "block";
+        });
+      } else {
+        alert("パスワードが違います");
+
+        // 前のページへ
+        if (history.length > 1) {
+          history.back();
+        } else {
+          location.href = "index.html";
+        }
+      }
+    }
   </script>
 </head>
 
@@ -80,23 +69,14 @@
 
 <header>
   <h1>いろいろページ</h1>
-  <p>日々のいろいろを書いています</p>
-  <nav>
-    <a href="index.html">ホームページトップ</a>
-   
-  </nav>
 </header>
 
 <main>
   <article>
-    <h3>現在、ありません</h3>
-    <p>ただいま準備中です。</p>
+    <h3>準備中</h3>
+    <p></p>
   </article>
 </main>
-
-<footer>
-  <p>2026 いろいろgroup</p>
-</footer>
 
 </body>
 </html>
