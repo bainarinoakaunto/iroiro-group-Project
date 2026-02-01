@@ -254,28 +254,40 @@ footer {
 <h2>Services</h2>
 <div class="status-card">
 <h3>スタッフじゃんけん</h3>
-<p>本日: <span id="status"></span></p>
+
+<p>
+  本日（<span id="date"></span>）：
+  <span id="status"></span>
+</p>
+
 <button id="detailBtn" onclick="location.href='スタッフじゃんけん詳細.html'">
   詳細
 </button>
 
 <script>
   const status = document.getElementById("status");
+  const dateSpan = document.getElementById("date");
   const btn = document.getElementById("detailBtn");
 
   const today = new Date();
-  const day = today.getDay(); // 0=日曜, 6=土曜
+  const month = today.getMonth() + 1; // 0始まりなので+1
+  const date = today.getDate();
+  const day = today.getDay(); // 0=日, 6=土
+
+  // 日付表示（例：5月12日）
+  dateSpan.textContent = month + "月" + date + "日";
 
   if (day === 0 || day === 6) {
     status.textContent = "不可";
     status.style.color = "red";
-    btn.disabled = true;        // ボタン無効
+    btn.disabled = true;
     btn.style.opacity = "0.5";
   } else {
     status.textContent = "可能";
     status.style.color = "green";
   }
 </script>
+
 
 <div class="card">
 <p>
