@@ -1,15 +1,26 @@
-const img = document.getElementById("screen");
-const channel = new BroadcastChannel("tv-share");
+document.getElementById("start").onclick = async () => {
+  try {
+    // 画面共有ダイアログを開く
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: "always" } // カーソルも映す
+    });
 
-channel.onmessage = e => {
-  img.src = URL.createObjectURL(e.data);
-};
+    // video要素に表示
+    const video = document.getElementById("video"); 
+    video.srcObject = stream;
 
-/* 自動フルスクリーン */
-function fullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(()=>{});
+    // canvas描画ループ
+    function draw() {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+  } catch (err) {
+    alert("画面取得に失敗しました: " + err.message);
+    console.error(err);
   }
-}
-window.onload = fullscreen;
-document.addEventListener("click", fullscreen);
+};
