@@ -2,132 +2,89 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Mi！ - 操作用</title>
+<title>Mini OBS - TV表示</title>
 <style>
-body { font-family: sans-serif; }
-canvas { border:1px solid #000; display:block; margin-top:10px; }
-ul { list-style:none; padding:0; }
-li { margin:4px 0; }
-li button { margin-left:10px; }
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:black;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+#screen-container {
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  overflow:hidden;
+}
+
+#screen {
+  object-fit:contain; /* 縦横比維持 */
+  max-width:100%;
+  max-height:100%;
+}
+
+/* スライダーUI */
+#controls {
+  padding:5px;
+  background:#222;
+  color:white;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+#sizeSlider {
+  flex:1;
+}
 </style>
 </head>
 <body>
 
-<h2>Mi！ - 操作用</h2>
+<div id="screen-container">
+  <img id="screen">
+</div>
 
-<button id="start">画面取得</button>
-<button id="openTV">TV表示</button>
-<input type="file" id="addImg" multiple accept="image/*">
-
-<h3>登録画像</h3>
-<ul id="imgList"></ul>
-
-<canvas id="canvas" width="1280" height="720"></canvas>
+<div id="controls">
+  <label>サイズ調整:</label>
+  <input type="range" id="sizeSlider" min="10" max="200" value="100">
+  <span id="sizeValue">100%</span>
+</div>
 
 <script>
-/* -------------------
-   1. 初期設定
-------------------- */
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// BroadcastChannelでリアルタイム受信
+const img = document.getElementById("screen");
 const channel = new BroadcastChannel("tv-share");
-let video = document.createElement("video"); 
-video.autoplay = true;
-let sources = [];
-let active = null, ox = 0, oy = 0;
-let idCounter = 0;
 
-/* -------------------
-   2. 画面取得
-------------------- */
-document.getElementById("start").onclick = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getDisplayMedia({ video:{ cursor:"always" } });
-    video.srcObject = stream;
-    draw();
-  } catch(err) {
-    alert("画面取得に失敗しました:\n" + err.message);
-    console.error(err);
+channel.onmessage = e => {
+  img.src = URL.createObjectURL(e.data);
+};
+
+// スライダーでサイズ調整
+const slider = document.getElementById("sizeSlider");
+const sizeValue = document.getElementById("sizeValue");
+
+slider.oninput = () => {
+  const scale = slider.value / 100;
+  img.style.width = scale * 100 + "%";
+  img.style.height = "auto"; // 縦横比維持
+  sizeValue.textContent = slider.value + "%";
+};
+
+// フルスクリーン化
+function fullscreen() {
+  if(!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(()=>{});
   }
-};
-
-/* -------------------
-   3. TV表示ボタン
-------------------- */
-document.getElementById("openTV").onclick = () => {
-  window.open("viewer.html", "_blank");
-};
-
-/* -------------------
-   4. 画像アップロード
-------------------- */
-document.getElementById("addImg").onchange = e => {
-  const files = e.target.files;
-  for (let file of files) {
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    const id = idCounter++;
-    img.onload = () => {
-      const source = { img, x:100, y:100, w:img.width/2, h:img.height/2, id };
-      sources.push(source);
-      addImageList(source);
-    };
-  }
-};
-
-function addImageList(source){
-  const ul = document.getElementById("imgList");
-  const li = document.createElement("li");
-  li.id = "img-" + source.id;
-  li.textContent = "画像 " + source.id;
-  const btn = document.createElement("button");
-  btn.textContent = "削除";
-  btn.onclick = () => {
-    sources = sources.filter(s=>s.id!==source.id);
-    ul.removeChild(li);
-  };
-  li.appendChild(btn);
-  ul.appendChild(li);
 }
-
-/* -------------------
-   5. 描画ループ
-------------------- */
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(video.srcObject) ctx.drawImage(video,0,0,canvas.width,canvas.height);
-  for(const s of sources) ctx.drawImage(s.img,s.x,s.y,s.w,s.h);
-  canvas.toBlob(b => channel.postMessage(b), "image/webp", 0.7);
-  requestAnimationFrame(draw);
-}
-
-/* -------------------
-   6. ドラッグ移動
-------------------- */
-canvas.onmousedown = e=>{
-  const r = canvas.getBoundingClientRect();
-  const x = e.clientX - r.left;
-  const y = e.clientY - r.top;
-  for(let i = sources.length-1; i>=0; i--){
-    const s = sources[i];
-    if(x>s.x && x<s.x+s.w && y>s.y && y<s.y+s.h){
-      active = s;
-      ox = x - s.x;
-      oy = y - s.y;
-      sources.splice(i,1);
-      sources.push(s);
-      break;
-    }
-  }
-};
-
-canvas.onmousemove = e=>{
-  if(!active) return;
-  const r = canvas.getBoundingClientRect();
-  active.x = e.clientX - r.left - ox;
-  active.y = e.clientY - r.top - oy;
-};
-canvas.onmouseup = canvas.onmouseleave = ()=> active=null;
+window.onload = fullscreen;
+document.addEventListener("click", fullscreen);
 </script>
 </body>
 </html>
+
