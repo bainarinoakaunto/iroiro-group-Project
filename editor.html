@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Editor</title>
+</head>
+<body>
+
+<button id="start">画面取得</button>
+<button id="openTV">TVに表示</button>
+<br><br>
+
+<canvas id="canvas" width="1280" height="720"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const channel = new BroadcastChannel("tv-share");
+
+let video = document.createElement("video");
+video.autoplay = true;
+
+/* 画面取得 */
+document.getElementById("start").onclick = async () => {
+  const stream = await navigator.mediaDevices.getDisplayMedia({ video:true });
+  video.srcObject = stream;
+  draw();
+};
+
+/* 描画ループ */
+function draw() {
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // TVにフレーム送信
+  canvas.toBlob(blob => {
+    channel.postMessage(blob);
+  }, "image/webp", 0.7);
+
+  requestAnimationFrame(draw);
+}
+
+/* TV画面を開く */
+document.getElementById("openTV").onclick = () => {
+  window.open("viewer.html", "_blank");
+};
+</script>
+
+</body>
+</html>
