@@ -2,13 +2,45 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Min - TV表示</title>
-<link rel="stylesheet" href="css/style.css">
+<title>Mi! OBS - TV表示</title>
+<style>
+body {
+  margin:0;
+  background:black;
+  overflow:hidden;
+}
+
+#screen {
+  width:100vw;
+  height:100vh;
+  object-fit:contain;
+  display:block;
+}
+</style>
 </head>
-<body class="tv">
+<body>
 
 <img id="screen">
 
-<script src="js/viewer.js"></script>
+<script>
+const img = document.getElementById("screen");
+const channel = new BroadcastChannel("tv-share");
+
+// BroadcastChannelで受信
+channel.onmessage = e => {
+  img.src = URL.createObjectURL(e.data);
+};
+
+// フルスクリーン化（ユーザー操作で必須）
+function fullscreen() {
+  if(!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(()=>{});
+  }
+}
+
+// ページ読み込み時、クリック時にフルスクリーン
+window.onload = fullscreen;
+document.addEventListener("click", fullscreen);
+</script>
 </body>
 </html>
