@@ -2,10 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Mi!-共有</title>
+<title>Mi!- エディター</title>
 <style>
 body {
-  margin:0; padding:0;
+  margin:0;
+  padding:0;
   font-family:sans-serif;
   background:#111;
   color:white;
@@ -54,7 +55,7 @@ img.draggable {
 </head>
 <body>
 
-<h2>Mini OBS 統合ページ</h2>
+<h2>Mini OBS エディタ</h2>
 
 <div id="controls">
   <!-- 画面共有 -->
@@ -90,28 +91,40 @@ let shareChannel;
 
 startShare.onclick = async () => {
   try {
-    const stream = await navigator.mediaDevices.getDisplayMedia({video:true});
+    // 画面共有の開始
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true  // 音声も共有する場合
+    });
     preview.srcObject = stream;
     preview.style.display = "block";
 
+    // 画面キャプチャの設定
     const track = stream.getVideoTracks()[0];
     const imageCapture = new ImageCapture(track);
 
+    // BroadcastChannelの設定
     shareChannel = new BroadcastChannel("tv-share");
 
+    // 画面のキャプチャを定期的に行い、送信
     setInterval(async () => {
       const bitmap = await imageCapture.grabFrame();
       const canvas = document.createElement("canvas");
       canvas.width = bitmap.width;
       canvas.height = bitmap.height;
       const ctx = canvas.getContext("2d");
-      ctx.drawImage(bitmap,0,0);
-      canvas.toBlob(blob => { shareChannel.postMessage(blob); }, "image/jpeg", 0.7);
-    }, 33);
+      ctx.drawImage(bitmap, 0, 0);
+      canvas.toBlob(blob => {
+        shareChannel.postMessage(blob);  // 画面データを送信
+      }, "image/jpeg", 0.7);  // JPEG圧縮
+    }, 33);  // 約30fpsで送信
+
+    // 画面共有中のUI変更
     startShare.disabled = true;
     startShare.textContent = "共有中…";
-  } catch(e) {
-    alert("画面共有に失敗: "+e);
+  } catch (e) {
+    console.error("画面共有に失敗: ", e);
+    alert("画面共有に失敗: " + e.message);
   }
 };
 
@@ -151,31 +164,31 @@ const deleteImg = document.getElementById("deleteImg");
 let selectedImg = null;
 
 uploadImg.addEventListener("change", e => {
-  for(const file of e.target.files){
+  for (const file of e.target.files) {
     const img = document.createElement("img");
     img.src = URL.createObjectURL(file);
     img.classList.add("draggable");
-    img.style.width="100%";  // デフォルトで親の100%幅に設定
-    img.style.top="0px";
-    img.style.left="0px";
+    img.style.width = "100px";  // デフォルトで100px
+    img.style.top = "0px";
+    img.style.left = "0px";
 
-    img.addEventListener("click", ev=>{
+    img.addEventListener("click", ev => {
       ev.stopPropagation();
       selectedImg = img;
-      imgSize.value = parseInt(img.style.width); // ここは変更後の%に合わせて調整
-      imgSizeValue.textContent = imgSize.value + "%";
+      imgSize.value = parseInt(img.style.width);
+      imgSizeValue.textContent = imgSize.value + "px";
     });
 
     // ドラッグ
     let offsetX, offsetY;
-    img.addEventListener("pointerdown", e=>{
+    img.addEventListener("pointerdown", e => {
       selectedImg = img;
       offsetX = e.clientX - img.offsetLeft;
       offsetY = e.clientY - img.offsetTop;
       img.setPointerCapture(e.pointerId);
     });
-    img.addEventListener("pointermove", e=>{
-      if(e.pressure === 0) return;
+    img.addEventListener("pointermove", e => {
+      if (e.pressure === 0) return;
       img.style.left = e.clientX - offsetX + "px";
       img.style.top = e.clientY - offsetY + "px";
     });
@@ -184,35 +197,33 @@ uploadImg.addEventListener("change", e => {
   }
 });
 
-container.addEventListener("click", ()=>{ selectedImg = null; });
+container.addEventListener("click", () => { selectedImg = null; });
 
 // サイズ調整
-imgSize.addEventListener("input", ()=>{
-  if(selectedImg){
-    const containerWidth = container.offsetWidth;  // コンテナの幅を取得
-    const newWidth = (imgSize.value / 100) * containerWidth;  // 親コンテナに対する割合で幅を設定
-    selectedImg.style.width = newWidth + "px";  // 計算されたピクセル数に変更
-    imgSizeValue.textContent = imgSize.value + "%";
+imgSize.addEventListener("input", () => {
+  if (selectedImg) {
+    selectedImg.style.width = imgSize.value + "px";
+    imgSizeValue.textContent = imgSize.value + "px";
   }
 });
 
 // 前面に持ってくる
-bringFront.addEventListener("click", ()=>{
-  if(selectedImg) {
+bringFront.addEventListener("click", () => {
+  if (selectedImg) {
     selectedImg.style.zIndex = 10; // 前面へ
   }
 });
 
 // 背面に送る
-sendBack.addEventListener("click", ()=>{
-  if(selectedImg) {
+sendBack.addEventListener("click", () => {
+  if (selectedImg) {
     selectedImg.style.zIndex = -10; // 背面へ
   }
 });
 
 // 画像削除
-deleteImg.addEventListener("click", ()=>{
-  if(selectedImg) {
+deleteImg.addEventListener("click", () => {
+  if (selectedImg) {
     selectedImg.remove();
     selectedImg = null;
   }
