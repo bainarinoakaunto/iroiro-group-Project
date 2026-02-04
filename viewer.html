@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TV View</title>
+<style>
+  body { margin:0; background:black }
+  img { width:100vw; height:100vh; object-fit:contain }
+</style>
+</head>
+<body>
+
+<img id="screen">
+
+<script>
+const img = document.getElementById("screen");
+const channel = new BroadcastChannel("tv-share");
+
+channel.onmessage = e => {
+  const url = URL.createObjectURL(e.data);
+  img.src = url;
+};
+</script>
+
+</body>
+</html>
