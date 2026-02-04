@@ -34,6 +34,7 @@ const img = document.getElementById("screen");
 const channel = new BroadcastChannel("tv-share");
 
 channel.onmessage = e => {
+  // メッセージが受信されたら、受け取った画像を表示
   img.src = URL.createObjectURL(e.data);
 };
 
@@ -50,3 +51,4 @@ document.addEventListener("click", fullscreen);
 </script>
 </body>
 </html>
+
