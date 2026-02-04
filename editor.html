@@ -61,7 +61,7 @@ img.draggable {
   <button id="startShare">画面共有開始</button>
 
   <!-- 受信 -->
-  <button id="startReceive">受信開始</button>
+  <button id="startReceive">画面共有受信</button>
   <label>受信画像サイズ:</label>
   <input type="range" id="receiveSize" min="10" max="200" value="100">
   <span id="receiveSizeValue">100%</span>
@@ -72,8 +72,8 @@ img.draggable {
   <button id="sendBack">背面へ</button>
   <button id="deleteImg">削除</button>
   <label>サイズ調整:</label>
-  <input type="range" id="imgSize" min="10" max="300" value="100">
-  <span id="imgSizeValue">100px</span>
+  <input type="range" id="imgSize" min="10" max="200" value="100">
+  <span id="imgSizeValue">100%</span>
 </div>
 
 <div id="screen-container">
@@ -155,15 +155,15 @@ uploadImg.addEventListener("change", e => {
     const img = document.createElement("img");
     img.src = URL.createObjectURL(file);
     img.classList.add("draggable");
-    img.style.width="100px";
+    img.style.width="100%";  // デフォルトで親の100%幅に設定
     img.style.top="0px";
     img.style.left="0px";
 
     img.addEventListener("click", ev=>{
       ev.stopPropagation();
       selectedImg = img;
-      imgSize.value = parseInt(img.style.width);
-      imgSizeValue.textContent = imgSize.value + "px";
+      imgSize.value = parseInt(img.style.width); // ここは変更後の%に合わせて調整
+      imgSizeValue.textContent = imgSize.value + "%";
     });
 
     // ドラッグ
@@ -175,7 +175,7 @@ uploadImg.addEventListener("change", e => {
       img.setPointerCapture(e.pointerId);
     });
     img.addEventListener("pointermove", e=>{
-      if(e.pressure===0) return;
+      if(e.pressure === 0) return;
       img.style.left = e.clientX - offsetX + "px";
       img.style.top = e.clientY - offsetY + "px";
     });
@@ -184,9 +184,41 @@ uploadImg.addEventListener("change", e => {
   }
 });
 
-container.addEventListener("click", ()=>{ selectedImg=null; });
+container.addEventListener("click", ()=>{ selectedImg = null; });
 
 // サイズ調整
 imgSize.addEventListener("input", ()=>{
   if(selectedImg){
-    selectedImg.style.width = imgSize.value + "px
+    const containerWidth = container.offsetWidth;  // コンテナの幅を取得
+    const newWidth = (imgSize.value / 100) * containerWidth;  // 親コンテナに対する割合で幅を設定
+    selectedImg.style.width = newWidth + "px";  // 計算されたピクセル数に変更
+    imgSizeValue.textContent = imgSize.value + "%";
+  }
+});
+
+// 前面に持ってくる
+bringFront.addEventListener("click", ()=>{
+  if(selectedImg) {
+    selectedImg.style.zIndex = 10; // 前面へ
+  }
+});
+
+// 背面に送る
+sendBack.addEventListener("click", ()=>{
+  if(selectedImg) {
+    selectedImg.style.zIndex = -10; // 背面へ
+  }
+});
+
+// 画像削除
+deleteImg.addEventListener("click", ()=>{
+  if(selectedImg) {
+    selectedImg.remove();
+    selectedImg = null;
+  }
+});
+</script>
+
+</body>
+</html>
+
