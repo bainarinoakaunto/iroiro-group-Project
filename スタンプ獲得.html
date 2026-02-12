@@ -9,12 +9,13 @@
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(135deg,#fdf2e9,#ffe0c7);
+  background:radial-gradient(circle at center,#fff3e6,#ffd8b0);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
   text-align:center;
+  overflow:hidden;
   color:#5a3b1e;
 }
 
@@ -22,57 +23,54 @@ body{
   background:white;
   padding:40px 30px;
   border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
   max-width:400px;
   width:90%;
-  animation:fadeIn 0.8s ease;
+  position:relative;
+  z-index:2;
 }
 
-h1{
-  margin-top:0;
-  font-size:24px;
-}
+h1{margin:0;}
 
 .stamp-icon{
-  font-size:60px;
+  font-size:80px;
   margin:20px 0;
-  animation:pop 1s infinite alternate;
+  opacity:0;
+  transform:scale(0.3) rotate(-180deg);
 }
 
 .status{
-  font-size:16px;
+  font-size:18px;
   margin-top:10px;
-}
-
-.success{ color:#27ae60; font-weight:bold; }
-.already{ color:#c0392b; font-weight:bold; }
-
-/* ホームボタン */
-.home-btn{
-  display:inline-block;
-  margin-top:25px;
-  padding:10px 20px;
-  border-radius:30px;
-  background:#b3561c;
-  color:white;
   font-weight:bold;
-  text-decoration:none;
-  transition:0.3s;
 }
 
-.home-btn:hover{
-  background:#8b4513;
-  transform:translateY(-2px);
+.success{ color:#27ae60; }
+.already{ color:#c0392b; }
+
+/* キラキラ */
+.sparkle{
+  position:absolute;
+  font-size:20px;
+  animation:fall 3s linear infinite;
+  opacity:0.8;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
+@keyframes fall{
+  0%{transform:translateY(-100px) rotate(0deg);}
+  100%{transform:translateY(100vh) rotate(360deg);}
 }
 
-@keyframes pop{
-  from{transform:scale(1);}
-  to{transform:scale(1.1);}
+@keyframes popStamp{
+  0%{opacity:0; transform:scale(0.3) rotate(-180deg);}
+  60%{transform:scale(1.3) rotate(10deg);}
+  100%{opacity:1; transform:scale(1) rotate(0);}
+}
+
+.countdown{
+  margin-top:15px;
+  font-size:14px;
+  color:#888;
 }
 </style>
 </head>
@@ -80,42 +78,84 @@ h1{
 <body>
 
 <div class="card">
-  <h1>🎉 ご来場ありがとうございます！</h1>
-  <div class="stamp-icon">🎫</div>
-  <p class="status" id="message">スタンプを確認中...</p>
-
-  <!-- ホームボタン -->
-  <a href="index.html" class="home-btn">🏠 ホームへ戻る</a>
+  <h1>🎉 スタンプ獲得！</h1>
+  <div class="stamp-icon" id="stampIcon">🎫</div>
+  <p class="status" id="message">確認中...</p>
+  <div class="countdown" id="countdown"></div>
 </div>
 
 <script>
 /* ===== 設定 ===== */
-const STAMP_ID = "001";
-const REDIRECT_URL = "デジタルスタンプカード.html";
+const STAMP_ID="001";
+const STAMP_IMG="https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png";
+const REDIRECT_URL="デジタルスタンプカード.html";
 
+/* ===== 日付 ===== */
+function today(){
+  const d=new Date();
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+}
 function todayKey(){
   return new Date().toISOString().slice(0,10);
 }
 
-const keyName = "stampDate_" + STAMP_ID;
-const message = document.getElementById("message");
+const message=document.getElementById("message");
+const stampIcon=document.getElementById("stampIcon");
+const countdownEl=document.getElementById("countdown");
+const dateKey="stampDate_"+STAMP_ID;
 
-if(localStorage.getItem(keyName) !== todayKey()){
-  localStorage.setItem(keyName, todayKey());
-  message.textContent = "スタンプを取得しました！デジスタへ移動します...";
-  message.className = "status success";
+/* ===== 取得処理 ===== */
+if(localStorage.getItem(dateKey)!==todayKey()){
 
-  setTimeout(()=>{
-    location.href = REDIRECT_URL + "?stamp=" + STAMP_ID;
-  },1500);
+  let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
+
+  stamps.push({
+    img:STAMP_IMG,
+    number:STAMP_ID,
+    date:today(),
+    used:false
+  });
+
+  localStorage.setItem("stamps",JSON.stringify(stamps));
+  localStorage.setItem(dateKey,todayKey());
+
+  message.textContent="スタンプを1個獲得しました！";
+  message.className="status success";
+
+  /* スタンプアニメ */
+  stampIcon.style.animation="popStamp 1s forwards";
+
+  /* キラキラ生成 */
+  for(let i=0;i<20;i++){
+    const s=document.createElement("div");
+    s.textContent="✨";
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"%";
+    s.style.animationDuration=(2+Math.random()*2)+"s";
+    document.body.appendChild(s);
+  }
+
+  /* 5秒カウントダウン */
+  let seconds=5;
+  countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
+
+  const timer=setInterval(()=>{
+    seconds--;
+    countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
+    if(seconds<=0){
+      clearInterval(timer);
+      location.href=REDIRECT_URL;
+    }
+  },1000);
 
 }else{
-  message.textContent = "今日はすでに取得済みです。デジスタへ戻ります...";
-  message.className = "status already";
+  message.textContent="今日はすでに取得済みです。";
+  message.className="status already";
+  stampIcon.textContent="✅";
 
   setTimeout(()=>{
-    location.href = REDIRECT_URL;
-  },1500);
+    location.href=REDIRECT_URL;
+  },3000);
 }
 </script>
 
