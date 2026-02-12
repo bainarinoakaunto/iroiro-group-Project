@@ -72,20 +72,50 @@ h1{margin:0;}
   font-size:14px;
   color:#888;
 }
+
+input{
+  margin-top:15px;
+  padding:8px;
+  width:80%;
+  border-radius:6px;
+  border:1px solid #c59f7b;
+  font-size:16px;
+}
+
+button{
+  margin-top:10px;
+  padding:8px 16px;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #c59f7b;
+  background:#fff2e0;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#ffd8b0;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <h1>🎉 スタンプ獲得！</h1>
+  <h1>🎉 スタンプ取得</h1>
+  <div id="passwordArea">
+    <input type="password" id="passwordInput" placeholder="パスワードを入力">
+    <br>
+    <button onclick="checkPassword()">送信</button>
+  </div>
+
   <div class="stamp-icon" id="stampIcon">🎫</div>
-  <p class="status" id="message">確認中...</p>
+  <p class="status" id="message">パスワードを入力してください</p>
   <div class="countdown" id="countdown"></div>
 </div>
 
 <script>
 /* ===== 設定 ===== */
+const PASSWORD="0430"; // パスワード設定
 const STAMP_ID="001";
 const STAMP_IMG="https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png";
 const REDIRECT_URL="デジタルスタンプカード.html";
@@ -99,63 +129,80 @@ function todayKey(){
   return new Date().toISOString().slice(0,10);
 }
 
+/* ===== 要素取得 ===== */
 const message=document.getElementById("message");
 const stampIcon=document.getElementById("stampIcon");
 const countdownEl=document.getElementById("countdown");
 const dateKey="stampDate_"+STAMP_ID;
+const passwordInput=document.getElementById("passwordInput");
+const passwordArea=document.getElementById("passwordArea");
 
-/* ===== 取得処理 ===== */
-if(localStorage.getItem(dateKey)!==todayKey()){
-
-  let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
-
-  stamps.push({
-    img:STAMP_IMG,
-    number:STAMP_ID,
-    date:today(),
-    used:false
-  });
-
-  localStorage.setItem("stamps",JSON.stringify(stamps));
-  localStorage.setItem(dateKey,todayKey());
-
-  message.textContent="スタンプを1個獲得しました！";
-  message.className="status success";
-
-  /* スタンプアニメ */
-  stampIcon.style.animation="popStamp 1s forwards";
-
-  /* キラキラ生成 */
-  for(let i=0;i<20;i++){
-    const s=document.createElement("div");
-    s.textContent="✨";
-    s.className="sparkle";
-    s.style.left=Math.random()*100+"%";
-    s.style.animationDuration=(2+Math.random()*2)+"s";
-    document.body.appendChild(s);
+/* ===== パスワードチェック ===== */
+function checkPassword(){
+  const input=passwordInput.value.trim();
+  if(input===PASSWORD){
+    passwordArea.style.display="none"; // パスワード欄を非表示
+    startStampProcess();
+  }else{
+    message.textContent="パスワードが違います";
+    message.className="status already";
   }
+}
 
-  /* 5秒カウントダウン */
-  let seconds=5;
-  countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
+/* ===== スタンプ取得処理 ===== */
+function startStampProcess(){
+  if(localStorage.getItem(dateKey)!==todayKey()){
 
-  const timer=setInterval(()=>{
-    seconds--;
-    countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
-    if(seconds<=0){
-      clearInterval(timer);
-      location.href=REDIRECT_URL;
+    let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
+
+    stamps.push({
+      img:STAMP_IMG,
+      number:STAMP_ID,
+      date:today(),
+      used:false
+    });
+
+    localStorage.setItem("stamps",JSON.stringify(stamps));
+    localStorage.setItem(dateKey,todayKey());
+
+    message.textContent="スタンプを1個獲得しました！";
+    message.className="status success";
+
+    /* スタンプアニメ */
+    stampIcon.style.animation="popStamp 1s forwards";
+
+    /* キラキラ生成 */
+    for(let i=0;i<20;i++){
+      const s=document.createElement("div");
+      s.textContent="✨";
+      s.className="sparkle";
+      s.style.left=Math.random()*100+"%";
+      s.style.animationDuration=(2+Math.random()*2)+"s";
+      document.body.appendChild(s);
     }
-  },1000);
 
-}else{
-  message.textContent="今日はすでに取得済みです。";
-  message.className="status already";
-  stampIcon.textContent="✅";
+    /* 5秒カウントダウン */
+    let seconds=5;
+    countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
 
-  setTimeout(()=>{
-    location.href=REDIRECT_URL;
-  },3000);
+    const timer=setInterval(()=>{
+      seconds--;
+      countdownEl.textContent=`${seconds}秒後にデジスタへ移動します...`;
+      if(seconds<=0){
+        clearInterval(timer);
+        location.href=REDIRECT_URL;
+      }
+    },1000);
+
+  }else{
+    message.textContent="今日はすでに取得済みです。";
+    message.className="status already";
+    stampIcon.textContent="✅";
+
+    setTimeout(()=>{
+      location.href=REDIRECT_URL;
+    },3000);
+  }
 }
 </script>
 
