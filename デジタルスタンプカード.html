@@ -290,6 +290,27 @@ function judge(p,c){
 scanner=new Html5QrcodeScanner("reader",{fps:8,qrbox:250},false);
 scanner.render(onScanSuccess);
 render();
+  /* ===== URLキー自動処理 ===== */
+(function(){
+  const params = new URLSearchParams(location.search);
+  const key = params.get("key");
+  if(!key) return;
+
+  const validKey = "stamp-" + todayKey(); // todayKeyは既存関数でOK
+  if(key !== validKey) return;
+
+  // オーバーレイを開く
+  document.getElementById("stampOverlay").style.display = "flex";
+
+  // 平日判定してパスワード必要なら表示
+  if(isWeekday()){
+    document.getElementById("passwordArea").style.display = "block";
+    document.getElementById("overlayMessage").textContent = "🔒 平日はパスワードが必要です";
+  } else {
+    addStamp(); // 取得処理（追加）
+  }
+})();
+
 </script>
 
 </body>
