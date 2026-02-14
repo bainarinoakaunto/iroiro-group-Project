@@ -45,133 +45,8 @@ button:hover{background:#ffd8b0;}
 #roulette{font-size:70px;height:90px;margin-bottom:10px;}
 #jankenResult{font-size:18px;font-weight:bold;color:#b3561c;}
 #adminStatus{color:#c0392b;font-weight:bold;margin-top:10px;}
-</style>
-</head>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #222;
-      line-height: 1.7;
-      scroll-behavior: smooth;
-      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center center;
-      background-attachment: fixed;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(200, 200, 200, 0.25);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    a { text-decoration: none; color: inherit; }
-
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.95);
-      border-bottom: 1px solid #eee;
-      z-index: 100;
-    }
-
-    nav ul {
-      display: flex;
-      justify-content: center;
-      list-style: none;
-      margin: 0;
-      padding: 16px;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-
-    header {
-      padding: 140px 20px 100px;
-      text-align: center;
-    }
-
-    header h1 { font-size: 3rem; margin-bottom: 16px; }
-
-    section {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 60px 20px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-    }
-
-    h2 { font-size: 2rem; margin-bottom: 24px; }
-
-    .card, .status-card {
-      border: 1px solid #eee;
-      padding: 24px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      background: rgba(255,255,255,0.95);
-    }
-
-    .slide-wrapper {
-      position: relative;
-      padding-top: 56.25%;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .slide-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .clock {
-      font-size: 1.8rem;
-      padding: 16px 32px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .status-up { color: green; font-weight: bold; }
-    .status-down { color: red; font-weight: bold; }
-
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      font-size: 14px;
-      color: #666;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px 12px 0 0;
-    }
-
-    @media (max-width: 600px) {
-      .clock { font-size: 1.5rem; padding: 12px 24px; }
-      .card, .status-card { padding: 16px; }
-    }
-
-    img.responsive-img {
-      display: block;
-      margin: 0 auto 24px auto;
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    #stampOverlay{
+/* オーバーレイ用 */
+#stampOverlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.6);
@@ -180,7 +55,6 @@ button:hover{background:#ffd8b0;}
   align-items:center;
   z-index:9999;
 }
-
 .overlay-card{
   background:white;
   padding:40px 30px;
@@ -190,23 +64,61 @@ button:hover{background:#ffd8b0;}
   position:relative;
   box-shadow:0 15px 40px rgba(0,0,0,0.3);
 }
-
 .stamp-icon{
   font-size:80px;
   margin:20px 0;
   opacity:0;
   transform:scale(0.3) rotate(-180deg);
 }
-
 @keyframes popStamp{
   0%{opacity:0; transform:scale(0.3) rotate(-180deg);}
   60%{transform:scale(1.3) rotate(10deg);}
   100%{opacity:1; transform:scale(1) rotate(0);}
 }
-
-  </style>
+/* 背景・ナビ */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #222;
+  line-height: 1.7;
+  scroll-behavior: smooth;
+  background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(200, 200, 200, 0.25);
+  pointer-events: none;
+  z-index: -1;
+}
+a { text-decoration: none; color: inherit; }
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid #eee;
+  z-index: 100;
+}
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 16px;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+</style>
 </head>
-
 <body>
 
 <nav>
@@ -219,36 +131,13 @@ button:hover{background:#ffd8b0;}
     <li><a href="index.html#Video">Merchandise</a></li>
     <li><a href="index.html#status">Service Information</a></li>
     <li><a href="index.html#contact">Contact</a></li>
-     <li><a href="irotemu.html">いろテック</a></li>    
-    <li><a href="いろいろ通信.html">いろいろ通信</a></li>    
-    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li> 
+    <li><a href="irotemu.html">いろテック</a></li>
+    <li><a href="いろいろ通信.html">いろいろ通信</a></li>
+    <li><a href="情報掲載証明書.html">情報掲載証明書</a></li>
   </ul>
 </nav>
 
-<!-- ===== スタンプ取得オーバーレイ ===== -->
-<div id="stampOverlay" style="display:none;">
-  <div class="overlay-card">
-    
-    <!-- 閉じるボタン -->
-    <button id="closeBtn" onclick="closeOverlay()" style="float:right;background:#ccc;color:#000;">✖</button>
-
-    <h2>🎉 スタンプ取得</h2>
-
-    <div id="passwordArea" style="display:none;">
-      <input type="password" id="passwordInput" placeholder="パスワードを入力">
-      <br>
-      <button onclick="checkPassword()">送信</button>
-    </div>
-
-    <div class="stamp-icon" id="overlayIcon">🎫</div>
-    <p id="overlayMessage">確認中...</p>
-
-  </div>
-</div>
-
-
 <h1>デジスタ</h1>
-
 <button onclick="enterAdmin()">管理者モード</button>
 <div id="adminStatus"></div>
 
@@ -269,38 +158,35 @@ button:hover{background:#ffd8b0;}
   <p id="jankenResult"></p>
 </div>
 
+<!-- スタンプオーバーレイ -->
+<div id="stampOverlay" style="display:none;">
+  <div class="overlay-card">
+    <button id="closeBtn" onclick="closeOverlay()" style="float:right;background:#ccc;color:#000;">✖</button>
+    <h2>🎉 スタンプ取得</h2>
+    <div id="passwordArea" style="display:none;">
+      <input type="password" id="passwordInput" placeholder="パスワードを入力"><br>
+      <button onclick="checkPassword()">送信</button>
+    </div>
+    <div class="stamp-icon" id="overlayIcon">🎫</div>
+    <p id="overlayMessage">確認中...</p>
+  </div>
+</div>
+
+<footer>
+  <p>2026 いろいろ Group.<br>このサイトは実在する企業・団体とは無関係です。</p>
+  <div class="footer-links">
+    <a href="irotemu.html">新会社</a> |
+    <a href="いろいろ通信.html">いろいろ通信</a> |
+    <a href="情報掲載証明書.html">掲載証明</a> |
+    <a href="デジタルスタンプカード.html">デジスタk</a> |
+    <a href="いろいろ会社サービス.html">通貨管理</a>
+  </div>
+</footer>
+
 <script>
-/* ===== 管理者設定 ===== */
-  /* ===== 閉じる ===== */
-function closeOverlay(){
-  document.getElementById("stampOverlay").style.display="none";
-}
-
-/* ===== URLキー判定 ===== */
-(function(){
-
-  const params=new URLSearchParams(location.search);
-  const key=params.get("key");
-  if(!key) return;
-
-  const valid="stamp-"+todayKey();
-  if(key!==valid) return;
-
-  document.getElementById("stampOverlay").style.display="flex";
-
-  if(isWeekday()){
-    document.getElementById("passwordArea").style.display="block";
-    document.getElementById("overlayMessage").textContent=
-      "🔒 平日はパスワードが必要です";
-  }else{
-    addStamp();
-  }
-
-})();
-
+/* 管理者モード */
 const ADMIN_PASSWORD = "1430";
 let isAdmin = false;
-
 function enterAdmin(){
   if(prompt("管理者パスワード") === ADMIN_PASSWORD){
     isAdmin = true;
@@ -311,48 +197,33 @@ function enterAdmin(){
   }
 }
 
-/* ===== QRコード対応 ===== */
+/* オーバーレイ閉じる */
+function closeOverlay(){
+  document.getElementById("stampOverlay").style.display="none";
+}
+
+/* 日付関連 */
+function today(){ const d=new Date(); return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`; }
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
+/* QR対応 */
 const QR_VALUE_INFO_MAP = {
-  "https://codepen.io/bainarinoakaunto/pen/emZaZLr":{
-    img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
-    number:"001"
-  },
-  "https://bc.benesse.ne.jp/nzm/redirect?code=FsUPBNRukK":{
-    img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
-    number:"002"
-  },
-  "https://maps.app.goo.gl/Fp1J9vefnib7n3AaA":{
-    img:"https://cdn2.scratch.mit.edu/get_image/project/1261979082_100x80.png",
-    number:"003"
-  }
+  "https://codepen.io/bainarinoakaunto/pen/emZaZLr": { img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"001" },
+  "https://bc.benesse.ne.jp/nzm/redirect?code=FsUPBNRukK": { img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"002" },
+  "https://maps.app.goo.gl/Fp1J9vefnib7n3AaA": { img:"https://cdn2.scratch.mit.edu/get_image/project/1261979082_100x80.png", number:"003" }
 };
 
 const USE_PASSWORD="0430";
-const JANKEN_STAMP={
-  img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
-  number:"じゃんけん"
-};
-
+const JANKEN_STAMP={ img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"じゃんけん" };
 let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
 let scanning=true;
 let scanner;
 
-/* ===== 日付 ===== */
-function today(){
-  const d=new Date();
-  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
-}
-function todayKey(){
-  return new Date().toISOString().slice(0,10);
-}
-
-/* ===== 表示 ===== */
+/* 表示更新 */
 function render(){
   const area=document.getElementById("stampArea");
   area.innerHTML="";
-  document.getElementById("stampCount").textContent =
-    "合計スタンプ数: "+stamps.filter(s=>!s.used).length;
-
+  document.getElementById("stampCount").textContent = "合計スタンプ数: "+stamps.filter(s=>!s.used).length;
   stamps.forEach((s,i)=>{
     if(s.used) return;
     area.insertAdjacentHTML("beforeend",`
@@ -366,26 +237,20 @@ function render(){
   });
 }
 
-/* ===== QR読み取り ===== */
+/* QRスキャン成功時 */
 function onScanSuccess(text){
   if(!scanning) return;
   const info=QR_VALUE_INFO_MAP[text];
   if(!info){alert("コードが違います");return;}
-
   stamps.push({img:info.img,number:info.number,date:today(),used:false});
   localStorage.setItem("stamps",JSON.stringify(stamps));
   render();
   scanning=false;
   scanner.clear();
 }
+function restartScan(){ if(scanning) return; scanning=true; scanner.render(onScanSuccess); }
 
-function restartScan(){
-  if(scanning) return;
-  scanning=true;
-  scanner.render(onScanSuccess);
-}
-
-/* ===== スタンプ使用 ===== */
+/* スタンプ使用 */
 function useStamp(i){
   if(prompt("使用パスワード")===USE_PASSWORD){
     stamps[i].used=true;
@@ -394,79 +259,39 @@ function useStamp(i){
   }else alert("パスワードが違います");
 }
 
-/* ===== じゃんけん ===== */
-const JANKEN_HANDS=[
-  {key:"rock",emoji:"✊"},
-  {key:"scissors",emoji:"✌️"},
-  {key:"paper",emoji:"✋"}
-];
-
+/* じゃんけん */
+const JANKEN_HANDS=[ {key:"rock",emoji:"✊"}, {key:"scissors",emoji:"✌️"}, {key:"paper",emoji:"✋"} ];
 function startJanken(player){
-
-  if(!isAdmin && localStorage.getItem("jankenDate")===todayKey()){
-    alert("今日はもうじゃんけんできません");
-    return;
-  }
-
+  if(!isAdmin && localStorage.getItem("jankenDate")===todayKey()){ alert("今日はもうじゃんけんできません"); return; }
   let i=0;
-  const timer=setInterval(()=>{
-    document.getElementById("roulette").textContent=
-      JANKEN_HANDS[i++%3].emoji;
-  },100);
-
+  const timer=setInterval(()=>{ document.getElementById("roulette").textContent=JANKEN_HANDS[i++%3].emoji; },100);
   setTimeout(()=>{
     clearInterval(timer);
     const cpu=JANKEN_HANDS[Math.floor(Math.random()*3)];
     document.getElementById("roulette").textContent=cpu.emoji;
-
     const r=judge(player,cpu.key);
     document.getElementById("jankenResult").textContent="結果："+r;
-
-    if(r!=="あいこ" && !isAdmin){
-      localStorage.setItem("jankenDate",todayKey());
-    }
-
+    if(r!=="あいこ" && !isAdmin) localStorage.setItem("jankenDate",todayKey());
     if(r==="勝ち 🎉"){
-      stamps.push({
-        img:JANKEN_STAMP.img,
-        number:JANKEN_STAMP.number,
-        date:today(),
-        used:false
-      });
+      stamps.push({ img:JANKEN_STAMP.img, number:JANKEN_STAMP.number, date:today(), used:false });
       localStorage.setItem("stamps",JSON.stringify(stamps));
       render();
       alert("勝ち！スタンプを1個ゲット！");
     }
   },2000);
 }
-
 function judge(p,c){
   if(p===c) return "あいこ";
-  if(
-    (p==="rock"&&c==="scissors")||
-    (p==="scissors"&&c==="paper")||
-    (p==="paper"&&c==="rock")
-  ) return "勝ち 🎉";
+  if((p==="rock"&&c==="scissors")||(p==="scissors"&&c==="paper")||(p==="paper"&&c==="rock")) return "勝ち 🎉";
   return "負け 😢";
 }
 
-/* ===== カメラ起動 ===== */
+/* カメラ起動 */
 scanner=new Html5QrcodeScanner("reader",{fps:8,qrbox:250},false);
 scanner.render(onScanSuccess);
 render();
 </script>
+
 </body>
 </html>
-<footer>
-  
-<footer>
-  <p>2026 いろいろ Group.<br>このサイトは実在する企業・団体とは無関係です。</p>
 
-  <div class="footer-links">
-    <a href="irotemu.html">新会社</a> |
-    <a href="いろいろ通信.html">いろいろ通信</a> |
-    <a href="情報掲載証明書.html">掲載証明</a> |
-    <a href="デジタルスタンプカード.html">デジスタk</a> |
-    <a href="いろいろ会社サービス.html">通貨管理</a>
-  </div>
-</footer>
