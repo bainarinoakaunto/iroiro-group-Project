@@ -192,6 +192,26 @@ button:hover{background:#ffd8b0;}
   </ul>
 </nav>
 
+<!-- ===== スタンプ取得オーバーレイ ===== -->
+<div id="stampOverlay" style="display:none;">
+  <div class="overlay-card">
+    
+    <!-- 閉じるボタン -->
+    <button id="closeBtn" onclick="closeOverlay()" style="float:right;background:#ccc;color:#000;">✖</button>
+
+    <h2>🎉 スタンプ取得</h2>
+
+    <div id="passwordArea" style="display:none;">
+      <input type="password" id="passwordInput" placeholder="パスワードを入力">
+      <br>
+      <button onclick="checkPassword()">送信</button>
+    </div>
+
+    <div class="stamp-icon" id="overlayIcon">🎫</div>
+    <p id="overlayMessage">確認中...</p>
+
+  </div>
+</div>
 
 
 <h1>デジスタ</h1>
