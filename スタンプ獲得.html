@@ -62,8 +62,23 @@ button{
   color:white;
   cursor:pointer;
 }
-button:hover{
+button:hover{opacity:0.8;}
+
+/* ===== アニメーション ===== */
+@keyframes popStamp{
+  0%{opacity:0; transform:scale(0.3) rotate(-180deg);}
+  60%{transform:scale(1.3) rotate(10deg);}
+  100%{opacity:1; transform:scale(1) rotate(0);}
+}
+.sparkle{
+  position:absolute;
+  font-size:20px;
+  animation:fall 3s linear infinite;
   opacity:0.8;
+}
+@keyframes fall{
+  0%{transform:translateY(-100px) rotate(0deg);}
+  100%{transform:translateY(100vh) rotate(360deg);}
 }
 </style>
 </head>
@@ -87,10 +102,10 @@ button:hover{
 <script>
 
 /* ===== 設定 ===== */
-const STAMP_ID="QR or auto";
+const STAMP_ID="2";
 const STAMP_IMG="https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png";
 const REDIRECT_URL="デジタルスタンプカード.html";
-const PASSWORD="111"; // 平日用パスワード
+const PASSWORD="111";
 
 /* ===== 今日キー ===== */
 function todayKey(){
@@ -98,7 +113,7 @@ function todayKey(){
 }
 const VALID_KEY="stamp-"+todayKey();
 
-/* ===== URLパラメータ ===== */
+/* ===== URLキー取得 ===== */
 const urlParams=new URLSearchParams(location.search);
 const key=urlParams.get("key");
 
@@ -111,7 +126,7 @@ const dateKey="stampDate_"+STAMP_ID;
 /* ===== 平日判定 ===== */
 function isWeekday(){
   const day=new Date().getDay();
-  return (day>=1 && day<=5); // 月〜金
+  return (day>=1 && day<=5);
 }
 
 /* ===== パスワード確認 ===== */
@@ -152,6 +167,19 @@ function startStampProcess(){
     message.textContent="スタンプを1個獲得しました！";
     message.className="status success";
 
+    // ポップアニメ
+    stampIcon.style.animation="popStamp 1s forwards";
+
+    // キラキラ
+    for(let i=0;i<20;i++){
+      const s=document.createElement("div");
+      s.textContent="✨";
+      s.className="sparkle";
+      s.style.left=Math.random()*100+"%";
+      s.style.animationDuration=(2+Math.random()*2)+"s";
+      document.body.appendChild(s);
+    }
+
     let seconds=5;
     countdownEl.textContent=`${seconds}秒後に移動します...`;
 
@@ -185,11 +213,9 @@ window.onload=function(){
   }
 
   if(isWeekday()){
-    // 平日はパスワード必要
     document.getElementById("passwordArea").style.display="block";
     message.textContent="平日はパスワードが必要です";
   }else{
-    // 土日はそのまま取得
     startStampProcess();
   }
 }
@@ -198,3 +224,4 @@ window.onload=function(){
 
 </body>
 </html>
+
