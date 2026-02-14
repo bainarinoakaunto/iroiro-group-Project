@@ -1,0 +1,20 @@
+<h2>こちらからしかスタンプを取得出来ません。</h2>
+
+<a id="stampLink" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   style="display:inline-block;padding:10px 20px;background:#4CAF50;color:white;text-decoration:none;border-radius:5px;">
+  スタンプゲットページへ
+</a>
+
+<script>
+// 今日の日付取得（YYYY-MM-DD）
+const today = new Date().toISOString().slice(0,10);
+
+// スタンプ取得ページURL
+const baseUrl = "https://bainarinoakaunto.github.io/iroiro-group-Project/スタンプ獲得.html";
+const fullUrl = `${baseUrl}?key=stamp-${today}`;
+
+// リンクに反映（毎日有効）
+document.getElementById("stampLink").href = fullUrl;
+</script>
