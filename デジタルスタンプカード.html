@@ -6,6 +6,7 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <link rel="icon" type="image/png" href="いろいろ.png">
 <style>
+/* ===== 基本デザイン ===== */
 body{
   font-family:"Comic Sans MS",sans-serif;
   text-align:center;
@@ -164,7 +165,7 @@ nav ul {
     <button id="closeBtn" onclick="closeOverlay()" style="float:right;background:#ccc;color:#000;">✖</button>
     <h2>🎉 スタンプ取得</h2>
     <div id="passwordArea" style="display:none;">
-      <input type="password" id="passwordInput" placeholder="パスワードを入力"><br>
+      <input type="password" id="passwordInput" placeholder="平日用パスワードを入力"><br>
       <button onclick="checkPassword()">送信</button>
     </div>
     <div class="stamp-icon" id="overlayIcon">🎫</div>
@@ -184,7 +185,7 @@ nav ul {
 </footer>
 
 <script>
-/* 管理者モード */
+/* ===== 管理者モード ===== */
 const ADMIN_PASSWORD = "1430";
 let isAdmin = false;
 function enterAdmin(){
@@ -197,29 +198,27 @@ function enterAdmin(){
   }
 }
 
-/* オーバーレイ閉じる */
-function closeOverlay(){
-  document.getElementById("stampOverlay").style.display="none";
-}
+/* ===== パスワード設定 ===== */
+const USE_PASSWORD = "0430";             // スタンプ使用用
+const WEEKDAY_STAMP_PASSWORD = "1234";   // 平日QR取得用
 
-/* 日付関連 */
+/* ===== 日付関連 ===== */
 function today(){ const d=new Date(); return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`; }
 function todayKey(){ return new Date().toISOString().slice(0,10); }
+function isWeekday(){ const d=new Date().getDay(); return d>=1 && d<=5; }
 
-/* QR対応 */
+/* ===== QR対応 ===== */
 const QR_VALUE_INFO_MAP = {
   "https://codepen.io/bainarinoakaunto/pen/emZaZLr": { img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"001" },
   "https://bc.benesse.ne.jp/nzm/redirect?code=FsUPBNRukK": { img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"002" },
   "https://maps.app.goo.gl/Fp1J9vefnib7n3AaA": { img:"https://cdn2.scratch.mit.edu/get_image/project/1261979082_100x80.png", number:"003" }
 };
-
-const USE_PASSWORD="0430";
 const JANKEN_STAMP={ img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"じゃんけん" };
 let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
 let scanning=true;
 let scanner;
 
-/* 表示更新 */
+/* ===== 表示更新 ===== */
 function render(){
   const area=document.getElementById("stampArea");
   area.innerHTML="";
@@ -237,7 +236,25 @@ function render(){
   });
 }
 
-/* QRスキャン成功時 */
+/* ===== スタンプ使用 ===== */
+function useStamp(i){
+  if(prompt("使用パスワード")===USE_PASSWORD){
+    stamps[i].used=true;
+    localStorage.setItem("stamps",JSON.stringify(stamps));
+    render();
+  } else alert("パスワードが違います");
+}
+
+/* ===== 平日パスワードチェック ===== */
+function checkPassword(){
+  const input = document.getElementById("passwordInput").value;
+  if(input === WEEKDAY_STAMP_PASSWORD){
+    addStamp();
+    document.getElementById("stampOverlay").style.display="none";
+  } else alert("パスワードが違います");
+}
+
+/* ===== QRスキャン成功時 ===== */
 function onScanSuccess(text){
   if(!scanning) return;
   const info=QR_VALUE_INFO_MAP[text];
@@ -250,16 +267,7 @@ function onScanSuccess(text){
 }
 function restartScan(){ if(scanning) return; scanning=true; scanner.render(onScanSuccess); }
 
-/* スタンプ使用 */
-function useStamp(i){
-  if(prompt("使用パスワード")===USE_PASSWORD){
-    stamps[i].used=true;
-    localStorage.setItem("stamps",JSON.stringify(stamps));
-    render();
-  }else alert("パスワードが違います");
-}
-
-/* じゃんけん */
+/* ===== じゃんけん ===== */
 const JANKEN_HANDS=[ {key:"rock",emoji:"✊"}, {key:"scissors",emoji:"✌️"}, {key:"paper",emoji:"✋"} ];
 function startJanken(player){
   if(!isAdmin && localStorage.getItem("jankenDate")===todayKey()){ alert("今日はもうじゃんけんできません"); return; }
@@ -286,31 +294,41 @@ function judge(p,c){
   return "負け 😢";
 }
 
-/* カメラ起動 */
+/* ===== カメラ起動 ===== */
 scanner=new Html5QrcodeScanner("reader",{fps:8,qrbox:250},false);
 scanner.render(onScanSuccess);
 render();
-  /* ===== URLキー自動処理 ===== */
+
+/* ===== URLキー処理 ===== */
 (function(){
   const params = new URLSearchParams(location.search);
   const key = params.get("key");
   if(!key) return;
-
-  const validKey = "stamp-" + todayKey(); // todayKeyは既存関数でOK
+  const validKey = "stamp-" + todayKey();
   if(key !== validKey) return;
 
-  // オーバーレイを開く
   document.getElementById("stampOverlay").style.display = "flex";
 
-  // 平日判定してパスワード必要なら表示
   if(isWeekday()){
     document.getElementById("passwordArea").style.display = "block";
     document.getElementById("overlayMessage").textContent = "🔒 平日はパスワードが必要です";
   } else {
-    addStamp(); // 取得処理（追加）
+    addStamp();
   }
 })();
 
+/* ===== スタンプ追加共通関数 ===== */
+function addStamp(){
+  // デフォルトQR画像（例：休日や自動追加用）
+  stamps.push({ img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"自動", date:today(), used:false });
+  localStorage.setItem("stamps",JSON.stringify(stamps));
+  render();
+}
+
+/* ===== オーバーレイ閉じる ===== */
+function closeOverlay(){
+  document.getElementById("stampOverlay").style.display="none";
+}
 </script>
 
 </body>
