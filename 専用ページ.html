@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>専用ページ</title>
+
+<script>
+// 🔐 ログインチェック
+if(sessionStorage.getItem("auth") !== "ok"){
+  alert("ログインしてください");
+  location.href = "login.html";
+}
+</script>
+
+<style>
+body{
+  font-family:sans-serif;
+  text-align:center;
+  padding:20px;
+  background:#fdf2e9;
+}
+.stamp-area{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  margin-top:20px;
+}
+.stamp{
+  border:2px dashed #c59f7b;
+  padding:5px;
+  width:130px;
+  border-radius:10px;
+  background:#fff8f0;
+}
+.stamp img{
+  width:100%;
+  border-radius:8px;
+}
+button{
+  margin-top:10px;
+  padding:8px 14px;
+}
+#stampCount{
+  font-weight:bold;
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>🎫 スタッフ専用ページ</h1>
+
+<button onclick="logout()">ログアウト</button>
+
+<p id="stampCount">合計スタンプ数: 0</p>
+
+<button onclick="manualStamp()">🎫 スタンプを押す</button>
+
+<div id="stampArea" class="stamp-area"></div>
+
+<script>
+let stamps = JSON.parse(localStorage.getItem("stamps") || "[]");
+
+function today(){
+  const d=new Date();
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function render(){
+  const area=document.getElementById("stampArea");
+  area.innerHTML="";
+  document.getElementById("stampCount").textContent =
+    "合計スタンプ数: " + stamps.length;
+
+  stamps.forEach((s)=>{
+    area.insertAdjacentHTML("beforeend",`
+      <div class="stamp">
+        <img src="${s.img}">
+        <div>取得日：${s.date}</div>
+      </div>
+    `);
+  });
+}
+
+function manualStamp(){
+  stamps.push({
+    img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
+    date:today()
+  });
+  localStorage.setItem("stamps",JSON.stringify(stamps));
+  render();
+  alert("スタンプ追加！");
+}
+
+function logout(){
+  sessionStorage.removeItem("auth");
+  location.href="login.html";
+}
+
+render();
+</script>
+
+</body>
+</html>
