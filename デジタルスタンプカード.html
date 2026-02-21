@@ -213,7 +213,7 @@ const QR_VALUE_INFO_MAP = {
   "https://bc.benesse.ne.jp/nzm/redirect?code=FsUPBNRukK": { img:"https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png", number:"002" },
   "https://maps.app.goo.gl/Fp1J9vefnib7n3AaA": { img:"https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png", number:"003" }
 };
-const JANKEN_STAMP={ img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"じゃんけん" };
+const JANKEN_STAMP={ img:"https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png", number:"じゃんけん" };
 let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
 let scanning=true;
 let scanner;
@@ -320,7 +320,7 @@ render();
 /* ===== スタンプ追加共通関数 ===== */
 function addStamp(){
   // デフォルトQR画像（例：休日や自動追加用）
-  stamps.push({ img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png", number:"自動", date:today(), used:false });
+  stamps.push({ img:"https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png", number:"自動", date:today(), used:false });
   localStorage.setItem("stamps",JSON.stringify(stamps));
   render();
 }
