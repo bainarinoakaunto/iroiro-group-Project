@@ -2,16 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>専用ページ</title>
-
-<script>
-// 🔐 ログインチェック
-if(sessionStorage.getItem("auth") !== "ok"){
-  alert("ログインしてください");
-  location.href = "login.html";
-}
-</script>
-
+<title>スタッフ専用ページ</title>
 <style>
 body{
   font-family:sans-serif;
@@ -46,12 +37,19 @@ button{
   margin-top:10px;
 }
 </style>
+
+<script>
+// 🔐 ログインチェック
+if(sessionStorage.getItem("auth") !== "ok"){
+  alert("スタッフログインを通ってください");
+  location.href = "スタッフログイン.html"; // ログインページに戻す
+}
+</script>
 </head>
+
 <body>
 
 <h1>🎫 スタッフ専用ページ</h1>
-
-<button onclick="logout()">ログアウト</button>
 
 <p id="stampCount">合計スタンプ数: 0</p>
 
@@ -60,19 +58,20 @@ button{
 <div id="stampArea" class="stamp-area"></div>
 
 <script>
+// スタンプデータ（localStorageで保存）
 let stamps = JSON.parse(localStorage.getItem("stamps") || "[]");
 
+// 今日の日付取得
 function today(){
-  const d=new Date();
+  const d = new Date();
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
 }
 
+// 画面更新
 function render(){
-  const area=document.getElementById("stampArea");
-  area.innerHTML="";
-  document.getElementById("stampCount").textContent =
-    "合計スタンプ数: " + stamps.length;
-
+  const area = document.getElementById("stampArea");
+  area.innerHTML = "";
+  document.getElementById("stampCount").textContent = "合計スタンプ数: " + stamps.length;
   stamps.forEach((s)=>{
     area.insertAdjacentHTML("beforeend",`
       <div class="stamp">
@@ -83,19 +82,15 @@ function render(){
   });
 }
 
+// スタンプ手動追加
 function manualStamp(){
   stamps.push({
     img:"https://cdn2.scratch.mit.edu/get_image/project/1264832201_100x80.png",
     date:today()
   });
-  localStorage.setItem("stamps",JSON.stringify(stamps));
+  localStorage.setItem("stamps", JSON.stringify(stamps));
   render();
-  alert("スタンプ追加！");
-}
-
-function logout(){
-  sessionStorage.removeItem("auth");
-  location.href="login.html";
+  alert("スタンプを追加しました！");
 }
 
 render();
