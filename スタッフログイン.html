@@ -1,86 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>スタッフログイン</title>
-
-  <!-- favicon（styleの外に出すのが正解） -->
-  <link rel="icon" type="image/png" href="いろいろ.png">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #222;
-      line-height: 1.7;
-      scroll-behavior: smooth;
-      padding-top: 80px;
-
-      background-image: url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center center;
-      background-attachment: fixed;
-    }
-
-   <!DOCTYPE html>
-<html lang="ja">
-<head>
 <meta charset="UTF-8">
-<title>社員ログイン</title>
+<title>スタッフ専用ページ</title>
 <style>
-body {
-    font-family: Arial;
-    background: #f2f2f2;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+body{
+  font-family:sans-serif;
+  text-align:center;
+  padding:40px;
+  background:#fdf2e9;
 }
-.login-box {
-    background:white;
-    padding:30px;
-    border-radius:8px;
-    width:300px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+button{
+  margin-top:20px;
+  padding:10px 20px;
+  font-size:16px;
 }
-input {
-    width:100%;
-    padding:8px;
-    margin:8px 0;
-}
-button {
-    width:100%;
-    padding:8px;
-    background:#007bff;
-    color:white;
-    border:none;
+#stampCount{
+  font-size:20px;
+  font-weight:bold;
+  margin-top:30px;
+  color:#b3561c;
 }
 </style>
-</head>
-<body>
-
-<div class="login-box">
-<h2>社員専用ログイン</h2>
-
-<input type="text" id="id" placeholder="社員ID">
-<input type="password" id="pass" placeholder="パスワード">
-<button onclick="login()">ログイン</button>
-
-<p id="message" style="color:red;"></p>
-</div>
 
 <script>
-function login(){
-    const id = document.getElementById("id").value;
-    const pass = document.getElementById("pass").value;
-
-    if(id === "1340" && pass === "0000"){
-        // ログイン成功フラグ保存
-        sessionStorage.setItem("auth", "ok");
-        window.location.href = "専用ページ.html";
-    } else {
-        document.getElementById("message").innerText = "IDまたはパスワードが違います";
-    }
+// 🔐 ログインチェック
+if(sessionStorage.getItem("auth") !== "ok"){
+  alert("スタッフログインを通ってください");
+  location.href = "スタッフログイン.html";
 }
 </script>
+</head>
+
+<body>
+
+<h1>🎫 スタッフ専用ページ</h1>
+
+<button onclick="manualStamp()">🎫 スタンプを押す</button>
+
+<!-- 個別スタンプ表示を削除 -->
+<p id="stampCount">合計スタンプ数: 0</p>
+
+<script>
+// 個別スタンプは非表示にして合計だけ管理
+let stampCount = parseInt(localStorage.getItem("stampCount") || "0");
+
+// 合計スタンプ表示を更新
+function render(){
+  document.getElementById("stampCount").textContent = "合計スタンプ数: " + stampCount;
+}
+
+// スタンプ追加
+function manualStamp(){
+  stampCount += 1;
+  localStorage.setItem("stampCount", stampCount);
+  render();
+  alert("スタンプを追加しました！");
+}
+
+render();
+</script>
+
+</body>
+</html>
