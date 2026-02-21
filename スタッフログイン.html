@@ -23,27 +23,64 @@
       background-attachment: fixed;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(200, 200, 200, 0.25);
-      pointer-events: none;
-      z-index: -1;
+   <!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>社員ログイン</title>
+<style>
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.login-box {
+    background:white;
+    padding:30px;
+    border-radius:8px;
+    width:300px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+input {
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+}
+button {
+    width:100%;
+    padding:8px;
+    background:#007bff;
+    color:white;
+    border:none;
+}
+</style>
+</head>
+<body>
+
+<div class="login-box">
+<h2>社員専用ログイン</h2>
+
+<input type="text" id="id" placeholder="社員ID">
+<input type="password" id="pass" placeholder="パスワード">
+<button onclick="login()">ログイン</button>
+
+<p id="message" style="color:red;"></p>
+</div>
+
+<script>
+function login(){
+    const id = document.getElementById("id").value;
+    const pass = document.getElementById("pass").value;
+
+    if(id === "1340" && pass === "0000"){
+        // ログイン成功フラグ保存
+        sessionStorage.setItem("auth", "ok");
+        window.location.href = "専用ページ.html";
+    } else {
+        document.getElementById("message").innerText = "IDまたはパスワードが違います";
     }
-
-    form {
-      max-width: 400px;
-      margin: 120px auto;
-      padding: 30px;
-      background: rgba
-
-
-    <button type="submit">ログイン</button>
-</form>
-
-
-
+}
+</script>
