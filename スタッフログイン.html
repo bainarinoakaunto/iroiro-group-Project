@@ -2,63 +2,83 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スタッフ専用ページ</title>
+<title>スタッフログイン</title>
+
+<link rel="icon" type="image/png" href="いろいろ.png">
+
 <style>
 body{
-  font-family:sans-serif;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-image:url("https://bainarinoakaunto.github.io/iroiro-group-Project/%EF%BD%9A.png");
+  background-size:cover;
+  background-position:center;
+}
+.login-box{
+  background:rgba(255,255,255,0.95);
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  width:320px;
   text-align:center;
-  padding:40px;
-  background:#fdf2e9;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
 }
 button{
-  margin-top:20px;
-  padding:10px 20px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#b3561c;
+  color:white;
   font-size:16px;
+  cursor:pointer;
 }
-#stampCount{
-  font-size:20px;
-  font-weight:bold;
-  margin-top:30px;
-  color:#b3561c;
+button:hover{
+  background:#8b4513;
+}
+#message{
+  color:red;
+  margin-top:10px;
 }
 </style>
-
-<script>
-// 🔐 ログインチェック
-if(sessionStorage.getItem("auth") !== "ok"){
-  alert("スタッフログインを通ってください");
-  location.href = "スタッフログイン.html";
-}
-</script>
 </head>
 
 <body>
 
-<h1>🎫 スタッフ専用ページ</h1>
+<div class="login-box">
+  <h2>スタッフログイン</h2>
 
-<button onclick="manualStamp()">🎫 スタンプを押す</button>
+  <input type="text" id="id" placeholder="スタッフID">
+  <input type="password" id="pass" placeholder="パスワード">
 
-<!-- 個別スタンプ表示を削除 -->
-<p id="stampCount">合計スタンプ数: 0</p>
+  <button onclick="login()">ログイン</button>
+
+  <p id="message"></p>
+</div>
 
 <script>
-// 個別スタンプは非表示にして合計だけ管理
-let stampCount = parseInt(localStorage.getItem("stampCount") || "0");
+function login(){
+  const id = document.getElementById("id").value;
+  const pass = document.getElementById("pass").value;
 
-// 合計スタンプ表示を更新
-function render(){
-  document.getElementById("stampCount").textContent = "合計スタンプ数: " + stampCount;
+  // 🔑 認証情報（必要に応じて変更）
+  if(id === "1340" && pass === "0000"){
+    sessionStorage.setItem("auth","ok");
+    window.location.href = "専用ページ.html";
+  }else{
+    document.getElementById("message").textContent = "IDまたはパスワードが違います";
+  }
 }
-
-// スタンプ追加
-function manualStamp(){
-  stampCount += 1;
-  localStorage.setItem("stampCount", stampCount);
-  render();
-  alert("スタンプを追加しました！");
-}
-
-render();
 </script>
 
 </body>
