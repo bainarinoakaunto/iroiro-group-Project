@@ -141,6 +141,8 @@ nav ul {
 <h1>デジスタ</h1>
 <button onclick="enterAdmin()">管理者モード</button>
 <div id="adminStatus"></div>
+  
+<button onclick="location.href='スタッフログイン.html'">スタッフ専用ページ</button>
 
 <div id="reader"></div>
 <button onclick="restartScan()">再読み取り</button>
@@ -197,7 +199,6 @@ function enterAdmin(){
     alert("パスワードが違います");
   }
 
-<button onclick="location.href='スタッフログイン.html'">スタッフ専用ページ</button>
 
 /* ===== パスワード設定 ===== */
 const USE_PASSWORD = "0430";             // スタンプ使用用
