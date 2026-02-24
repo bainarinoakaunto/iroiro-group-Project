@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>音声キーワード検知</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding: 30px;
+  border-radius: 20px;
+  width: 420px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+h1 { margin-bottom: 20px; }
+
+input {
+  width: 65%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.add-btn { background: #00c9a7; color: white; }
+.start-btn {
+  margin-top: 20px;
+  width: 100%;
+  background: #ffc75f;
+  color: black;
+}
+
+button:hover { transform: scale(1.05); }
+
+#keywords { margin-top: 15px; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255,255,255,0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin: 5px;
+  font-size: 14px;
+}
+
+.tag button {
+  background: transparent;
+  border: none;
+  color: white;
+  margin-left: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#spoken {
+  margin-top: 20px;
+  font-size: 16px;
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 10px;
+  min-height: 40px;
+}
+
+#detected {
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff4d4d;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🎤 音声キーワード検知</h1>
+
+  <input type="text" id="keywordInput" placeholder="キーワードを入力">
+  <button class="add-btn" onclick="addKeyword()">追加</button>
+
+  <div id="keywords"></div>
+
+  <button class="start-btn" onclick="startRecognition()">音声認識開始</button>
+
+  <div id="spoken">ここに話した内容が表示されます</div>
+  <div id="detected"></div>
+</div>
+
+<script>
+let keywords = [];
+const input = document.getElementById("keywordInput");
+
+// Enterキーで追加
+input.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") addKeyword();
+});
+
+function addKeyword() {
+  const word = input.value.trim();
+  if (word && !keywords.includes(word)) {
+    keywords.push(word);
+    displayKeywords();
+  }
+  input.value = "";
+}
+
+function removeKeyword(word) {
+  keywords = keywords.filter(k => k !== word);
+  displayKeywords();
+}
+
+function displayKeywords() {
+  const container = document.getElementById("keywords");
+  container.innerHTML = "";
+  keywords.forEach(word => {
+    const span = document.createElement("span");
+    span.className = "tag";
+    span.innerHTML = `${word} <button onclick="removeKeyword('${word}')">✕</button>`;
+    container.appendChild(span);
+  });
+}
+
+function startRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'ja-JP';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = function(event) {
+    let transcript = "";
+    for (let i = 0; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript;
+    }
+
+    // 🎤 話した内容を表示
+    document.getElementById("spoken").textContent = transcript;
+
+    // 🔍 キーワード検知
+    keywords.forEach(word => {
+      if (transcript.includes(word)) {
+        document.getElementById("detected").textContent = "🔔 検出: " + word;
+      }
+    });
+  };
+
+  recognition.start();
+}
+</script>
+
+</body>
+</html>
