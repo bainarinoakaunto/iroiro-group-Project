@@ -13,7 +13,6 @@ body {
   align-items: center;
   height: 100vh;
 }
-
 .card {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(15px);
@@ -22,30 +21,21 @@ body {
   width: 420px;
   text-align: center;
   color: white;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
 }
-
-h1 { margin-bottom: 20px; }
-
 input {
   width: 65%;
   padding: 10px;
   border-radius: 10px;
   border: none;
   outline: none;
-  font-size: 16px;
 }
-
 button {
   padding: 10px 15px;
   border-radius: 10px;
   border: none;
   margin-left: 5px;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
 }
-
 .add-btn { background: #00c9a7; color: white; }
 .start-btn {
   margin-top: 20px;
@@ -53,11 +43,6 @@ button {
   background: #ffc75f;
   color: black;
 }
-
-button:hover { transform: scale(1.05); }
-
-#keywords { margin-top: 15px; }
-
 .tag {
   display: inline-flex;
   align-items: center;
@@ -65,27 +50,21 @@ button:hover { transform: scale(1.05); }
   padding: 6px 12px;
   border-radius: 20px;
   margin: 5px;
-  font-size: 14px;
 }
-
 .tag button {
   background: transparent;
   border: none;
   color: white;
   margin-left: 6px;
   cursor: pointer;
-  font-size: 14px;
 }
-
 #spoken {
   margin-top: 20px;
-  font-size: 16px;
   background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 10px;
   min-height: 40px;
 }
-
 #detected {
   margin-top: 15px;
   font-size: 20px;
@@ -97,7 +76,7 @@ button:hover { transform: scale(1.05); }
 <body>
 
 <div class="card">
-  <h1>🎤 音声キーワード検知</h1>
+  <h1>🚨 音声キーワード警報</h1>
 
   <input type="text" id="keywordInput" placeholder="キーワードを入力">
   <button class="add-btn" onclick="addKeyword()">追加</button>
@@ -114,7 +93,9 @@ button:hover { transform: scale(1.05); }
 let keywords = [];
 const input = document.getElementById("keywordInput");
 
-// Enterキーで追加
+// 🚨 警報音
+const alarm = new Audio("警報が鳴る.mp3");
+
 input.addEventListener("keydown", function(event) {
   if (event.key === "Enter") addKeyword();
 });
@@ -157,13 +138,15 @@ function startRecognition() {
       transcript += event.results[i][0].transcript;
     }
 
-    // 🎤 話した内容を表示
     document.getElementById("spoken").textContent = transcript;
 
-    // 🔍 キーワード検知
     keywords.forEach(word => {
       if (transcript.includes(word)) {
-        document.getElementById("detected").textContent = "🔔 検出: " + word;
+        document.getElementById("detected").textContent = "🚨 検出: " + word;
+
+        // 🔊 警報を鳴らす
+        alarm.currentTime = 0;
+        alarm.play();
       }
     });
   };
