@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>音声キーワード検知</title>
+<title>音声キーワード警報</title>
+
 <style>
 body {
   margin: 0;
@@ -43,6 +44,12 @@ button {
   background: #ffc75f;
   color: black;
 }
+.stop-btn {
+  margin-top: 10px;
+  width: 100%;
+  background: #ff4d4d;
+  color: white;
+}
 .tag {
   display: inline-flex;
   align-items: center;
@@ -73,6 +80,7 @@ button {
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
@@ -84,6 +92,7 @@ button {
   <div id="keywords"></div>
 
   <button class="start-btn" onclick="startRecognition()">音声認識開始</button>
+  <button class="stop-btn" onclick="stopRecognition()">停止</button>
 
   <div id="spoken">ここに話した内容が表示されます</div>
   <div id="detected"></div>
@@ -91,9 +100,10 @@ button {
 
 <script>
 let keywords = [];
-const input = document.getElementById("keywordInput");
+let recognition;
+let cooldown = false;
 
-// 🚨 警報音
+const input = document.getElementById("keywordInput");
 const alarm = new Audio("クイズ正解4.mp3");
 
 input.addEventListener("keydown", function(event) {
@@ -127,31 +137,52 @@ function displayKeywords() {
 
 function startRecognition() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
+
+  if (!SpeechRecognition) {
+    alert("このブラウザは音声認識に対応していません。Chromeを使用してください。");
+    return;
+  }
+
+  recognition = new SpeechRecognition();
   recognition.lang = 'ja-JP';
   recognition.continuous = true;
   recognition.interimResults = true;
 
   recognition.onresult = function(event) {
     let transcript = "";
-    for (let i = 0; i < event.results.length; i++) {
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
       transcript += event.results[i][0].transcript;
     }
 
     document.getElementById("spoken").textContent = transcript;
 
     keywords.forEach(word => {
-      if (transcript.includes(word)) {
+      if (!cooldown && transcript.includes(word)) {
+
         document.getElementById("detected").textContent = "🚨 検出: " + word;
 
-        // 🔊 警報を鳴らす
         alarm.currentTime = 0;
         alarm.play();
+
+        cooldown = true;
+        setTimeout(() => cooldown = false, 3000);
       }
     });
   };
 
+  recognition.onend = function() {
+    recognition.start(); // 自動再開
+  };
+
   recognition.start();
+}
+
+function stopRecognition() {
+  if (recognition) {
+    recognition.onend = null;
+    recognition.stop();
+  }
 }
 </script>
 
