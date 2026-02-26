@@ -54,8 +54,8 @@ background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 <p id="modalInfo"></p>
 <input type="number" id="tradeQty" min="1">
 <br>
-<button onclick="executeTrade()">確定</button>
-<button onclick="closeModal()">キャンセル</button>
+<button class="buy" onclick="executeTrade(); event.stopPropagation();">確定</button>
+<button class="sell" onclick="closeModal(); event.stopPropagation();">キャンセル</button>
 </div>
 </div>
 
