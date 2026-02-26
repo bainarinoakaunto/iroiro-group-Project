@@ -68,11 +68,11 @@ const sectorVolatility = {
     "小売":0.015,
     "金融":0.025,
     "観光":0.04,
-    "テック":0.05
+    "テック":0.02
 };
 
 let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
-    cash:1000,
+    cash:90000,
     selected:0,
     stocks:[
         {code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
