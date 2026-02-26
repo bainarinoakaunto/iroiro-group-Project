@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>株シュミレーターtitle>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
+h1{color:#00ffcc;}
+button{padding:6px 12px;margin:4px;cursor:pointer;}
+.buy{background:#00c853;color:white;}
+.sell{background:#d50000;color:white;}
+table{width:100%;margin-top:10px;border-collapse:collapse;}
+th,td{border:1px solid #333;padding:6px;text-align:center;}
+.profit{color:#00ff66;}
+.loss{color:#ff4444;}
+canvas{background:#111;margin-top:20px;}
+.modal{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.7);
+display:none;justify-content:center;align-items:center;
+}
+.modal-content{
+background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
+}
+</style>
+</head>
+<body>
+
+<h1>📈 株式投資システム ULTIMATE++</h1>
+
+<h3>所持金: <span id="cash"></span> 円</h3>
+
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>銘柄</th>
+<th>価格</th>
+<th>保有</th>
+<th>平均</th>
+<th>損益</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody id="stockTable"></tbody>
+</table>
+
+<canvas id="chart" height="100"></canvas>
+
+<div class="modal" id="tradeModal">
+<div class="modal-content">
+<h3 id="modalTitle"></h3>
+<p id="modalInfo"></p>
+<input type="number" id="tradeQty" min="1">
+<br>
+<button onclick="executeTrade()">確定</button>
+<button onclick="closeModal()">キャンセル</button>
+</div>
+</div>
+
+<script>
+const TAX_RATE = 0.20315;
+let currentTrade = {type:null,index:null};
+
+let data = JSON.parse(localStorage.getItem("ultimateStockData")) || {
+    cash:1000000,
+    selected:0,
+    stocks:[
+        {
+            code:"001",
+            name:"何でも会社",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            volatility:0.01,
+            history:[500]
+        },
+        {
+            code:"002",
+            name:"なんでも会社Scratchゲーム",
+            price:300,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.0,
+            volatility:0.05,
+            history:[300]
+        }
+    ]
+};
+
+let chart;
+let chartData={labels:[],datasets:[{data:[],borderColor:"#00ffcc",tension:0.1}]};
+
+function save(){
+    localStorage.setItem("ultimateStockData",JSON.stringify(data));
+}
+
+function render(){
+    document.getElementById("cash").innerText=data.cash.toLocaleString();
+    let table=document.getElementById("stockTable");
+    table.innerHTML="";
+    data.stocks.forEach((stock,i)=>{
+        let profit=(stock.price-stock.avgPrice)*stock.quantity;
+        table.innerHTML+=`
+        <tr onclick="selectStock(${i})">
+        <td>${stock.code}</td>
+        <td>${stock.name}</td>
+        <td>${stock.price.toFixed(2)}</td>
+        <td>${stock.quantity}</td>
+        <td>${stock.avgPrice.toFixed(2)}</td>
+        <td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
+        <td>
+        <button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
+        <button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
+        </td>
+        </tr>`;
+    });
+}
+
+function openModal(type,i){
+    currentTrade={type,index:i};
+    let stock=data.stocks[i];
+    document.getElementById("tradeModal").style.display="flex";
+
+    if(type==="buy"){
+        let max=Math.floor(data.cash/stock.price);
+        document.getElementById("modalTitle").innerText="購入";
+        document.getElementById("modalInfo").innerText="最大購入可能株数: "+max;
+    }else{
+        document.getElementById("modalTitle").innerText="売却";
+        document.getElementById("modalInfo").innerText="売却可能株数: "+stock.quantity;
+    }
+
+    document.getElementById("tradeQty").value=1;
+}
+
+function closeModal(){
+    document.getElementById("tradeModal").style.display="none";
+}
+
+function executeTrade(){
+    let qty=parseInt(document.getElementById("tradeQty").value);
+    let stock=data.stocks[currentTrade.index];
+    if(!qty||qty<=0)return;
+
+    if(currentTrade.type==="buy"){
+        let cost=qty*stock.price;
+        if(cost>data.cash){alert("資金不足");return;}
+        stock.avgPrice=(stock.avgPrice*stock.quantity+cost)/(stock.quantity+qty);
+        stock.quantity+=qty;
+        data.cash-=cost;
+    }else{
+        if(qty>stock.quantity){alert("保有不足");return;}
+        let gain=(stock.price-stock.avgPrice)*qty;
+        let tax=gain>0?gain*TAX_RATE:0;
+        data.cash+=qty*stock.price-tax;
+        stock.quantity-=qty;
+        if(stock.quantity==0)stock.avgPrice=0;
+    }
+
+    save();
+    render();
+    closeModal();
+}
+
+function selectStock(i){
+    data.selected=i;
+    updateChart();
+}
+
+function updateChart(){
+    let stock=data.stocks[data.selected];
+    chartData.labels=stock.history.map((_,i)=>i);
+    chartData.datasets[0].data=stock.history;
+    chart.update();
+}
+
+function autoUpdate(){
+    data.stocks.forEach(stock=>{
+        let change=stock.price*stock.volatility*(Math.random()-0.5);
+        stock.price+=change;
+        if(stock.price<10)stock.price=10;
+        stock.history.push(stock.price);
+        if(stock.history.length>50)stock.history.shift();
+    });
+    save();
+    render();
+    updateChart();
+}
+
+function initChart(){
+    let ctx=document.getElementById("chart");
+    chart=new Chart(ctx,{type:"line",data:chartData});
+}
+
+initChart();
+render();
+updateChart();
+setInterval(autoUpdate,2000);
+</script>
+
+</body>
+</html>
