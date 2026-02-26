@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>株シミュレーター（平均取得価格表示）</title>
+<title>株シミュレーター（移動平均付き）</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
@@ -34,7 +34,7 @@ margin-bottom:20px;
 </head>
 <body>
 
-<h1>📈 株シミュレーター（平均線付き）</h1>
+<h1>📈 株シミュレーター（移動平均線付き）</h1>
 
 <div id="tradingNotice"></div>
 
@@ -70,7 +70,6 @@ margin-bottom:20px;
 
 <script>
 const TAX_RATE = 0.20315;
-let currentTrade = {type:null,index:null};
 
 const sectorVolatility = {
     "インフラ":0.02,
@@ -80,7 +79,9 @@ const sectorVolatility = {
     "テック":0.08
 };
 
-let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
+let currentTrade={type:null,index:null};
+
+let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
     cash:90000,
     selected:0,
     stocks:[
@@ -125,37 +126,33 @@ function render(){
 }
 
 function isTradingTime(){
-    const hour=new Date().getHours();
-    return hour>=8 && hour<21;
+    const h=new Date().getHours();
+    return h>=8 && h<21;
 }
 
 function updateTradingStatus(){
     const notice=document.getElementById("tradingNotice");
-    const buttons=document.querySelectorAll("#stockTable .buy, #stockTable .sell");
+    const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
 
     if(!isTradingTime()){
-        const hour=new Date().getHours();
-        notice.innerText= hour>=21 ?
-        "本日の取引は終了しました" :
+        const h=new Date().getHours();
+        notice.innerText=h>=21?
+        "本日の取引は終了しました":
         "本日の取引は8時〜開始されます";
-        buttons.forEach(btn=>btn.disabled=true);
+        buttons.forEach(b=>b.disabled=true);
         closeModal();
     }else{
         notice.innerText="";
-        buttons.forEach(btn=>btn.disabled=false);
+        buttons.forEach(b=>b.disabled=false);
     }
 }
 
 function openModal(type,i){
-    if(!isTradingTime()){
-        alert("現在は取引時間外です");
-        return;
-    }
+    if(!isTradingTime()) return;
     currentTrade={type,index:i};
     let stock=data.stocks[i];
     document.getElementById("tradeModal").style.display="flex";
-    document.getElementById("modalTitle").innerText=
-        type==="buy"?"購入":"売却";
+    document.getElementById("modalTitle").innerText=type==="buy"?"購入":"売却";
     document.getElementById("modalInfo").innerText=
         type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
     document.getElementById("tradeQty").value=1;
@@ -167,7 +164,6 @@ function closeModal(){
 
 function executeTrade(){
     if(!isTradingTime()) return;
-
     let qty=parseInt(document.getElementById("tradeQty").value);
     let stock=data.stocks[currentTrade.index];
     if(!qty||qty<=0) return;
@@ -192,6 +188,22 @@ function executeTrade(){
     closeModal();
 }
 
+function calculateMA(period,history){
+    let ma=[];
+    for(let i=0;i<history.length;i++){
+        if(i<period){
+            ma.push(null);
+        }else{
+            let sum=0;
+            for(let j=0;j<period;j++){
+                sum+=history[i-j];
+            }
+            ma.push(sum/period);
+        }
+    }
+    return ma;
+}
+
 function selectStock(i){
     data.selected=i;
     updateChart();
@@ -199,10 +211,15 @@ function selectStock(i){
 
 function updateChart(){
     let stock=data.stocks[data.selected];
+    let ma5=calculateMA(5,stock.history);
+
     chartData.labels=stock.history.map((_,i)=>i);
     chartData.datasets=[
         {label:"株価",data:stock.history,borderColor:"#00ffcc"},
-        {label:"平均取得価格",data:Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00"}
+        {label:"5本移動平均",data:ma5,borderColor:"#ff00ff"},
+        {label:"平均取得価格",
+         data:Array(stock.history.length).fill(stock.avgPrice),
+         borderColor:"#ffcc00"}
     ];
     chart.update();
 }
@@ -210,7 +227,7 @@ function updateChart(){
 function autoUpdate(){
     data.stocks.forEach(stock=>{
         let vol=sectorVolatility[stock.sector];
-        let change=stock.price*vol*(Math.random()-0.5);
+        let change=stock.price*vol*(Math.random()-0.5)*2;
         stock.price+=change;
         if(stock.price<10) stock.price=10;
         if(stock.price>2000) stock.price=2000;
@@ -223,8 +240,10 @@ function autoUpdate(){
 }
 
 function initChart(){
-    let ctx=document.getElementById("chart");
-    chart=new Chart(ctx,{type:"line",data:chartData});
+    chart=new Chart(document.getElementById("chart"),{
+        type:"line",
+        data:chartData
+    });
 }
 
 initChart();
