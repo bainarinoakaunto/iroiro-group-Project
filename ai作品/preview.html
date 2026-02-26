@@ -73,11 +73,11 @@ const TAX_RATE = 0.20315;
 let currentTrade = {type:null,index:null};
 
 const sectorVolatility = {
-    "インフラ":0.005,
-    "小売":0.015,
-    "金融":0.025,
-    "観光":0.04,
-    "テック":0.02
+    "インフラ":0.02,
+    "小売":0.04,
+    "金融":0.06,
+    "観光":0.10,
+    "テック":0.08
 };
 
 let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
