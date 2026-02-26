@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>株シュミレーター</title>
+<title>株シミュレーター（平均取得価格表示）</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
@@ -15,39 +15,30 @@ th,td{border:1px solid #333;padding:6px;text-align:center;}
 .profit{color:#00ff66;}
 .loss{color:#ff4444;}
 canvas{background:#111;margin-top:20px;}
-input{padding:5px;margin:3px;}
 .modal{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
+position:fixed;top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.7);
-display:none;
-justify-content:center;
-align-items:center;
+display:none;justify-content:center;align-items:center;
 }
 .modal-content{
-background:#1c1f26;
-padding:20px;
-border-radius:10px;
-text-align:center;
+background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 }
 </style>
 </head>
 <body>
 
-<h1>📈 株シュミレーター</h1>
+<h1>📈 株シミュレーター（平均線付き）</h1>
 
 <h3>所持金: <span id="cash"></span> 円</h3>
-<h4>累計受取配当: <span id="divTotal"></span> 円</h4>
 
 <table>
 <thead>
 <tr>
 <th>コード</th>
 <th>銘柄</th>
+<th>業種</th>
 <th>価格</th>
 <th>保有</th>
-<th>平均</th>
 <th>損益</th>
 <th>操作</th>
 </tr>
@@ -57,7 +48,6 @@ text-align:center;
 
 <canvas id="chart" height="100"></canvas>
 
-<!-- モーダル -->
 <div class="modal" id="tradeModal">
 <div class="modal-content">
 <h3 id="modalTitle"></h3>
@@ -73,89 +63,37 @@ text-align:center;
 const TAX_RATE = 0.20315;
 let currentTrade = {type:null,index:null};
 
-let data = JSON.parse(localStorage.getItem("ultimateStockData")) || {
+const sectorVolatility = {
+    "インフラ":0.005,
+    "小売":0.015,
+    "金融":0.025,
+    "観光":0.04,
+    "テック":0.05
+};
+
+let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
     cash:1000,
-    dividendTotal:0,
     selected:0,
     stocks:[
-        {
-            code:"001",
-            name:"何でも会社",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        },
-        {
-            code:"002",
-            name:"警備会社",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        },
-        {
-            code:"003",
-            name:"証券会社",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        },
-        
-        {
-            code:"004",
-            name:"ガソリンスタンド",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        },
-         {
-            code:"005",
-            name:"外食チェーン",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-         },
-         {
-            code:"006",
-            name:"スーパーマーケット",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        },
-         {
-            code:"007",
-            name:"観光運営",
-            price:500,
-            quantity:0,
-            avgPrice:0,
-            dividendYield:0.03,
-            history:[500]
-        }
+        {code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"002",name:"警備会社",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"003",name:"証券会社",sector:"金融",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"004",name:"ガソリンスタンド",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"005",name:"外食チェーン",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"006",name:"スーパーマーケット",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
+        {code:"007",name:"観光運営",sector:"観光",price:500,quantity:0,avgPrice:0,history:[500]}
     ]
-};
 };
 
 let chart;
-let chartData={labels:[],datasets:[{data:[],borderColor:"#00ffcc",tension:0.1}]};
+let chartData={labels:[],datasets:[]};
 
 function save(){
-    localStorage.setItem("ultimateStockData",JSON.stringify(data));
+    localStorage.setItem("sectorStockData",JSON.stringify(data));
 }
 
 function render(){
     document.getElementById("cash").innerText=data.cash.toLocaleString();
-    document.getElementById("divTotal").innerText=data.dividendTotal.toLocaleString();
     let table=document.getElementById("stockTable");
     table.innerHTML="";
     data.stocks.forEach((stock,i)=>{
@@ -164,9 +102,9 @@ function render(){
         <tr onclick="selectStock(${i})">
         <td>${stock.code}</td>
         <td>${stock.name}</td>
+        <td>${stock.sector}</td>
         <td>${stock.price.toFixed(2)}</td>
         <td>${stock.quantity}</td>
-        <td>${stock.avgPrice.toFixed(2)}</td>
         <td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
         <td>
         <button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
@@ -177,23 +115,18 @@ function render(){
 }
 
 function openModal(type,i){
-    currentTrade.type=type;
-    currentTrade.index=i;
+    currentTrade={type,index:i};
     let stock=data.stocks[i];
-    let modal=document.getElementById("tradeModal");
-    modal.style.display="flex";
+    document.getElementById("tradeModal").style.display="flex";
 
     if(type==="buy"){
         let max=Math.floor(data.cash/stock.price);
         document.getElementById("modalTitle").innerText="購入";
-        document.getElementById("modalInfo").innerText=
-        "最大購入可能株数: "+max;
+        document.getElementById("modalInfo").innerText="最大購入可能株数: "+max;
     }else{
         document.getElementById("modalTitle").innerText="売却";
-        document.getElementById("modalInfo").innerText=
-        "売却可能株数: "+stock.quantity;
+        document.getElementById("modalInfo").innerText="売却可能株数: "+stock.quantity;
     }
-
     document.getElementById("tradeQty").value=1;
 }
 
@@ -219,7 +152,6 @@ function executeTrade(){
         data.cash+=qty*stock.price-tax;
         stock.quantity-=qty;
         if(stock.quantity==0)stock.avgPrice=0;
-        alert("税金: "+Math.round(tax).toLocaleString()+" 円");
     }
 
     save();
@@ -235,18 +167,23 @@ function selectStock(i){
 function updateChart(){
     let stock=data.stocks[data.selected];
     chartData.labels=stock.history.map((_,i)=>i);
-    chartData.datasets[0].data=stock.history;
+    chartData.datasets=[
+        {label:"株価", data:stock.history, borderColor:"#00ffcc", tension:0.1},
+        {label:"平均取得価格", data:Array(stock.history.length).fill(stock.avgPrice), borderColor:"#ffcc00", tension:0.1}
+    ];
     chart.update();
 }
 
 function autoUpdate(){
     data.stocks.forEach(stock=>{
-        let change=stock.price*0.02*(Math.random()-0.5);
+        let vol=sectorVolatility[stock.sector];
+        let change=stock.price*vol*(Math.random()-0.5);
         stock.price+=change;
         if(stock.price<10)stock.price=10;
         stock.history.push(stock.price);
         if(stock.history.length>50)stock.history.shift();
     });
+
     save();
     render();
     updateChart();
@@ -254,7 +191,7 @@ function autoUpdate(){
 
 function initChart(){
     let ctx=document.getElementById("chart");
-    chart=new Chart(ctx,{type:"line",data:chartData});
+    chart=new Chart(ctx,{type:"line",data:chartData, options:{responsive:true}});
 }
 
 initChart();
