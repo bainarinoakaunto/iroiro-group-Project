@@ -10,6 +10,7 @@ h1{color:#00ffcc;}
 button{padding:6px 12px;margin:4px;cursor:pointer;}
 .buy{background:#00c853;color:white;}
 .sell{background:#d50000;color:white;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
 table{width:100%;margin-top:10px;border-collapse:collapse;}
 th,td{border:1px solid #333;padding:6px;text-align:center;}
 .profit{color:#00ff66;}
@@ -23,11 +24,19 @@ display:none;justify-content:center;align-items:center;
 .modal-content{
 background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 }
+#tradingNotice{
+text-align:center;
+font-size:1.5em;
+color:#ff4444;
+margin-bottom:20px;
+}
 </style>
 </head>
 <body>
 
 <h1>📈 株シミュレーター（平均線付き）</h1>
+
+<div id="tradingNotice"></div>
 
 <h3>所持金: <span id="cash"></span> 円</h3>
 
@@ -54,38 +63,12 @@ background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 <p id="modalInfo"></p>
 <input type="number" id="tradeQty" min="1">
 <br>
-<button class="buy" onclick="executeTrade(); event.stopPropagation();">確定</button>
-<button class="sell" onclick="closeModal(); event.stopPropagation();">キャンセル</button>
+<button class="buy" onclick="executeTrade()">確定</button>
+<button class="sell" onclick="closeModal()">キャンセル</button>
 </div>
 </div>
-<!-- 時間による取引制御用 -->
-<div id="tradingNotice" style="text-align:center; font-size:1.5em; color:#ff4444; margin-bottom:20px;"></div>
 
 <script>
-function updateTradingStatus() {
-    const now = new Date();
-    const hour = now.getHours();
-    const noticeDiv = document.getElementById('tradingNotice');
-    const simulatorDivs = document.querySelectorAll('#cash, #stockTable, #chart, .buy, .sell');
-
-    if (hour >= 21 && hour < 24) {
-        noticeDiv.innerText = '本日の取引は終了しました';
-        simulatorDivs.forEach(el => el.style.display = 'none');
-    } else if (hour >= 0 && hour < 8) {
-        noticeDiv.innerText = '本日の取引は8時〜開始されます';
-        simulatorDivs.forEach(el => el.style.display = 'none');
-    } else {
-        noticeDiv.innerText = '';
-        simulatorDivs.forEach(el => el.style.display = 'block');
-    }
-}
-
-// 最初の状態チェック
-updateTradingStatus();
-
-// 1秒ごとに監視してリアルタイム更新
-setInterval(updateTradingStatus, 1000);
-
 const TAX_RATE = 0.20315;
 let currentTrade = {type:null,index:null};
 
@@ -138,20 +121,43 @@ function render(){
         </td>
         </tr>`;
     });
+    updateTradingStatus();
+}
+
+function isTradingTime(){
+    const hour=new Date().getHours();
+    return hour>=8 && hour<21;
+}
+
+function updateTradingStatus(){
+    const notice=document.getElementById("tradingNotice");
+    const buttons=document.querySelectorAll("#stockTable .buy, #stockTable .sell");
+
+    if(!isTradingTime()){
+        const hour=new Date().getHours();
+        notice.innerText= hour>=21 ?
+        "本日の取引は終了しました" :
+        "本日の取引は8時〜開始されます";
+        buttons.forEach(btn=>btn.disabled=true);
+        closeModal();
+    }else{
+        notice.innerText="";
+        buttons.forEach(btn=>btn.disabled=false);
+    }
 }
 
 function openModal(type,i){
+    if(!isTradingTime()){
+        alert("現在は取引時間外です");
+        return;
+    }
     currentTrade={type,index:i};
     let stock=data.stocks[i];
     document.getElementById("tradeModal").style.display="flex";
-
-    if(type==="buy"){
-        document.getElementById("modalTitle").innerText="購入";
-        document.getElementById("modalInfo").innerText="購入株数を入力（資金範囲で可）";
-    }else{
-        document.getElementById("modalTitle").innerText="売却";
-        document.getElementById("modalInfo").innerText="売却可能株数: "+stock.quantity;
-    }
+    document.getElementById("modalTitle").innerText=
+        type==="buy"?"購入":"売却";
+    document.getElementById("modalInfo").innerText=
+        type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
     document.getElementById("tradeQty").value=1;
 }
 
@@ -160,21 +166,20 @@ function closeModal(){
 }
 
 function executeTrade(){
+    if(!isTradingTime()) return;
+
     let qty=parseInt(document.getElementById("tradeQty").value);
     let stock=data.stocks[currentTrade.index];
     if(!qty||qty<=0) return;
 
     if(currentTrade.type==="buy"){
         let cost=qty*stock.price;
-        if(cost>data.cash){
-            alert("資金不足です。購入可能株数を超えています。");
-            return;
-        }
+        if(cost>data.cash){alert("資金不足");return;}
         stock.avgPrice=(stock.avgPrice*stock.quantity+cost)/(stock.quantity+qty);
         stock.quantity+=qty;
         data.cash-=cost;
     }else{
-        if(qty>stock.quantity){alert("保有不足"); return;}
+        if(qty>stock.quantity){alert("保有不足");return;}
         let gain=(stock.price-stock.avgPrice)*qty;
         let tax=gain>0?gain*TAX_RATE:0;
         data.cash+=qty*stock.price-tax;
@@ -196,8 +201,8 @@ function updateChart(){
     let stock=data.stocks[data.selected];
     chartData.labels=stock.history.map((_,i)=>i);
     chartData.datasets=[
-        {label:"株価", data:stock.history, borderColor:"#00ffcc", tension:0.1},
-        {label:"平均取引価格", data:Array(stock.history.length).fill(stock.avgPrice), borderColor:"#ffcc00", tension:0.1}
+        {label:"株価",data:stock.history,borderColor:"#00ffcc"},
+        {label:"平均取得価格",data:Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00"}
     ];
     chart.update();
 }
@@ -208,10 +213,10 @@ function autoUpdate(){
         let change=stock.price*vol*(Math.random()-0.5);
         stock.price+=change;
         if(stock.price<10) stock.price=10;
+        if(stock.price>2000) stock.price=2000;
         stock.history.push(stock.price);
         if(stock.history.length>50) stock.history.shift();
     });
-
     save();
     render();
     updateChart();
@@ -219,13 +224,14 @@ function autoUpdate(){
 
 function initChart(){
     let ctx=document.getElementById("chart");
-    chart=new Chart(ctx,{type:"line",data:chartData, options:{responsive:true}});
+    chart=new Chart(ctx,{type:"line",data:chartData});
 }
 
 initChart();
 render();
 updateChart();
-setInterval(autoUpdate, 10000); // 10秒ごとに更新
+setInterval(autoUpdate,10000);
+setInterval(updateTradingStatus,1000);
 </script>
 
 </body>
