@@ -171,7 +171,7 @@ function updateChart(){
     chartData.labels=stock.history.map((_,i)=>i);
     chartData.datasets=[
         {label:"株価", data:stock.history, borderColor:"#00ffcc", tension:0.1},
-        {label:"平均取得価格", data:Array(stock.history.length).fill(stock.avgPrice), borderColor:"#ffcc00", tension:0.1}
+        {label:"平均取引価格", data:Array(stock.history.length).fill(stock.avgPrice), borderColor:"#ffcc00", tension:0.1}
     ];
     chart.update();
 }
