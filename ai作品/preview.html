@@ -71,22 +71,79 @@ text-align:center;
 
 <script>
 const TAX_RATE = 0.20315;
-
 let currentTrade = {type:null,index:null};
 
 let data = JSON.parse(localStorage.getItem("ultimateStockData")) || {
-    cash:1000000,
+    cash:1000,
     dividendTotal:0,
     selected:0,
-    stocks:[{
-        code:"001",
-        name:"何でも会社",
-        price:500,
-        quantity:0,
-        avgPrice:0,
-        dividendYield:0.03,
-        history:[500]
-    }]
+    stocks:[
+        {
+            code:"001",
+            name:"何でも会社",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        },
+        {
+            code:"002",
+            name:"警備会社",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        },
+        {
+            code:"003",
+            name:"証券会社",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        },
+        
+        {
+            code:"004",
+            name:"ガソリンスタンド",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        },
+         {
+            code:"005",
+            name:"外食チェーン",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+         },
+         {
+            code:"006",
+            name:"スーパーマーケット",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        },
+         {
+            code:"007",
+            name:"観光運営",
+            price:500,
+            quantity:0,
+            avgPrice:0,
+            dividendYield:0.03,
+            history:[500]
+        }
+    ]
+};
 };
 
 let chart;
