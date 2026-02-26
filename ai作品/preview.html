@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>株シミュレーター</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
 <style>
 body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
 h1{color:#00ffcc;}
@@ -14,6 +13,8 @@ button{padding:6px 12px;margin:4px;cursor:pointer;}
 button:disabled{opacity:0.5;cursor:not-allowed;}
 table{width:100%;margin-top:10px;border-collapse:collapse;}
 th,td{border:1px solid #333;padding:6px;text-align:center;}
+.profit{color:#00ff66;}
+.loss{color:#ff4444;}
 canvas{background:#111;margin-top:20px;}
 .modal{
 position:fixed;top:0;left:0;width:100%;height:100%;
@@ -24,14 +25,16 @@ display:none;justify-content:center;align-items:center;
 background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 }
 #tradingNotice{
-text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;
+text-align:center;
+font-size:1.5em;
+color:#ff4444;
+margin-bottom:20px;
 }
 </style>
 </head>
 <body>
 
 <h1>📈 株シミュレーター</h1>
-<h3>取引時間：午前7:00~午後9:00</h3>
 <div id="tradingNotice"></div>
 <h3>所持金: <span id="cash"></span> 円</h3>
 
@@ -50,7 +53,7 @@ text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;
 <tbody id="stockTable"></tbody>
 </table>
 
-<canvas id="chart" height="200"></canvas>
+<canvas id="chart" height="100"></canvas>
 
 <div class="modal" id="tradeModal">
 <div class="modal-content">
@@ -64,147 +67,193 @@ text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;
 </div>
 
 <script>
-const TAX_RATE = 0.20315;
-const sectorVolatility = { "インフラ":0.02, "小売":0.04, "金融":0.06, "観光":0.10, "テック":0.08 };
+const TAX_RATE=0.20315;
+
+const sectorVolatility={
+"インフラ":0.02,
+"小売":0.04,
+"金融":0.06,
+"観光":0.10,
+"テック":0.08
+};
+
 let currentTrade={type:null,index:null};
 
-let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
+let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
 cash:90000,
 selected:0,
 stocks:[
-{code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"002",name:"警備会社",sector:"インフラ",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"003",name:"証券会社",sector:"金融",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"004",name:"ガソリンスタンド",sector:"インフラ",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"005",name:"外食チェーン",sector:"小売",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"006",name:"スーパーマーケット",sector:"小売",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]},
-{code:"007",name:"観光運営",sector:"観光",price:500,quantity:0,history:[{o:500,h:500,l:500,c:500}]}
+{code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"002",name:"警備会社",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"003",name:"証券会社",sector:"金融",price:500,quantity:0,avgPrice:0,history:[500]}
 ]
 };
 
 let chart;
-let chartData = { datasets: [] };
+let chartData={labels:[],datasets:[]};
 
-function save(){ localStorage.setItem("sectorStockData", JSON.stringify(data)); }
+function save(){
+localStorage.setItem("sectorStockData",JSON.stringify(data));
+}
 
-function isTradingTime(){ 
-    let h = new Date().getHours(); 
-    return h >= 7 && h < 21; 
+function isTradingTime(){
+let h=new Date().getHours();
+return h>=8 && h<21;
 }
 
 function render(){
-    document.getElementById("cash").innerText = data.cash.toLocaleString();
-    let table = document.getElementById("stockTable");
-    table.innerHTML = "";
-    data.stocks.forEach((stock,i)=>{
-        let lastC = stock.history[stock.history.length-1].c;
-        let lastO = stock.history[stock.history.length-1].o;
-        let profit = stock.quantity > 0 ? (lastC - lastO) * stock.quantity : 0;
-        let displayPrice = isTradingTime() ? lastC.toFixed(2) : "---";
-        table.innerHTML += `
-        <tr onclick="selectStock(${i})">
-        <td>${stock.code}</td>
-        <td>${stock.name}</td>
-        <td>${stock.sector}</td>
-        <td>${displayPrice}</td>
-        <td>${stock.quantity}</td>
-        <td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
-        <td>
-        <button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
-        <button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
-        </td>
-        </tr>`;
-    });
-    updateTradingStatus();
-    updateChart();
+document.getElementById("cash").innerText=data.cash.toLocaleString();
+let table=document.getElementById("stockTable");
+table.innerHTML="";
+
+data.stocks.forEach((stock,i)=>{
+let profit=(stock.price-stock.avgPrice)*stock.quantity;
+
+let displayPrice=isTradingTime()?stock.price.toFixed(2):"---";
+
+table.innerHTML+=`
+<tr onclick="selectStock(${i})">
+<td>${stock.code}</td>
+<td>${stock.name}</td>
+<td>${stock.sector}</td>
+<td>${displayPrice}</td>
+<td>${stock.quantity}</td>
+<td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
+<td>
+<button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
+<button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
+</td>
+</tr>`;
+});
+updateTradingStatus();
 }
 
 function updateTradingStatus(){
-    const notice = document.getElementById("tradingNotice");
-    const buttons = document.querySelectorAll("#stockTable .buy,#stockTable .sell");
-    if(!isTradingTime()){
-        let h = new Date().getHours();
-        notice.innerText = h >= 21 ? "本日の取引は終了しました" : "本日の取引は7時〜開始されます";
-        buttons.forEach(b=>b.disabled=true);
-        closeModal();
-    } else {
-        notice.innerText = "";
-        buttons.forEach(b=>b.disabled=false);
-    }
+const notice=document.getElementById("tradingNotice");
+const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
+
+if(!isTradingTime()){
+let h=new Date().getHours();
+notice.innerText=h>=21?
+"本日の取引は終了しました":
+"本日の取引は8時〜開始されます";
+buttons.forEach(b=>b.disabled=true);
+closeModal();
+}else{
+notice.innerText="";
+buttons.forEach(b=>b.disabled=false);
+}
 }
 
-function openModal(type,i){ 
-    if(!isTradingTime()) return;
-    currentTrade={type,index:i};
-    let stock = data.stocks[i];
-    document.getElementById("tradeModal").style.display="flex";
-    document.getElementById("modalTitle").innerText = type==="buy"?"購入":"売却";
-    document.getElementById("modalInfo").innerText = type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
-    document.getElementById("tradeQty").value = 1;
+function openModal(type,i){
+if(!isTradingTime()) return;
+currentTrade={type,index:i};
+let stock=data.stocks[i];
+document.getElementById("tradeModal").style.display="flex";
+document.getElementById("modalTitle").innerText=type==="buy"?"購入":"売却";
+document.getElementById("modalInfo").innerText=
+type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
+document.getElementById("tradeQty").value=1;
 }
 
-function closeModal(){ document.getElementById("tradeModal").style.display="none"; }
+function closeModal(){
+document.getElementById("tradeModal").style.display="none";
+}
 
 function executeTrade(){
-    if(!isTradingTime()) return;
-    let qty = parseInt(document.getElementById("tradeQty").value);
-    let stock = data.stocks[currentTrade.index];
-    if(!qty || qty <= 0) return;
+if(!isTradingTime()) return;
 
-    let last = stock.history[stock.history.length-1];
-    if(currentTrade.type==="buy"){
-        let cost = qty * last.c;
-        if(cost > data.cash){ alert("資金不足"); return; }
-        let oldQty = stock.quantity;
-        stock.quantity += qty;
-        let avg = (last.c * oldQty + cost) / stock.quantity;
-        last.o = last.c = avg;
-        last.h = Math.max(last.h, avg);
-        last.l = Math.min(last.l, avg);
-        data.cash -= cost;
-    } else {
-        if(qty > stock.quantity){ alert("保有不足"); return; }
-        stock.quantity -= qty;
-        if(stock.quantity===0){ last.o = last.h = last.l = last.c; }
-    }
-    save(); render(); closeModal();
+let qty=parseInt(document.getElementById("tradeQty").value);
+let stock=data.stocks[currentTrade.index];
+if(!qty||qty<=0) return;
+
+if(currentTrade.type==="buy"){
+let cost=qty*stock.price;
+if(cost>data.cash){alert("資金不足");return;}
+stock.avgPrice=(stock.avgPrice*stock.quantity+cost)/(stock.quantity+qty);
+stock.quantity+=qty;
+data.cash-=cost;
+}else{
+if(qty>stock.quantity){alert("保有不足");return;}
+let gain=(stock.price-stock.avgPrice)*qty;
+let tax=gain>0?gain*TAX_RATE:0;
+data.cash+=qty*stock.price-tax;
+stock.quantity-=qty;
+if(stock.quantity==0) stock.avgPrice=0;
 }
 
-function selectStock(i){ data.selected = i; updateChart(); }
+save();
+render();
+updateChart();
+closeModal();
+}
+
+function selectStock(i){
+data.selected=i;
+updateChart();
+}
 
 function updateChart(){
-    let stock = data.stocks[data.selected];
-    if(!isTradingTime()){ chartData.datasets = []; chart.update(); return; }
-    chartData.datasets = [{
-        label: stock.name,
-        data: stock.history,
-        type: 'candlestick'
-    }];
-    chart.update();
+let stock=data.stocks[data.selected];
+
+chartData.labels=stock.history.map((_,i)=>i);
+
+let datasets=[
+{
+label:"株価",
+data:stock.history,
+borderColor:"#00ffcc",
+tension:0.2
+}
+];
+
+// 保有しているときだけ平均線表示
+if(stock.quantity>0){
+let avgLine=new Array(stock.history.length).fill(stock.avgPrice);
+datasets.push({
+label:"平均取得価格",
+data:avgLine,
+borderColor:"#ffcc00",
+borderWidth:3,
+tension:0
+});
+}
+
+chartData.datasets=datasets;
+chart.update();
 }
 
 function autoUpdate(){
-    if(!isTradingTime()) return;
-    data.stocks.forEach(stock=>{
-        let last = stock.history[stock.history.length-1];
-        let vol = sectorVolatility[stock.sector];
-        let change = last.c * vol * (Math.random()-0.5) * 2;
-        let open = last.c, close = Math.max(10, Math.min(2000, last.c + change));
-        let high = Math.max(open, close) * (1 + Math.random()*0.02);
-        let low  = Math.min(open, close) * (1 - Math.random()*0.02);
-        stock.history.push({o: open, h: high, l: low, c: close});
-        if(stock.history.length > 50) stock.history.shift();
-    });
-    save(); render();
+if(!isTradingTime()) return; // 🔥 夜は完全停止
+
+data.stocks.forEach(stock=>{
+let vol=sectorVolatility[stock.sector];
+let change=stock.price*vol*(Math.random()-0.5)*2;
+stock.price+=change;
+
+if(stock.price<10) stock.price=10;
+if(stock.price>2000) stock.price=2000;
+
+stock.history.push(stock.price);
+if(stock.history.length>50) stock.history.shift();
+});
+
+save();
+render();
+updateChart();
 }
 
 function initChart(){
-    chart = new Chart(document.getElementById("chart"), { type:'candlestick', data: chartData, options:{responsive:true} });
+chart=new Chart(document.getElementById("chart"),{
+type:"line",
+data:chartData
+});
 }
 
 initChart();
 render();
-setInterval(autoUpdate,10000); // 10秒ごとに更新
+updateChart();
+setInterval(autoUpdate,10000);
 setInterval(updateTradingStatus,1000);
 </script>
 
