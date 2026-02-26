@@ -58,8 +58,34 @@ background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 <button class="sell" onclick="closeModal(); event.stopPropagation();">キャンセル</button>
 </div>
 </div>
+<!-- 時間による取引制御用 -->
+<div id="tradingNotice" style="text-align:center; font-size:1.5em; color:#ff4444; margin-bottom:20px;"></div>
 
 <script>
+function updateTradingStatus() {
+    const now = new Date();
+    const hour = now.getHours();
+    const noticeDiv = document.getElementById('tradingNotice');
+    const simulatorDivs = document.querySelectorAll('#cash, #stockTable, #chart, .buy, .sell');
+
+    if (hour >= 21 && hour < 24) {
+        noticeDiv.innerText = '本日の取引は終了しました';
+        simulatorDivs.forEach(el => el.style.display = 'none');
+    } else if (hour >= 0 && hour < 8) {
+        noticeDiv.innerText = '本日の取引は8時〜開始されます';
+        simulatorDivs.forEach(el => el.style.display = 'none');
+    } else {
+        noticeDiv.innerText = '';
+        simulatorDivs.forEach(el => el.style.display = 'block');
+    }
+}
+
+// 最初の状態チェック
+updateTradingStatus();
+
+// 1秒ごとに監視してリアルタイム更新
+setInterval(updateTradingStatus, 1000);
+
 const TAX_RATE = 0.20315;
 let currentTrade = {type:null,index:null};
 
