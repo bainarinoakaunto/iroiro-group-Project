@@ -31,7 +31,7 @@ text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;
 <body>
 
 <h1>📈 株シミュレーター</h1>
-    <h3>取引時刻：午前8:00~午後9:00
+    <h3>取引時刻：午前7:00~午後9:00
 通貨とは交換できません。
 投資家になった気分でお楽しみください。
     </h3>
@@ -113,19 +113,25 @@ updateTradingStatus();
 updateChart();
 }
 
-function updateTradingStatus(){
-const notice=document.getElementById("tradingNotice");
-const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
-
-if(!isTradingTime()){
-let h=new Date().getHours();
-notice.innerText=h>=21?"本日の取引は終了しました":"本日の取引は8時〜開始されます";
-buttons.forEach(b=>b.disabled=true);
-closeModal();
-}else{
-notice.innerText="";
-buttons.forEach(b=>b.disabled=false);
+function isTradingTime(){
+    let h = new Date().getHours();
+    // 朝7時から21時までが取引可能
+    return h >= 7 && h < 21;
 }
+
+function updateTradingStatus(){
+    const notice = document.getElementById("tradingNotice");
+    const buttons = document.querySelectorAll("#stockTable .buy,#stockTable .sell");
+
+    if(!isTradingTime()){
+        let h = new Date().getHours();
+        notice.innerText = h >= 21 ? "本日の取引は終了しました" : "本日の取引は7時〜開始されます";
+        buttons.forEach(b => b.disabled = true);
+        closeModal();
+    } else {
+        notice.innerText = "";
+        buttons.forEach(b => b.disabled = false);
+    }
 }
 
 function openModal(type,i){if(!isTradingTime())return;
