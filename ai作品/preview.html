@@ -102,7 +102,7 @@ localStorage.setItem("sectorStockData",JSON.stringify(data));
 
 function isTradingTime(){
 let h=new Date().getHours();
-return h>=8 && h<21;
+return h>=7 && h<21;
 }
 
 function render(){
@@ -140,7 +140,7 @@ if(!isTradingTime()){
 let h=new Date().getHours();
 notice.innerText=h>=21?
 "本日の取引は終了しました":
-"本日の取引は8時〜開始されます";
+"本日の取引は7時〜開始されます";
 buttons.forEach(b=>b.disabled=true);
 closeModal();
 }else{
