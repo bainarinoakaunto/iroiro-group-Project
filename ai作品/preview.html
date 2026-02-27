@@ -235,6 +235,11 @@ let vol=sectorVolatility[stock.sector];
 let change=stock.price*vol*(Math.random()-0.5)*2;
 stock.price+=change;
 
+/* 🔥 テック急騰イベント */
+if(stock.sector==="テック" && Math.random()<0.05){
+    stock.price*=1.5; // 5%で+50%
+}
+
 if(stock.price<10) stock.price=10;
 if(stock.price>2000) stock.price=2000;
 
@@ -259,6 +264,8 @@ render();
 updateChart();
 setInterval(autoUpdate,10000);
 setInterval(updateTradingStatus,1000);
+
+
 </script>
 
 </body>
