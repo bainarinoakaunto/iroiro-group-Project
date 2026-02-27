@@ -16,27 +16,29 @@ th,td{border:1px solid #333;padding:6px;text-align:center;}
 .profit{color:#00ff66;}
 .loss{color:#ff4444;}
 canvas{background:#111;margin-top:20px;}
-.modal{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.7);
-display:none;justify-content:center;align-items:center;
+#tradingNotice{text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;}
+
+#newsArea{margin-bottom:20px;}
+.news{
+  background:#1c1f26;
+  padding:10px;
+  margin:8px 0;
+  border-left:5px solid #00ffcc;
+  border-radius:6px;
 }
-.modal-content{
-background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
-}
-#tradingNotice{
-text-align:center;
-font-size:1.5em;
-color:#ff4444;
-margin-bottom:20px;
-}
+.positive{border-left-color:#00ff66;}
+.negative{border-left-color:#ff4444;}
 </style>
 </head>
 <body>
 
 <h1>📈 株シミュレーター</h1>
 <div id="tradingNotice"></div>
+
 <h3>所持金: <span id="cash"></span> 円</h3>
+
+<h3>📰 マーケットニュース</h3>
+<div id="newsArea"></div>
 
 <table>
 <thead>
@@ -47,24 +49,12 @@ margin-bottom:20px;
 <th>価格</th>
 <th>保有</th>
 <th>損益</th>
-<th>操作</th>
 </tr>
 </thead>
 <tbody id="stockTable"></tbody>
 </table>
 
 <canvas id="chart" height="100"></canvas>
-
-<div class="modal" id="tradeModal">
-<div class="modal-content">
-<h3 id="modalTitle"></h3>
-<p id="modalInfo"></p>
-<input type="number" id="tradeQty" min="1">
-<br>
-<button class="buy" onclick="executeTrade()">確定</button>
-<button class="sell" onclick="closeModal()">キャンセル</button>
-</div>
-</div>
 
 <script>
 const TAX_RATE=0.20315;
@@ -74,12 +64,19 @@ const sectorVolatility={
 "小売":0.04,
 "金融":0.06,
 "観光":0.10,
-"テック":0.06
+"テック":0.08
 };
 
-let currentTrade={type:null,index:null};
+const newsEvents=[
+{sector:"テック", text:"テック業界で革新的技術発表！", impact:1.3, type:"positive"},
+{sector:"テック", text:"大型ハッキング被害発生", impact:0.7, type:"negative"},
+{sector:"観光", text:"観光需要急回復！", impact:1.25, type:"positive"},
+{sector:"金融", text:"金融不安拡大", impact:0.75, type:"negative"},
+{sector:"小売", text:"消費拡大で売上増加期待", impact:1.2, type:"positive"},
+{sector:"インフラ", text:"公共投資削減発表", impact:0.8, type:"negative"}
+];
 
-let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
+let data={
 cash:90000,
 selected:0,
 stocks:[
@@ -96,10 +93,6 @@ stocks:[
 let chart;
 let chartData={labels:[],datasets:[]};
 
-function save(){
-localStorage.setItem("sectorStockData",JSON.stringify(data));
-}
-
 function isTradingTime(){
 let h=new Date().getHours();
 return h>=7 && h<21;
@@ -110,134 +103,52 @@ document.getElementById("cash").innerText=data.cash.toLocaleString();
 let table=document.getElementById("stockTable");
 table.innerHTML="";
 
-data.stocks.forEach((stock,i)=>{
+data.stocks.forEach(stock=>{
 let profit=(stock.price-stock.avgPrice)*stock.quantity;
-
-let displayPrice=isTradingTime()?stock.price.toFixed(2):"---";
-
 table.innerHTML+=`
-<tr onclick="selectStock(${i})">
+<tr>
 <td>${stock.code}</td>
 <td>${stock.name}</td>
 <td>${stock.sector}</td>
-<td>${displayPrice}</td>
+<td>${isTradingTime()?stock.price.toFixed(2):"---"}</td>
 <td>${stock.quantity}</td>
 <td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
-<td>
-<button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
-<button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
-</td>
 </tr>`;
 });
-updateTradingStatus();
-}
-
-function updateTradingStatus(){
-const notice=document.getElementById("tradingNotice");
-const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
-
-if(!isTradingTime()){
-let h=new Date().getHours();
-notice.innerText=h>=21?
-"本日の取引は終了しました":
-"本日の取引は7時〜開始されます";
-buttons.forEach(b=>b.disabled=true);
-closeModal();
-}else{
-notice.innerText="";
-buttons.forEach(b=>b.disabled=false);
-}
-}
-
-function openModal(type,i){
-if(!isTradingTime()) return;
-currentTrade={type,index:i};
-let stock=data.stocks[i];
-document.getElementById("tradeModal").style.display="flex";
-document.getElementById("modalTitle").innerText=type==="buy"?"購入":"売却";
-document.getElementById("modalInfo").innerText=
-type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
-document.getElementById("tradeQty").value=1;
-}
-
-function closeModal(){
-document.getElementById("tradeModal").style.display="none";
-}
-
-function executeTrade(){
-if(!isTradingTime()) return;
-
-let qty=parseInt(document.getElementById("tradeQty").value);
-let stock=data.stocks[currentTrade.index];
-if(!qty||qty<=0) return;
-
-if(currentTrade.type==="buy"){
-let cost=qty*stock.price;
-if(cost>data.cash){alert("資金不足");return;}
-stock.avgPrice=(stock.avgPrice*stock.quantity+cost)/(stock.quantity+qty);
-stock.quantity+=qty;
-data.cash-=cost;
-}else{
-if(qty>stock.quantity){alert("保有不足");return;}
-let gain=(stock.price-stock.avgPrice)*qty;
-let tax=gain>0?gain*TAX_RATE:0;
-data.cash+=qty*stock.price-tax;
-stock.quantity-=qty;
-if(stock.quantity==0) stock.avgPrice=0;
-}
-
-save();
-render();
-updateChart();
-closeModal();
-}
-
-function selectStock(i){
-data.selected=i;
-updateChart();
 }
 
 function updateChart(){
 let stock=data.stocks[data.selected];
-
 chartData.labels=stock.history.map((_,i)=>i);
-
-let datasets=[
-{
+chartData.datasets=[{
 label:"株価",
 data:stock.history,
 borderColor:"#00ffcc",
 tension:0.2
-}
-];
-
-// 保有しているときだけ平均線表示
-if(stock.quantity>0){
-let avgLine=new Array(stock.history.length).fill(stock.avgPrice);
-datasets.push({
-label:"平均取得価格",
-data:avgLine,
-borderColor:"#ffcc00",
-borderWidth:3,
-tension:0
-});
-}
-
-chartData.datasets=datasets;
+}];
 chart.update();
 }
 
 function autoUpdate(){
-if(!isTradingTime()) return; // 🔥 夜は完全停止
+if(!isTradingTime()) return;
 
 data.stocks.forEach(stock=>{
 let vol=sectorVolatility[stock.sector];
 let change=stock.price*vol*(Math.random()-0.5)*2;
 stock.price+=change;
 
-/* 🔥 テック急騰イベント */
-if(stock.sector==="テック" && Math.random()<0.05){
-    stock.price*=1.5; // 5%で+50%
+/* ニュース影響 */
+if(Math.random()<0.25){
+let event=newsEvents[Math.floor(Math.random()*newsEvents.length)];
+if(stock.sector===event.sector){
+stock.price*=event.impact;
+
+let newsArea=document.getElementById("newsArea");
+let div=document.createElement("div");
+div.className="news "+event.type;
+div.innerText=event.text+"（"+event.sector+"）";
+newsArea.prepend(div);
+}
 }
 
 if(stock.price<10) stock.price=10;
@@ -247,7 +158,6 @@ stock.history.push(stock.price);
 if(stock.history.length>50) stock.history.shift();
 });
 
-save();
 render();
 updateChart();
 }
@@ -263,9 +173,6 @@ initChart();
 render();
 updateChart();
 setInterval(autoUpdate,10000);
-setInterval(updateTradingStatus,1000);
-
-
 </script>
 
 </body>
