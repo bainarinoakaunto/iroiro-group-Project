@@ -321,9 +321,6 @@ let vol=sectorVolatility[stock.sector];
 let change=stock.price*vol*(Math.random()-0.5)*2;
 stock.price+=change;
 
-if(stock.sector==="テック" && Math.random()<0.05){
-    stock.price*=1.5;
-}
 
 if(stock.price<10) stock.price=10;
 if(stock.price>2000) stock.price=2000;
