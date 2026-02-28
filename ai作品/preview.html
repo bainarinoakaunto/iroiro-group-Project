@@ -65,7 +65,8 @@ margin-bottom:20px;
 </head>
 <body>
 <div id="loadingScreen">
-  <img src="読み込み.gif" alt="Loading">
+  <img id="loadingImage" src="" alt="Loading">
+</div>
 </div>
 <h1>📈 株シミュレーター</h1>
 <div id="tradingNotice"></div>
@@ -347,13 +348,54 @@ initChart();
 render();
 updateChart();
 setInterval(autoUpdate,10000);
-setInterval(updateTradingStatus,1000);
-// ===== 3秒ローディング =====
-window.addEventListener("load", function(){
-  setTimeout(()=>{
-    document.getElementById("loadingScreen").style.display="none";
-  },3000);
-});
+setInterval(updateTradingStatus,1000);// 初回かどうか判定
+let isFirstVisit = !localStorage.getItem('visited');
+const loadingScreen = document.getElementById('loadingScreen');
+const loadingImg = document.getElementById('loadingImage');
+
+if (isFirstVisit) {
+  loadingImg.src = '初めて読み込み.gif';
+  localStorage.setItem('visited', 'true');
+} else {
+  // 初回以外はローディング非表示
+  loadingScreen.style.display = 'none';
+}
+
+// autoUpdate内で初回更新後にローディング非表示
+function autoUpdate(){
+  if(!isTradingTime()) return;
+
+  // 株価ランダム変動
+  data.stocks.forEach(stock=>{
+    let vol = sectorVolatility[stock.sector];
+    let change = stock.price * vol * (Math.random() - 0.5) * 2;
+    stock.price += change;
+
+    // セクター相関影響
+    for(let s in sectorCorrelation[stock.sector]||{}){
+      let relatedImpact = (stock.price * sectorCorrelation[stock.sector][s] * (Math.random()-0.5));
+      data.stocks.forEach(st => { if(st.sector===s) st.price += relatedImpact; });
+    }
+
+    if(stock.price<10) stock.price=10;
+    if(stock.price>2000) stock.price=2000;
+    stock.history.push(stock.price);
+    if(stock.history.length>50) stock.history.shift();
+  });
+
+  // ニュース生成
+  generateNews();
+
+  save();
+  render();
+  updateChart();
+
+  // 初回の場合のみ、株価更新完了後にローディング非表示
+  if(isFirstVisit){
+    loadingScreen.style.display = 'none';
+    isFirstVisit = false;
+  }
+}
 </script>
 </body>
 </html>
