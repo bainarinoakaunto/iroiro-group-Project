@@ -30,7 +30,9 @@ font-size:1.5em;
 color:#ff4444;
 margin-bottom:20px;
 }
-#newsArea{margin-bottom:20px;}
+#newsArea{
+  margin-bottom:20px;
+}
 .news{
   background:#1c1f26;
   padding:10px;
@@ -47,14 +49,11 @@ margin-bottom:20px;
 
 <h1>📈 株シミュレーター</h1>
 <div id="tradingNotice"></div>
-
 <h3>所持金: <span id="cash"></span> 円</h3>
-
 <h3>📰 マーケットNEWS</h3>
 <div id="newsArea">
   <div id="currentNews" class="news">待機中...</div>
 </div>
-
 <table>
 <thead>
 <tr>
@@ -86,63 +85,23 @@ margin-bottom:20px;
 <script>
 const TAX_RATE=0.20315;
 
+// セクターごとの基礎ボラティリティ
 const sectorVolatility={
 "インフラ":0.02,
 "小売":0.04,
 "金融":0.06,
 "観光":0.10,
-"テック":0.06
+"テック":0.08
 };
 
-/* ===== 40パターンNEWS ===== */
-const newsEvents=[
-
-{sector:"テック",text:"AI革命的新製品発表",impact:1.35,type:"positive"},
-{sector:"テック",text:"半導体不足懸念再燃",impact:0.8,type:"negative"},
-{sector:"テック",text:"大型買収発表",impact:1.25,type:"positive"},
-{sector:"テック",text:"サーバー障害発生",impact:0.75,type:"negative"},
-{sector:"テック",text:"海外市場拡大成功",impact:1.3,type:"positive"},
-{sector:"テック",text:"規制強化の懸念",impact:0.85,type:"negative"},
-{sector:"テック",text:"新OSリリース",impact:1.2,type:"positive"},
-{sector:"テック",text:"webサーバー老朽化問題",impact:0.7,type:"negative"},
-{sector:"テック",text:"クラウド需要急増",impact:1.28,type:"positive"},
-{sector:"テック",text:"業績予想下方修正",impact:0.78,type:"negative"},
-
-{sector:"金融",text:"金利引き上げ観測",impact:1.2,type:"positive"},
-{sector:"金融",text:"金融不安拡大",impact:0.75,type:"negative"},
-{sector:"金融",text:"大手銀行好決算",impact:1.25,type:"positive"},
-{sector:"金融",text:"不良債権問題浮上",impact:0.8,type:"negative"},
-{sector:"金融",text:"海外投資増加",impact:1.2,type:"positive"},
-{sector:"金融",text:"市場混乱",impact:0.7,type:"negative"},
-{sector:"金融",text:"資金流入加速",impact:1.22,type:"positive"},
-{sector:"金融",text:"信用不安拡大",impact:0.76,type:"negative"},
-
-{sector:"観光",text:"観光客急増",impact:1.3,type:"positive"},
-{sector:"観光",text:"大型台風接近",impact:0.75,type:"negative"},
-{sector:"観光",text:"国際イベント開催決定",impact:1.35,type:"positive"},
-{sector:"観光",text:"燃料費高騰",impact:0.8,type:"negative"},
-{sector:"観光",text:"旅行需要回復",impact:1.28,type:"positive"},
-{sector:"観光",text:"渡航制限強化",impact:0.7,type:"negative"},
-{sector:"観光",text:"ホテル稼働率上昇",impact:1.22,type:"positive"},
-
-{sector:"小売",text:"消費拡大",impact:1.25,type:"positive"},
-{sector:"小売",text:"物価高騰で売上減少",impact:0.8,type:"negative"},
-{sector:"小売",text:"大型セール成功",impact:1.2,type:"positive"},
-{sector:"小売",text:"物流停止",impact:0.75,type:"negative"},
-{sector:"小売",text:"新店舗拡大",impact:1.18,type:"positive"},
-{sector:"小売",text:"在庫過多問題",impact:0.82,type:"negative"},
-{sector:"小売",text:"EC売上急増",impact:1.3,type:"positive"},
-
-{sector:"インフラ",text:"大型公共工事決定",impact:1.2,type:"positive"},
-{sector:"インフラ",text:"工事遅延",impact:0.85,type:"negative"},
-{sector:"インフラ",text:"再生可能エネルギー拡大",impact:1.25,type:"positive"},
-{sector:"インフラ",text:"事故発生",impact:0.75,type:"negative"},
-{sector:"インフラ",text:"政府支援拡大",impact:1.22,type:"positive"},
-{sector:"インフラ",text:"資材価格上昇",impact:0.8,type:"negative"},
-{sector:"インフラ",text:"海外受注成功",impact:1.28,type:"positive"},
-{sector:"インフラ",text:"予算削減",impact:0.78,type:"negative"}
-
-];
+// セクター相関（影響率）
+const sectorCorrelation={
+"テック":{"小売":0.1,"金融":0.1,"観光":0.05},
+"金融":{"テック":0.05,"小売":0.1},
+"観光":{"小売":0.05},
+"小売":{"テック":0.03,"観光":0.05},
+"インフラ":{"金融":0.02}
+};
 
 let currentTrade={type:null,index:null};
 
@@ -163,24 +122,20 @@ stocks:[
 let chart;
 let chartData={labels:[],datasets:[]};
 
-function save(){
-localStorage.setItem("sectorStockData",JSON.stringify(data));
-}
+function save(){ localStorage.setItem("sectorStockData",JSON.stringify(data)); }
 
 function isTradingTime(){
 let h=new Date().getHours();
-return h>=7 && h<21;
+return h>=7 && h<21; // 7時〜21時まで取引可能
 }
 
 function render(){
 document.getElementById("cash").innerText=data.cash.toLocaleString();
 let table=document.getElementById("stockTable");
 table.innerHTML="";
-
 data.stocks.forEach((stock,i)=>{
 let profit=(stock.price-stock.avgPrice)*stock.quantity;
 let displayPrice=isTradingTime()?stock.price.toFixed(2):"---";
-
 table.innerHTML+=`
 <tr onclick="selectStock(${i})">
 <td>${stock.code}</td>
@@ -201,12 +156,9 @@ updateTradingStatus();
 function updateTradingStatus(){
 const notice=document.getElementById("tradingNotice");
 const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
-
 if(!isTradingTime()){
 let h=new Date().getHours();
-notice.innerText=h>=21?
-"本日の取引は終了しました":
-"本日の取引は7時〜開始されます";
+notice.innerText=h>=21?"本日の取引は終了しました":"本日の取引は7時〜開始されます";
 buttons.forEach(b=>b.disabled=true);
 closeModal();
 }else{
@@ -226,17 +178,13 @@ type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
 document.getElementById("tradeQty").value=1;
 }
 
-function closeModal(){
-document.getElementById("tradeModal").style.display="none";
-}
+function closeModal(){ document.getElementById("tradeModal").style.display="none"; }
 
 function executeTrade(){
 if(!isTradingTime()) return;
-
 let qty=parseInt(document.getElementById("tradeQty").value);
 let stock=data.stocks[currentTrade.index];
 if(!qty||qty<=0) return;
-
 if(currentTrade.type==="buy"){
 let cost=qty*stock.price;
 if(cost>data.cash){alert("資金不足");return;}
@@ -251,46 +199,64 @@ data.cash+=qty*stock.price-tax;
 stock.quantity-=qty;
 if(stock.quantity==0) stock.avgPrice=0;
 }
-
 save();
 render();
 updateChart();
 closeModal();
 }
 
-function selectStock(i){
-data.selected=i;
-updateChart();
-}
+function selectStock(i){ data.selected=i; updateChart(); }
 
 function updateChart(){
 let stock=data.stocks[data.selected];
 chartData.labels=stock.history.map((_,i)=>i);
-let datasets=[{
-label:"株価",
-data:stock.history,
-borderColor:"#00ffcc",
-tension:0.2
-}];
-
+let datasets=[{label:"株価",data:stock.history,borderColor:"#00ffcc",tension:0.2}];
 if(stock.quantity>0){
-let avgLine=new Array(stock.history.length).fill(stock.avgPrice);
-datasets.push({
-label:"平均取り引き価格",
-data:avgLine,
-borderColor:"#ffcc00",
-borderWidth:3,
-tension:0
-});
+datasets.push({label:"平均取得価格",data:new Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00",borderWidth:3,tension:0});
 }
-
 chartData.datasets=datasets;
 chart.update();
 }
 
+function autoUpdate(){
+if(!isTradingTime()) return;
+
+// 株価ランダム変動
+data.stocks.forEach(stock=>{
+let vol=sectorVolatility[stock.sector];
+let change=stock.price*vol*(Math.random()-0.5)*2;
+stock.price+=change;
+
+// テック急騰イベント
+if(stock.sector==="テック" && Math.random()<0.05) stock.price*=1.5;
+
+// セクター相関影響
+for(let s in sectorCorrelation[stock.sector]||{}){
+let relatedImpact = (stock.price * sectorCorrelation[stock.sector][s] * (Math.random()-0.5));
+data.stocks.forEach(st=>{ if(st.sector===s) st.price+=relatedImpact; });
+}
+
+if(stock.price<10) stock.price=10;
+if(stock.price>2000) stock.price=2000;
+stock.history.push(stock.price);
+if(stock.history.length>50) stock.history.shift();
+});
+
+// ニュース生成
+generateNews();
+
+save();
+render();
+updateChart();
+}
+
+function initChart(){
+chart=new Chart(document.getElementById("chart"),{type:"line",data:chartData});
+}
+
 function generateNews(){
 if(!isTradingTime()) return;
-if(Math.random()>0.25) return;
+if(Math.random()>0.3) return; // ニュース出現確率
 
 const event=newsEvents[Math.floor(Math.random()*newsEvents.length)];
 
@@ -300,48 +266,62 @@ stock.price*=event.impact;
 if(stock.price<10) stock.price=10;
 if(stock.price>2000) stock.price=2000;
 stock.history.push(stock.price);
-if(stock.history.length>50) stock.history.shift();
 }
 });
 
 const newsBox=document.getElementById("currentNews");
 newsBox.className="news "+event.type;
 newsBox.innerText=event.text+"（"+event.sector+"）";
-
-save();
-render();
-updateChart();
 }
 
-function autoUpdate(){
-if(!isTradingTime()) return;
-
-data.stocks.forEach(stock=>{
-let vol=sectorVolatility[stock.sector];
-let change=stock.price*vol*(Math.random()-0.5)*2;
-stock.price+=change;
-
-
-if(stock.price<10) stock.price=10;
-if(stock.price>2000) stock.price=2000;
-
-stock.history.push(stock.price);
-if(stock.history.length>50) stock.history.shift();
-});
-
-generateNews();
-
-save();
-render();
-updateChart();
-}
-
-function initChart(){
-chart=new Chart(document.getElementById("chart"),{
-type:"line",
-data:chartData
-});
-}
+// ニュースパターン40個
+const newsEvents=[
+// テック10
+{sector:"テック", text:"AI革命的新製品発表", impact:1.35, type:"positive"},
+{sector:"テック", text:"半導体不足懸念再燃", impact:0.8, type:"negative"},
+{sector:"テック", text:"大型買収発表", impact:1.25, type:"positive"},
+{sector:"テック", text:"サーバー障害発生", impact:0.75, type:"negative"},
+{sector:"テック", text:"海外市場拡大成功", impact:1.3, type:"positive"},
+{sector:"テック", text:"規制強化の懸念", impact:0.85, type:"negative"},
+{sector:"テック", text:"新OSリリース", impact:1.2, type:"positive"},
+{sector:"テック", text:"サーバー老朽化問題", impact:0.7, type:"negative"},
+{sector:"テック", text:"クラウド需要急増", impact:1.28, type:"positive"},
+{sector:"テック", text:"業績予想下方修正", impact:0.78, type:"negative"},
+// 金融8
+{sector:"金融", text:"金利引き上げ観測", impact:1.2, type:"positive"},
+{sector:"金融", text:"金融不安拡大", impact:0.75, type:"negative"},
+{sector:"金融", text:"大手銀行好決算", impact:1.25, type:"positive"},
+{sector:"金融", text:"不良債権問題浮上", impact:0.8, type:"negative"},
+{sector:"金融", text:"海外投資増加", impact:1.2, type:"positive"},
+{sector:"金融", text:"市場混乱", impact:0.7, type:"negative"},
+{sector:"金融", text:"資金流入加速", impact:1.22, type:"positive"},
+{sector:"金融", text:"信用不安拡大", impact:0.76, type:"negative"},
+// 観光7
+{sector:"観光", text:"観光客急増", impact:1.3, type:"positive"},
+{sector:"観光", text:"大型台風接近", impact:0.75, type:"negative"},
+{sector:"観光", text:"国際イベント開催決定", impact:1.35, type:"positive"},
+{sector:"観光", text:"燃料費高騰", impact:0.8, type:"negative"},
+{sector:"観光", text:"旅行需要回復", impact:1.28, type:"positive"},
+{sector:"観光", text:"渡航制限強化", impact:0.7, type:"negative"},
+{sector:"観光", text:"ホテル稼働率上昇", impact:1.22, type:"positive"},
+// 小売7
+{sector:"小売", text:"消費拡大", impact:1.25, type:"positive"},
+{sector:"小売", text:"物価高騰で売上減少", impact:0.8, type:"negative"},
+{sector:"小売", text:"大型セール成功", impact:1.2, type:"positive"},
+{sector:"小売", text:"物流停止", impact:0.75, type:"negative"},
+{sector:"小売", text:"新店舗拡大", impact:1.18, type:"positive"},
+{sector:"小売", text:"在庫過多問題", impact:0.82, type:"negative"},
+{sector:"小売", text:"EC売上急増", impact:1.3, type:"positive"},
+// インフラ8
+{sector:"インフラ", text:"大型公共工事決定", impact:1.2, type:"positive"},
+{sector:"インフラ", text:"工事遅延", impact:0.85, type:"negative"},
+{sector:"インフラ", text:"再生可能エネルギー拡大", impact:1.25, type:"positive"},
+{sector:"インフラ", text:"事故発生", impact:0.75, type:"negative"},
+{sector:"インフラ", text:"政府支援拡大", impact:1.22, type:"positive"},
+{sector:"インフラ", text:"資材価格上昇", impact:0.8, type:"negative"},
+{sector:"インフラ", text:"海外受注成功", impact:1.28, type:"positive"},
+{sector:"インフラ", text:"予算削減", impact:0.78, type:"negative"}
+];
 
 initChart();
 render();
