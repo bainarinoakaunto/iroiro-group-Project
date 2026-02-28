@@ -60,7 +60,41 @@ margin-bottom:20px;
 #loadingScreen img{
   width:120px;
 }
+.main-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#111827;
+  padding:15px 30px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
 
+.main-header .logo{
+  color:#00ffcc;
+  font-weight:bold;
+  font-size:1.2em;
+}
+
+.main-header nav a{
+  color:#aaa;
+  text-decoration:none;
+  margin-left:20px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.main-header nav a:hover{
+  color:#00ffcc;
+  transform:scale(1.1);
+}
+
+.main-header nav a.active{
+  color:#00ffcc;
+  border-bottom:2px solid #00ffcc;
+}
 </style>
 </head>
 <body>
