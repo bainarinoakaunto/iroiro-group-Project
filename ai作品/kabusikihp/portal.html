@@ -4,27 +4,114 @@
 <meta charset="UTF-8">
 <title>会社検索</title>
 <style>
-body{font-family:Arial; text-align:center; background:#f5f5f5; padding:50px;}
-h1{font-size:3em;}
-input[type="text"]{width:50%; padding:10px; font-size:1.2em; border-radius:20px; border:1px solid #ccc;}
-button{padding:10px 20px; font-size:1.2em; border:none; border-radius:20px; background:#4285f4; color:white; cursor:pointer;}
-button:hover{background:#357ae8;}
-#results{margin-top:30px; text-align:left; max-width:600px; margin-left:auto; margin-right:auto;}
-.result-item{background:white; padding:15px; margin:10px 0; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.result-item a{text-decoration:none; color:#1a0dab; font-weight:bold;}
-.result-item p{color:#555; margin-top:5px;}
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+header {
+  text-align: center;
+  margin-top: 80px;
+}
+header h1 {
+  font-size: 4em;
+  color: #4285f4;
+  margin: 0;
+}
+#searchBox {
+  margin-top: 30px;
+  position: relative;
+}
+input[type="text"] {
+  width: 400px;
+  max-width: 90%;
+  padding: 12px 20px;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  outline: none;
+}
+button {
+  padding: 12px 20px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 24px;
+  background: #4285f4;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+}
+button:hover {
+  background: #357ae8;
+}
+#autocomplete-list {
+  position: absolute;
+  top: 50px;
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.autocomplete-item {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+.autocomplete-item:hover {
+  background: #f0f0f0;
+}
+#results {
+  margin: 50px auto;
+  max-width: 800px;
+  text-align: left;
+}
+.result-item {
+  background: white;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.result-item a {
+  text-decoration: none;
+  color: #1a0dab;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.result-item p {
+  color: #555;
+  margin-top: 5px;
+}
+.highlight {
+  background-color: yellow;
+}
+@media(max-width:500px){
+  input[type="text"]{width:80%;}
+  button{width:80%; margin:10px 0;}
+  #searchBox{display:flex; flex-direction:column; align-items:center;}
+}
 </style>
 </head>
 <body>
 
-<h1>会社検索</h1>
-<input type="text" id="query" placeholder="検索ワードを入力">
-<button onclick="search()">検索</button>
+<header>
+  <h1>会社検索</h1>
+  <div id="searchBox">
+    <input type="text" id="query" placeholder="検索ワードを入力" autocomplete="off">
+    <button onclick="search()">検索</button>
+    <div id="autocomplete-list"></div>
+  </div>
+</header>
 
 <div id="results"></div>
 
 <script>
-// 検索対象のリンク集
+// サイトデータ
 const sites = [
   {name:"なんでも会社", url:"https://bainarinoakaunto.github.io/iroiro-group-Project/index.html", description:"総合リンクページ"},
   {name:"警備会社", url:"keibi.html", description:"警備会社のホームページ"},
@@ -35,13 +122,25 @@ const sites = [
   {name:"観光運営", url:"tourism.html", description:"観光関連ページ"}
 ];
 
+// ハイライト関数
+function highlight(text, term){
+  const regex = new RegExp(`(${term})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+// 検索関数
 function search(){
-  const query = document.getElementById("query").value.toLowerCase();
+  const query = document.getElementById("query").value.trim();
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = "";
+  closeAutocomplete();
+
   if(!query) return;
 
-  const results = sites.filter(site => site.name.toLowerCase().includes(query) || site.description.toLowerCase().includes(query));
+  const results = sites.filter(site => 
+    site.name.toLowerCase().includes(query.toLowerCase()) ||
+    site.description.toLowerCase().includes(query.toLowerCase())
+  );
 
   if(results.length===0){
     resultsDiv.innerHTML = "<p>検索結果はありません。</p>";
@@ -49,11 +148,51 @@ function search(){
     results.forEach(site=>{
       const div = document.createElement("div");
       div.className = "result-item";
-      div.innerHTML = `<a href="${site.url}" target="_blank">${site.name}</a><p>${site.description}</p>`;
+      div.innerHTML = `<a href="${site.url}" target="_blank">${highlight(site.name, query)}</a>
+                       <p>${highlight(site.description, query)}</p>`;
       resultsDiv.appendChild(div);
     });
   }
 }
+
+// オートコンプリート表示
+const queryInput = document.getElementById("query");
+queryInput.addEventListener("input", function(){
+  const val = this.value.trim().toLowerCase();
+  const list = document.getElementById("autocomplete-list");
+  list.innerHTML = "";
+  if(!val) return;
+
+  const matches = sites.filter(site =>
+    site.name.toLowerCase().includes(val) || site.description.toLowerCase().includes(val)
+  );
+
+  matches.forEach(site=>{
+    const item = document.createElement("div");
+    item.className = "autocomplete-item";
+    item.innerHTML = `<strong>${site.name}</strong> - ${site.description}`;
+    item.addEventListener("click", function(){
+      window.open(site.url, "_blank");
+    });
+    list.appendChild(item);
+  });
+});
+
+// Enterキーで検索
+queryInput.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){ 
+    search();
+    closeAutocomplete();
+  }
+});
+
+// オートコンプリートを閉じる
+function closeAutocomplete(){
+  document.getElementById("autocomplete-list").innerHTML = "";
+}
+document.addEventListener("click", function(e){
+  if(e.target !== queryInput) closeAutocomplete();
+});
 </script>
 
 </body>
