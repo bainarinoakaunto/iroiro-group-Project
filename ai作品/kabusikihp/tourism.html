@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>観光運営 | 公式サイト</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#e3f2fd;
+  color:#333;
+}
+
+/* ===== ヘッダー ===== */
+header{
+  background:linear-gradient(90deg,#0288d1,#4fc3f7);
+  padding:30px;
+  text-align:center;
+  font-size:1.8em;
+  font-weight:bold;
+  color:white;
+  letter-spacing:1px;
+}
+
+/* ===== ナビ ===== */
+nav{
+  background:#039be5;
+  padding:15px;
+  text-align:center;
+}
+nav a{
+  color:white;
+  margin:0 20px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+nav a:hover{
+  color:#bbdefb;
+}
+
+/* ===== ヒーロー ===== */
+.hero{
+  padding:70px 20px;
+  text-align:center;
+  background:linear-gradient(180deg,#bbdefb,#e3f2fd);
+}
+.hero h1{
+  font-size:2.4em;
+  margin-bottom:10px;
+}
+.hero p{
+  font-size:1.1em;
+}
+
+/* ===== セクション ===== */
+.section{
+  padding:50px 20px;
+}
+.card{
+  background:white;
+  padding:30px;
+  margin:20px auto;
+  max-width:1000px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+.card h2{
+  color:#0288d1;
+}
+
+/* ===== ツアー一覧 ===== */
+.tours{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  justify-content:center;
+}
+.tour{
+  background:#e1f5fe;
+  padding:20px;
+  width:260px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.tour:hover{
+  transform:scale(1.05);
+}
+.price{
+  font-weight:bold;
+  color:#01579b;
+  margin-top:10px;
+}
+
+/* ===== フッター ===== */
+footer{
+  background:#0288d1;
+  text-align:center;
+  padding:20px;
+  color:white;
+  font-size:0.9em;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  ✈ 観光運営
+</header>
+
+<nav>
+  <a href="#about">会社概要</a>
+  <a href="#tours">ツアー情報</a>
+  <a href="#event">イベント</a>
+  <a href="#contact">お問い合わせ</a>
+</nav>
+
+<div class="hero">
+  <h1>旅で未来をつなぐ</h1>
+  <p>感動体験を提供する観光運営企業</p>
+</div>
+
+<div class="section" id="about">
+  <div class="card">
+    <h2>会社概要</h2>
+    <p>
+      観光運営は、国内外の観光地開発・イベント企画・
+      旅行商品造成を行う総合観光企業です。
+    </p>
+  </div>
+</div>
+
+<div class="section" id="tours">
+  <div class="card">
+    <h2>人気ツアー</h2>
+    <div class="tours">
+      <div class="tour">
+        🏝 南国リゾート3日間
+        <div class="price">¥59,800</div>
+      </div>
+      <div class="tour">
+        🗻 富士山絶景ツアー
+        <div class="price">¥29,800</div>
+      </div>
+      <div class="tour">
+        🎆 夏祭り体験ツアー
+        <div class="price">¥19,800</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="event">
+  <div class="card">
+    <h2>イベント情報</h2>
+    <p>🌍 国際観光フェスティバル開催決定！</p>
+  </div>
+</div>
+  <h5>実在する企業団体とは無関係です。</h5>
+
+<div class="section" id="contact">
+  <div class="card">
+    <h2>お問い合わせ</h2>
+    <p>Email: info@tourismｋｊ.jp</p>
+  </div>
+</div>
+
+<footer>
+  © 2026 観光運営 All Rights Reserved.
+</footer>
+
+</body>
+</html>
