@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>スーパーマーケット | 公式サイト</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4fff6;
+  color:#333;
+}
+
+/* ===== ヘッダー ===== */
+header{
+  background:linear-gradient(90deg,#2e7d32,#66bb6a);
+  padding:30px;
+  text-align:center;
+  font-size:1.8em;
+  font-weight:bold;
+  color:white;
+  letter-spacing:1px;
+}
+
+/* ===== ナビ ===== */
+nav{
+  background:#43a047;
+  padding:15px;
+  text-align:center;
+}
+nav a{
+  color:white;
+  margin:0 20px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+nav a:hover{
+  color:#c8e6c9;
+}
+
+/* ===== ヒーロー ===== */
+.hero{
+  padding:60px 20px;
+  text-align:center;
+  background:linear-gradient(180deg,#c8e6c9,#f4fff6);
+}
+.hero h1{
+  font-size:2.2em;
+  margin-bottom:10px;
+}
+.hero p{
+  font-size:1.1em;
+}
+
+/* ===== セクション ===== */
+.section{
+  padding:50px 20px;
+}
+.card{
+  background:white;
+  padding:30px;
+  margin:20px auto;
+  max-width:1000px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+.card h2{
+  color:#2e7d32;
+}
+
+/* ===== 商品グリッド ===== */
+.products{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  justify-content:center;
+}
+.product{
+  background:#e8f5e9;
+  padding:20px;
+  width:220px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.product:hover{
+  transform:scale(1.05);
+}
+.price{
+  font-weight:bold;
+  color:#1b5e20;
+  margin-top:10px;
+}
+
+/* ===== フッター ===== */
+footer{
+  background:#2e7d32;
+  text-align:center;
+  padding:20px;
+  color:white;
+  font-size:0.9em;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  🛒 スーパーマーケット
+</header>
+
+<nav>
+  <a href="#about">会社概要</a>
+  <a href="#products">おすすめ商品</a>
+  <a href="#sale">特売情報</a>
+  <a href="#contact">お問い合わせ</a>
+</nav>
+
+<div class="hero">
+  <h1>毎日の暮らしをもっと便利に</h1>
+  <p>新鮮・安心・お得をお届けします</p>
+</div>
+
+<div class="section" id="about">
+  <div class="card">
+    <h2>会社概要</h2>
+    <p>
+      スーパーマーケットは地域密着型店舗として、
+      生鮮食品から日用品まで幅広く取り扱っています。
+    </p>
+  </div>
+</div>
+
+<div class="section" id="products">
+  <div class="card">
+    <h2>おすすめ商品</h2>
+    <div class="products">
+      <div class="product">
+        新鮮たまご
+        <div class="price">¥198</div>
+      </div>
+      <div class="product">
+        国産牛肉
+        <div class="price">¥780</div>
+      </div>
+      <div class="product">
+        季節の野菜セット
+        <div class="price">¥350</div>
+      </div>
+      <div class="product">
+        食パン
+        <div class="price">¥120</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="sale">
+  <div class="card">
+    <h2>特売情報</h2>
+    <p>🔥 毎週水曜日はポイント2倍デー！</p>
+  </div>
+</div>
+
+<div class="section" id="contact">
+  <div class="card">
+    <h2>お問い合わせ</h2>
+    <p>Email: info@supermarket.co.jp</p>
+  </div>
+</div>
+
+<footer>
+  © 2026 スーパーマーケット All Rights Reserved.
+</footer>
+
+</body>
+</html>
