@@ -10,23 +10,32 @@ iframe{width:100%; height:100%; border:none;}
 </head>
 <body>
 
-<iframe id="formFrame" src="https://docs.google.com/forms/d/e/1FAIpQLSdrS7n7m3V5IF8AB0vClyOwMiggU5iSKD4Mq7Z6io86a9yNYA/viewform?usp=pp_url"></iframe>
+<iframe id="formFrame"></iframe>
 
 <script>
-// Googleフォーム送信後は thank you ページにリダイレクトされるので、
-// tourokku.html 側で「戻るボタン」を押した時や「リロード時」に登録完了扱いにする
-if(!localStorage.getItem("isRegistered")){
-  localStorage.setItem("isRegistered","true");
+// 保存済みサポート番号を取得、なければ生成
+let supportNumber = localStorage.getItem("supportNumber");
+if(!supportNumber){
+    supportNumber = Math.floor(1000 + Math.random()*9000);
+    localStorage.setItem("supportNumber", supportNumber);
 }
 
-// オプション：フォーム送信後に株シミュレーターに自動遷移
-document.getElementById("formFrame").onload = function(){
-  // フォーム送信完了ページを検知してリダイレクトも可能
-  let url = this.contentWindow.location.href;
-  if(url.includes("formResponse")){ // Googleフォーム送信完了ページ
-    window.location.href = "株シミュレーターのURL"; 
-  }
-}
+// GoogleフォームURLにサポート番号を自動入力
+let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdrS7n7m3V5IF8AB0vClyOwMiggU5iSKD4Mq7Z6io86a9yNYA/viewform?usp=pp_url&entry.1672909628=" + supportNumber;
+
+document.getElementById("formFrame").src = formUrl;
+
+// フォーム送信後は登録済みフラグを設定
+// Googleフォームの場合、送信後は thank you ページにリダイレクトされる
+// その時に localStorage に登録済みフラグを保存
+window.addEventListener("message", function(e){
+    // 将来的に送信完了イベントをiframeから受け取る場合用
+    if(e.data === "submitted"){
+        localStorage.setItem("isRegistered", "true");
+        // 株シミュレーターに戻す
+        window.location.href = "株シミュレーターURL";
+    }
+});
 </script>
 
 </body>
