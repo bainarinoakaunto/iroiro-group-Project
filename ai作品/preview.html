@@ -100,18 +100,16 @@ margin-bottom:20px;
 </style>
 </head>
 <body>
-<div id="registerPage" style="display:none;text-align:center;margin-top:120px;">
-<h1>利用登録が必要です</h1>
-
-<p>株シミュレーターを利用するには登録してください。</p>
-
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/tourokku.html" target="_blank">
-<button style="padding:12px 25px;font-size:18px;background:#00c853;color:white;border:none;border-radius:8px;">
-登録ページへ
-</button>
-</a>
-
+  
+<div id="registerPage" style="display:none;width:100vw;height:100vh;position:fixed;top:0;left:0;background:#0d1117;z-index:9999;">
+  <iframe 
+    id="registerForm"
+    src="https://bainarinoakaunto.github.io/iroiro-group-Project/tourokku.html"
+    style="width:100%;height:100%;border:none;">
+  </iframe>
 </div>
+
+  
 <header class="main-header">
   <div class="logo">📊 Market Project</div>
   <nav>
@@ -124,7 +122,7 @@ margin-bottom:20px;
 </header>
 
 </div>
-</div>
+
 <h1>📈 株シミュレーター</h1>
 <div id="tradingNotice"></div>
 <h3>所持金: <span id="cash"></span> 円</h3>
@@ -161,21 +159,23 @@ margin-bottom:20px;
 </div>
 
 <script>
-let isRegistered = localStorage.getItem("isRegistered");
+// 登録確認
 let supportNumber = localStorage.getItem("supportNumber");
 
-if(!isRegistered){
-  // 未登録なら専用ページへ
-  if(!supportNumber){
-    supportNumber = Math.floor(1000 + Math.random()*9000);
-    localStorage.setItem("supportNumber", supportNumber);
-  }
+if(!supportNumber){
+  // 4桁番号作成して保存
+  supportNumber = Math.floor(1000 + Math.random()*9000);
+  localStorage.setItem("supportNumber", supportNumber);
 
-  // 登録ページに移動
-  window.location.href = "https://bainarinoakaunto.github.io/iroiro-group-Project/tourokku.html";
-}
+  // 登録フォーム表示
+  document.addEventListener("DOMContentLoaded", function(){
+    document.getElementById("registerPage").style.display = "block";
 
-const TAX_RATE=0.20315;
+    // 株シミュレーター本体を非表示
+    document.querySelectorAll("body > *:not(#registerPage)")
+      .forEach(el=>el.style.display="none");
+  });
+}const TAX_RATE=0.20315;
 
 // セクターごとの基礎ボラティリティ
 const sectorVolatility={
