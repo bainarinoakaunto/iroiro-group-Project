@@ -161,23 +161,20 @@ margin-bottom:20px;
 </div>
 
 <script>
-// 登録確認
+let isRegistered = localStorage.getItem("isRegistered");
 let supportNumber = localStorage.getItem("supportNumber");
 
-if(!supportNumber){
+if(!isRegistered){
+  // 未登録なら専用ページへ
+  if(!supportNumber){
+    supportNumber = Math.floor(1000 + Math.random()*9000);
+    localStorage.setItem("supportNumber", supportNumber);
+  }
 
-document.addEventListener("DOMContentLoaded", function(){
-
-// 登録ページ表示
-document.getElementById("registerPage").style.display="block";
-
-// 他の要素を非表示
-document.querySelectorAll("body > *:not(#registerPage)")
-.forEach(el=>el.style.display="none");
-
-});
-
+  // 登録ページに移動
+  window.location.href = "https://bainarinoakaunto.github.io/iroiro-group-Project/tourokku.html";
 }
+
 const TAX_RATE=0.20315;
 
 // セクターごとの基礎ボラティリティ
