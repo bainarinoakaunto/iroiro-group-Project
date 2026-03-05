@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>サポート</title>
+
+<style>
+body{
+font-family:sans-serif;
+text-align:center;
+margin:20px;
+}
+
+#num{
+font-size:40px;
+font-weight:bold;
+color:#0066ff;
+margin:20px;
+}
+
+iframe{
+width:100%;
+height:750px;
+border:none;
+}
+</style>
+
+</head>
+<body>
+
+<h2>あなたのサポート番号</h2>
+<div id="num"></div>
+
+<iframe id="form"></iframe>
+
+<script>
+
+// 保存番号取得
+let num = localStorage.getItem("supportNumber");
+
+// なければ4桁生成
+if(!num){
+num = Math.floor(1000 + Math.random()*9000);
+localStorage.setItem("supportNumber", num);
+}
+
+// 表示
+document.getElementById("num").textContent = num;
+
+// Googleフォーム
+let url = "https://docs.google.com/forms/d/e/1FAIpQLSdrS7n7m3V5IF8AB0vClyOwMiggU5iSKD4Mq7Z6io86a9yNYA/viewform?usp=pp_url&entry.1672909628=" + num;
+
+// フォーム表示
+document.getElementById("form").src = url;
+
+</script>
+
+</body>
+</html>
