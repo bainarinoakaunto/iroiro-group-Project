@@ -100,6 +100,18 @@ margin-bottom:20px;
 </style>
 </head>
 <body>
+<div id="registerPage" style="display:none;text-align:center;margin-top:120px;">
+<h1>利用登録が必要です</h1>
+
+<p>株シミュレーターを利用するには登録してください。</p>
+
+<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/tourokku.html" target="_blank">
+<button style="padding:12px 25px;font-size:18px;background:#00c853;color:white;border:none;border-radius:8px;">
+登録ページへ
+</button>
+</a>
+
+</div>
 <header class="main-header">
   <div class="logo">📊 Market Project</div>
   <nav>
@@ -149,6 +161,23 @@ margin-bottom:20px;
 </div>
 
 <script>
+// 登録確認
+let supportNumber = localStorage.getItem("supportNumber");
+
+if(!supportNumber){
+
+document.addEventListener("DOMContentLoaded", function(){
+
+// 登録ページ表示
+document.getElementById("registerPage").style.display="block";
+
+// 他の要素を非表示
+document.querySelectorAll("body > *:not(#registerPage)")
+.forEach(el=>el.style.display="none");
+
+});
+
+}
 const TAX_RATE=0.20315;
 
 // セクターごとの基礎ボラティリティ
