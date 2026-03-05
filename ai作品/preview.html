@@ -167,18 +167,19 @@ margin-bottom:20px;
 let supportNumber = localStorage.getItem("supportNumber");
 
 if(!supportNumber){
-  // 4桁番号作成して保存
-  supportNumber = Math.floor(1000 + Math.random()*9000);
-  localStorage.setItem("supportNumber", supportNumber);
 
-  // 登録フォーム表示
-  document.addEventListener("DOMContentLoaded", function(){
-    document.getElementById("registerPage").style.display = "block";
+document.addEventListener("DOMContentLoaded", function(){
 
-    // 株シミュレーター本体を非表示
-    document.querySelectorAll("body > *:not(#registerPage)")
-      .forEach(el=>el.style.display="none");
-  });
+// 登録ページ表示
+document.getElementById("registerPage").style.display="block";
+
+// 他の要素を非表示
+document.querySelectorAll("body > *:not(#registerPage)")
+.forEach(el=>el.style.display="none");
+
+});
+
+}
 }const TAX_RATE=0.20315;
 
 // セクターごとの基礎ボラティリティ
