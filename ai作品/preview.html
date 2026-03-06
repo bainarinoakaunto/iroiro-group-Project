@@ -128,6 +128,45 @@ margin-bottom:20px;
 </div>
 
 <script>
+let bannedNumbers = [];
+
+async function loadBanList() {
+  try {
+
+    const response = await fetch("banlist.json?" + Date.now()); 
+    // ?Date.now() を付けてキャッシュ防止
+
+    const data = await response.json();
+    bannedNumbers = data.bannedNumbers;
+
+    checkAccess();
+
+  } catch (error) {
+    console.error("BANリスト読み込み失敗", error);
+  }
+}
+
+function checkAccess() {
+
+  const supportNumber = localStorage.getItem("supportNumber") || "";
+
+  if (bannedNumbers.includes(supportNumber)) {
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:120px;font-size:28px;color:red;">
+      このサポート番号は利用停止されています
+      </div>
+    `;
+
+  }
+
+}
+
+// 初回読み込み
+loadBanList();
+
+// 1分ごとに更新
+setInterval(loadBanList, 60000);
 const TAX_RATE=0.20315;
 const sectorVolatility={ "インフラ":0.02,"小売":0.04,"金融":0.06,"観光":0.10,"テック":0.08 };
 const sectorCorrelation={ "テック":{"小売":0.1,"金融":0.1,"観光":0.05}, "金融":{"テック":0.05,"小売":0.1}, "観光":{"小売":0.05}, "小売":{"テック":0.03,"観光":0.05}, "インフラ":{"金融":0.02} };
