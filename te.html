@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>株シミュレーター</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
+h1{color:#00ffcc;}
+button{padding:6px 12px;margin:4px;cursor:pointer;}
+.buy{background:#00c853;color:white;}
+.sell{background:#d50000;color:white;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
+table{width:100%;margin-top:10px;border-collapse:collapse;}
+th,td{border:1px solid #333;padding:6px;text-align:center;}
+.profit{color:#00ff66;}
+.loss{color:#ff4444;}
+canvas{background:#111;margin-top:20px;}
+.news{background:#1c1f26;padding:10px;margin:8px 0;border-left:5px solid #00ffcc;border-radius:6px;}
+.positive{border-left-color:#00ff66;}
+.negative{border-left-color:#ff4444;}
+</style>
+</head>
+<body>
+
+<h1>📈 株シミュレーター</h1>
+<h3>所持金: <span id="cash"></span> 円</h3>
+<h3>📰 マーケットNEWS</h3>
+<div id="newsArea"><div id="currentNews" class="news">待機中...</div></div>
+
+<table>
+<thead>
+<tr>
+<th>コード</th><th>銘柄</th><th>業種</th><th>価格</th><th>保有</th><th>損益</th><th>操作</th>
+</tr>
+</thead>
+<tbody id="stockTable"></tbody>
+</table>
+
+<canvas id="chart" height="100"></canvas>
+
+<!-- 取引モーダル -->
+<div id="tradeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;display:flex;">
+  <div style="background:#1c1f26;padding:20px;border-radius:10px;text-align:center;">
+    <h3 id="modalTitle"></h3>
+    <p id="modalInfo"></p>
+    <input type="number" id="tradeQty" min="1" value="1">
+    <br><br>
+    <button class="buy" id="confirmTrade">確定</button>
+    <button class="sell" onclick="closeModal()">キャンセル</button>
+  </div>
+</div>
+
+<!-- 裏送信用 Googleフォーム（非表示） -->
+<form id="gform" style="display:none;">
+  <input type="hidden" name="entry.1612262928" id="entrySupportNumber">
+  <input type="hidden" name="entry.276375486" id="entryStockName">
+  <input type="hidden" name="entry.1972273050" id="entryQuantity">
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+// サポート番号チェック
+const supportNumber = localStorage.getItem("supportNumber");
+if(!supportNumber || supportNumber.trim()===""){ window.location.href="tourokku.html"; }
+
+// 株データ
+const TAX_RATE=0.20315;
+let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
+cash:90000, selected:0,
+stocks:[
+{code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"002",name:"警備会社",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"003",name:"証券会社",sector:"金融",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"004",name:"ガソリンスタンド",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"005",name:"外食チェーン",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"006",name:"スーパーマーケット",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"007",name:"観光運営",sector:"観光",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"008",name:"半導",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"009",name:"時計のとんけい",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
+{code:"010",name:"いろいろ電気",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]}
+]
+};
+
+// Chart初期化
+let chart, chartData={labels:[], datasets:[]};
+function initChart(){ chart=new Chart(document.getElementById("chart"),{type:"line",data:chartData}); }
+
+// 描画
+function render(){
+  document.getElementById("cash").innerText=data.cash.toLocaleString();
+  const table=document.getElementById("stockTable");
+  table.innerHTML="";
+  data.stocks.forEach((stock,i)=>{
+    let profit=(stock.price-stock.avgPrice)*stock.quantity;
+    table.innerHTML+=`<tr onclick="selectStock(${i})">
+      <td>${stock.code}</td><td>${stock.name}</td><td>${stock.sector}</td>
+      <td>${stock.price.toFixed(2)}</td><td>${stock.quantity}</td>
+      <td class="${profit>=0?'profit':'loss'}">${profit.toLocaleString()}</td>
+      <td>
+        <button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
+        <button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
+      </td></tr>`;
+  });
+  updateChart();
+}
+
+// モーダル
+let currentTrade={type:null,index:null};
+window.openModal=function(type,index){
+  currentTrade={type,index};
+  const stock=data.stocks[index];
+  document.getElementById("modalTitle").innerText=type==="buy"?"購入":"売却";
+  document.getElementById("modalInfo").innerText=type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
+  document.getElementById("tradeQty").value=1;
+  document.getElementById("tradeModal").style.display="flex";
+}
+window.closeModal=function(){ document.getElementById("tradeModal").style.display="none"; }
+
+// 確定ボタン
+document.getElementById("confirmTrade").addEventListener("click",()=>{
+  let stock=data.stocks[currentTrade.index];
+  let qty=parseInt(document.getElementById("tradeQty").value);
+  if(!qty||qty<=0) return;
+
+  if(currentTrade.type==="buy"){
+      let cost=qty*stock.price;
+      if(cost>data.cash){alert("資金不足"); return;}
+      stock.avgPrice=(stock.avgPrice*stock.quantity+cost)/(stock.quantity+qty);
+      stock.quantity+=qty;
+      data.cash-=cost;
+  } else {
+      if(qty>stock.quantity){alert("保有不足"); return;}
+      let gain=(stock.price-stock.avgPrice)*qty;
+      let tax=gain>0?gain*TAX_RATE:0;
+      data.cash+=qty*stock.price-tax;
+      stock.quantity-=qty;
+      if(stock.quantity===0) stock.avgPrice=0;
+  }
+
+  sendTradeToForm(stock,qty);
+  localStorage.setItem("sectorStockData",JSON.stringify(data));
+  render(); closeModal();
+});
+
+// Googleフォーム裏送信（fetch no-cors）
+function sendTradeToForm(stock,qty){
+  const formData=new FormData();
+  formData.append('entry.1612262928',supportNumber);
+  formData.append('entry.276375486',stock.name);
+  formData.append('entry.1972273050',qty);
+
+  fetch('https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse',{
+    method:'POST',
+    mode:'no-cors',
+    body:formData
+  }).then(()=>console.log("フォーム送信:",supportNumber,stock.name,qty))
+    .catch(e=>console.error(e));
+}
+
+// 株選択とグラフ更新
+window.selectStock=function(i){ data.selected=i; updateChart(); }
+function updateChart(){
+  let stock=data.stocks[data.selected||0];
+  chartData.labels=stock.history.map((_,i)=>i);
+  chartData.datasets=[{label:"株価",data:stock.history,borderColor:"#00ffcc",tension:0.2}];
+  if(stock.quantity>0) chartData.datasets.push({label:"平均取得価格",data:new Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00",borderWidth:3,tension:0});
+  chart.update();
+}
+
+initChart(); render();
+</script>
+</body>
+</html>
