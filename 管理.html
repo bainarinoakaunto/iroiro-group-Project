@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>BAN管理画面</title>
+<style>
+body{font-family:Arial; background:#111; color:white; padding:20px;}
+h1{color:#0ff;}
+table{width:100%; border-collapse:collapse; margin-top:20px;}
+th, td{border:1px solid #333; padding:8px; text-align:center;}
+input, button{padding:5px; margin:2px;}
+button{cursor:pointer;}
+</style>
+</head>
+<body>
+<h1>BAN管理画面</h1>
+
+<h3>新規BAN追加</h3>
+<input type="text" id="banNumber" placeholder="サポート番号">
+<input type="datetime-local" id="banUntil">
+<button id="addBan">追加</button>
+
+<h3>現在のBANリスト</h3>
+<table>
+<thead><tr><th>番号</th><th>期限</th><th>操作</th></tr></thead>
+<tbody id="banTable"></tbody>
+</table>
+
+<script>
+let banList = [];
+
+// GitHubでJSONを取得する場合
+const BAN_JSON_URL = 'https://yourusername.github.io/yourrepo/banlist.json'; 
+
+async function loadBanList() {
+  try{
+    const res = await fetch(BAN_JSON_URL + '?' + Date.now());
+    const data = await res.json();
+    banList = data.bans;
+    renderTable();
+  }catch(e){
+    console.error("BANリスト取得失敗", e);
+  }
+}
+
+function renderTable() {
+  const tbody = document.getElementById("banTable");
+  tbody.innerHTML = '';
+  banList.forEach((ban,i)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${ban.number}</td>
+      <td>${ban.until}</td>
+      <td><button onclick="removeBan(${i})">削除</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function removeBan(index){
+  if(!confirm("本当に削除しますか？")) return;
+  banList.splice(index,1);
+  renderTable();
+  saveBanList();
+}
+
+document.getElementById("addBan").addEventListener("click", ()=>{
+  const number = document.getElementById("banNumber").value.trim();
+  const until = document.getElementById("banUntil").value;
+  if(!number || !until){ alert("番号と期限を入力してください"); return; }
+  banList.push({number, until});
+  renderTable();
+  saveBanList();
+});
+
+// GitHub対応のJSON更新はここで行う（GitHub API or 手動コミット）
+function saveBanList(){
+  // ⚠ GitHub APIで更新する場合はアクセストークンが必要
+  // fetch('https://api.github.com/repos/ユーザー名/リポジトリ名/contents/banlist.json', {method:'PUT', ...})
+  console.log("BANリストを保存:", banList);
+}
+
+loadBanList();
+</script>
+</body>
+</html>
