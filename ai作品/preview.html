@@ -70,6 +70,14 @@ background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 </form>
 
 <script>
+// ページ読み込み時にサポート番号チェック
+const supportNumber = localStorage.getItem("supportNumber");
+
+// サポート番号が未登録なら登録ページへ強制遷移
+if(!supportNumber || supportNumber.trim() === ""){
+    alert("登録が必要です。登録ページに移動します。");
+    window.location.href = "tourokku.html";
+}
 const TAX_RATE=0.20315;
 let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
 cash:90000, selected:0,
@@ -195,16 +203,6 @@ document.getElementById("currentNews").innerText=event.text+"（"+event.sector+"
 initChart();
 render();
 setInterval(autoUpdate,3000);
-<script>
-// ページ読み込み時にサポート番号チェック
-const supportNumber = localStorage.getItem("supportNumber");
-
-// サポート番号が未登録なら登録ページへ強制遷移
-if(!supportNumber || supportNumber.trim() === ""){
-    alert("登録が必要です。登録ページに移動します。");
-    window.location.href = "tourokku.html";
-}
-</script>
 </script>
 </body>
 </html>
