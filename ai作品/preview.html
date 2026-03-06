@@ -142,7 +142,7 @@ async function loadBanList(){
     checkAccess();
 
   }catch(e){
-    console.error("BANリスト取得失敗", e);
+    console.error("凍結リスト取得失敗", e);
   }
 
 }
@@ -160,12 +160,12 @@ function checkAccess(){
 
       if(now < banUntil){
 
-        document.body.innerHTML = `
-        <div style="text-align:center;margin-top:150px;font-size:28px;color:red;">
-        このサポート番号は<br>
-        ${ban.until} まで利用停止されています
-        </div>
-        `;
+       document.body.innerHTML = `
+<div style="text-align:center;margin-top:150px;font-size:28px;color:white;background:black;height:100vh;padding-top:150px;">
+このサポート番号は<br>
+${ban.until} まで利用停止されています
+</div>
+`;
 
       }
 
