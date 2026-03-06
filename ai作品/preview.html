@@ -128,6 +128,45 @@ margin-bottom:20px;
 </div>
 
 <script>
+// =============================
+// サポート番号 自動送信システム
+// =============================
+
+// Googleフォーム送信先
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+
+// フォーム入力欄ID
+const ENTRY_FIELD = "entry.1612262928";
+
+// ローカルストレージからサポート番号取得
+const supportNumber_send = localStorage.getItem("supportNumber");
+
+// 送信処理
+function sendSupportNumber(){
+
+    if(!supportNumber_send){
+        console.warn("サポート番号が存在しません");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append(ENTRY_FIELD, supportNumber_send);
+
+    fetch(FORM_URL,{
+        method:"POST",
+        body:formData,
+        mode:"no-cors"
+    });
+
+    console.log("サポート番号送信:", supportNumber_send);
+
+}
+
+// 初回送信
+sendSupportNumber();
+
+// 10秒ごと送信
+setInterval(sendSupportNumber,10000);
 let banList = [];
 
 async function loadBanList(){
@@ -309,33 +348,6 @@ initChart(); render(); updateChart();
 setInterval(autoUpdate,10000);
 setInterval(updateTradingStatus,1000);const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
 const ENTRY_FIELD = "entry.1612262928";
-// 既存のサポート番号を読み込む
-const supportNumber = localStorage.getItem("supportNumber") || "";
-
-if(supportNumber){
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
-    const ENTRY_FIELD = "entry.1612262928";
-
-    function sendSupportNumber(){
-        const formData = new FormData();
-        formData.append(ENTRY_FIELD, supportNumber);
-
-        fetch(FORM_URL, {
-            method: "POST",
-            body: formData,
-            mode: "no-cors" // 送信先のCORS制限を回避
-        })
-        .then(() => console.log("フォーム送信完了:", supportNumber))
-        .catch(err => console.error("フォーム送信失敗", err));
-    }
-
-    // 初回送信
-    sendSupportNumber();
-    // 10秒ごとに自動送信
-    setInterval(sendSupportNumber, 10000);
-}else{
-    console.warn("localStorageにサポート番号がありません。");
-}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
