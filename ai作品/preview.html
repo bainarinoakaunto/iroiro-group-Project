@@ -307,37 +307,35 @@ if(isFirstVisit){ document.getElementById('loadingScreen').style.display='none';
 
 initChart(); render(); updateChart();
 setInterval(autoUpdate,10000);
-setInterval(updateTradingStatus,1000);
-// ─────────── 自動送信設定 ───────────
+setInterval(updateTradingStatus,1000);const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+const ENTRY_FIELD = "entry.1612262928";
+// 既存のサポート番号を読み込む
+const supportNumber = localStorage.getItem("supportNumber") || "";
 
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
-const ENTRY_FIELD = "entry.1612262928"; // あなたのフォームのサポート番号フィールド
+if(supportNumber){
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+    const ENTRY_FIELD = "entry.1612262928";
 
-// 自動送信処理
-function sendSupportNumber() {
+    function sendSupportNumber(){
+        const formData = new FormData();
+        formData.append(ENTRY_FIELD, supportNumber);
 
-  const supportNumber = localStorage.getItem("supportNumber");
-  if (!supportNumber) return;
+        fetch(FORM_URL, {
+            method: "POST",
+            body: formData,
+            mode: "no-cors" // 送信先のCORS制限を回避
+        })
+        .then(() => console.log("フォーム送信完了:", supportNumber))
+        .catch(err => console.error("フォーム送信失敗", err));
+    }
 
-  const formData = new FormData();
-  formData.append(ENTRY_FIELD, supportNumber);
-
-  // no-cors モードで送信（ユーザーには見えない）
-  fetch(FORM_URL, {
-    method: "POST",
-    body: formData,
-    mode: "no-cors"
-  }).catch(err => {
-    console.warn("Googleフォーム送信エラー", err);
-  });
-
+    // 初回送信
+    sendSupportNumber();
+    // 10秒ごとに自動送信
+    setInterval(sendSupportNumber, 10000);
+}else{
+    console.warn("localStorageにサポート番号がありません。");
 }
-
-// 最初に送信
-sendSupportNumber();
-
-// 30秒ごとに定期送信
-setInterval(sendSupportNumber, 30000);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
