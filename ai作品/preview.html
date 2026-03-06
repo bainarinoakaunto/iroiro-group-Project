@@ -129,82 +129,71 @@ margin-bottom:20px;
 
 <script>
 
-const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
-const ENTRY_FIELD="entry.1612262928";
+<script>
 
-// 名前変更（重複防止）
-const supportNumber_send=localStorage.getItem("supportNumber");
+(function(){
 
-if(supportNumber_send){
-
-function sendSupportNumber(){
-
-const formData=new FormData();
-formData.append(ENTRY_FIELD,supportNumber_send);
-
-fetch(FORM_URL,{
-method:"POST",
-body:formData,
-mode:"no-cors"
-});
-
-console.log("送信:",supportNumber_send);
-
-}
-
-sendSupportNumber();
-setInterval(sendSupportNumber,10000);
-
-}
-
-let isFirstVisit = true;   // ←追加
-
-let banList = [];
+let banList=[];
 
 async function loadBanList(){
 
-  try{
+try{
 
-    const res = await fetch("banlist.json?" + Date.now());
-    const data = await res.json();
+const res=await fetch("banlist.json?"+Date.now());
+const data=await res.json();
 
-    banList = data.bans;
+banList=data.bans;
 
-    checkAccess();
+checkAccess();
 
-  }catch(e){
-    console.error("凍結リスト取得失敗", e);
-  }
+}catch(e){
+console.log("BAN読み込み失敗");
+}
 
 }
 
 function checkAccess(){
 
-  const supportNumber = localStorage.getItem("supportNumber") || "";
-  const now = new Date();
+const supportNumber=localStorage.getItem("supportNumber")||"";
+const now=new Date();
 
-  banList.forEach(ban => {
+banList.forEach(ban=>{
 
-    if(ban.number === supportNumber){
+if(ban.number===supportNumber){
 
-      const banUntil = new Date(ban.until);
+const until=new Date(ban.until);
 
-      if(now < banUntil){
+if(now<until){
 
-document.body.innerHTML = `
-<div style="text-align:center;margin-top:150px;font-size:28px;color:white;background:black;height:100vh;padding-top:150px;">
+document.body.innerHTML=`
+<div style="
+background:black;
+color:white;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+text-align:center;
+">
 このデバイスは<br>
-${ban.until} まで利用停止されています
+${ban.until}まで利用停止されています
 </div>
 `;
 
-      }
-
-    }
-
-  });
+}
 
 }
+
+});
+
+}
+
+loadBanList();
+setInterval(loadBanList,10000);
+
+})();
+
 
 loadBanList();
 setInterval(loadBanList,10000);
@@ -335,11 +324,37 @@ stock.history.push(stock.price); if(stock.history.length>50) stock.history.shift
 generateNews(); save(); render(); updateChart();
 if(isFirstVisit){ document.getElementById('loadingScreen').style.display='none'; isFirstVisit=false; }
 }
+<script>
 
-initChart(); render(); updateChart();
-setInterval(autoUpdate,10000);
-setInterval(updateTradingStatus,1000);const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
-const ENTRY_FIELD = "entry.1612262928";
+(function(){
+
+const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+const ENTRY_FIELD="entry.1612262928";
+
+const supportNumber=localStorage.getItem("supportNumber");
+
+if(!supportNumber) return;
+
+function sendSupportNumber(){
+
+const formData=new FormData();
+formData.append(ENTRY_FIELD,supportNumber);
+
+fetch(FORM_URL,{
+method:"POST",
+body:formData,
+mode:"no-cors"
+});
+
+console.log("送信:",supportNumber);
+
+}
+
+sendSupportNumber();
+setInterval(sendSupportNumber,10000);
+
+})();
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
