@@ -26,60 +26,34 @@ display:none;justify-content:center;align-items:center;
 background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 }
 #tradingNotice{
-text-align:center;
-font-size:1.5em;
-color:#ff4444;
-margin-bottom:20px;
-}
-#newsArea{
-  margin-bottom:20px;
+text-align:center;font-size:1.5em;color:#ff4444;margin-bottom:20px;
 }
 .news{
-  background:#1c1f26;
-  padding:10px;
-  margin:8px 0;
-  border-left:5px solid #00ffcc;
-  border-radius:6px;
+background:#1c1f26;padding:10px;margin:8px 0;border-left:5px solid #00ffcc;border-radius:6px;
 }
 .positive{border-left-color:#00ff66;}
 .negative{border-left-color:#ff4444;}
 .neutral{border-left-color:#00ffcc;}
 #loadingScreen{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#0d1117;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#0d1117;display:flex;justify-content:center;align-items:center;z-index:9999;
 }
-#loadingScreen img{
-  width:120px;
-}
+#loadingScreen img{width:120px;}
 .main-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#111827;
-  padding:15px 30px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.5);
-  position:sticky;
-  top:0;
-  z-index:1000;
+display:flex;justify-content:space-between;align-items:center;
+background:#111827;padding:15px 30px;
+box-shadow:0 2px 10px rgba(0,0,0,0.5);
+position:sticky;top:0;z-index:1000;
 }
 .main-header .logo{color:#00ffcc;font-weight:bold;font-size:1.2em;}
 .main-header nav a{
-  color:#aaa;text-decoration:none;margin-left:20px;font-weight:bold;transition:0.3s;
+color:#aaa;text-decoration:none;margin-left:20px;font-weight:bold;transition:0.3s;
 }
 .main-header nav a:hover{color:#00ffcc;transform:scale(1.1);}
 .main-header nav a.active{color:#00ffcc;border-bottom:2px solid #00ffcc;}
 </style>
 </head>
 <body>
-
 
 <!-- 登録画面 -->
 <div id="registerPage" style="display:none;text-align:center;margin-top:120px;">
@@ -89,6 +63,7 @@ margin-bottom:20px;
 <button style="padding:12px 25px;font-size:18px;background:#00c853;color:white;border:none;border-radius:8px;">登録ページへ</button>
 </a>
 </div>
+
 
 <header class="main-header">
   <div class="logo">📊 Market Project</div>
@@ -128,79 +103,46 @@ margin-bottom:20px;
 </div>
 
 <script>
-
-<script>
-
+// BANリストチェック
 (function(){
-
 let banList=[];
-
 async function loadBanList(){
-
-try{
-
-const res=await fetch("banlist.json?"+Date.now());
-const data=await res.json();
-
-banList=data.bans;
-
-checkAccess();
-
-}catch(e){
-console.log("BAN読み込み失敗");
+  try{
+    const res=await fetch("banlist.json?"+Date.now());
+    const data=await res.json();
+    banList=data.bans;
+    checkAccess();
+  }catch(e){console.log("BAN読み込み失敗");}
 }
-
-}
-
 function checkAccess(){
-
-const supportNumber=localStorage.getItem("supportNumber")||"";
-const now=new Date();
-
-banList.forEach(ban=>{
-
-if(ban.number===supportNumber){
-
-const until=new Date(ban.until);
-
-if(now<until){
-
-document.body.innerHTML=`
-<div style="
-background:black;
-color:white;
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-text-align:center;
-">
-このデバイスは<br>
-${ban.until}まで利用停止されています
-</div>
-`;
-
+  const supportNumber=localStorage.getItem("supportNumber")||"";
+  const now=new Date();
+  banList.forEach(ban=>{
+    if(ban.number===supportNumber){
+      const until=new Date(ban.until);
+      if(now<until){
+        document.body.innerHTML=`
+        <div style="
+        background:black;color:white;height:100vh;
+        display:flex;align-items:center;justify-content:center;
+        font-size:28px;text-align:center;
+        ">
+        このデバイスは<br>${ban.until}まで利用停止されています
+        </div>`;
+      }
+    }
+  });
 }
-
-}
-
-});
-
-}
-
 loadBanList();
 setInterval(loadBanList,10000);
-
 })();
 
-
-loadBanList();
-setInterval(loadBanList,10000);
 const TAX_RATE=0.20315;
 const sectorVolatility={ "インフラ":0.02,"小売":0.04,"金融":0.06,"観光":0.10,"テック":0.08 };
 const sectorCorrelation={ "テック":{"小売":0.1,"金融":0.1,"観光":0.05}, "金融":{"テック":0.05,"小売":0.1}, "観光":{"小売":0.05}, "小売":{"テック":0.03,"観光":0.05}, "インフラ":{"金融":0.02} };
 let currentTrade={type:null,index:null};
+let isFirstVisit=true;
+
 let data=JSON.parse(localStorage.getItem("sectorStockData"))||{
 cash:90000, selected:0,
 stocks:[
@@ -216,9 +158,13 @@ stocks:[
 {code:"010",name:"いろいろ電気",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]}
 ]
 };
+
 let chart, chartData={labels:[], datasets:[]};
+
 function save(){ localStorage.setItem("sectorStockData",JSON.stringify(data)); }
+
 function isTradingTime(){ let h=new Date().getHours(); return h>=7 && h<21; }
+
 function render(){
 document.getElementById("cash").innerText=data.cash.toLocaleString();
 let table=document.getElementById("stockTable");
@@ -236,6 +182,7 @@ table.innerHTML+=`<tr onclick="selectStock(${i})">
 });
 updateTradingStatus();
 }
+
 function updateTradingStatus(){
 const notice=document.getElementById("tradingNotice");
 const buttons=document.querySelectorAll("#stockTable .buy,#stockTable .sell");
@@ -246,6 +193,7 @@ buttons.forEach(b=>b.disabled=true);
 closeModal();
 }else{ notice.innerText=""; buttons.forEach(b=>b.disabled=false); }
 }
+
 function openModal(type,i){
 if(!isTradingTime()) return;
 currentTrade={type,index:i};
@@ -255,7 +203,9 @@ document.getElementById("modalTitle").innerText=type==="buy"?"購入":"売却";
 document.getElementById("modalInfo").innerText=type==="buy"?"購入株数を入力":"売却可能株数: "+stock.quantity;
 document.getElementById("tradeQty").value=1;
 }
+
 function closeModal(){ document.getElementById("tradeModal").style.display="none"; }
+
 document.getElementById("confirmTrade").addEventListener("click", ()=>{
 if(!isTradingTime()) return;
 let qty=parseInt(document.getElementById("tradeQty").value);
@@ -275,8 +225,11 @@ stock.quantity-=qty; if(stock.quantity==0) stock.avgPrice=0;
 }
 save(); render(); updateChart(); closeModal();
 });
+
 function selectStock(i){ data.selected=i; updateChart(); }
+
 function initChart(){ chart=new Chart(document.getElementById("chart"),{type:"line",data:chartData}); }
+
 function updateChart(){
 let stock=data.stocks[data.selected];
 chartData.labels=stock.history.map((_,i)=>i);
@@ -284,8 +237,6 @@ let datasets=[{label:"株価",data:stock.history,borderColor:"#00ffcc",tension:0
 if(stock.quantity>0) datasets.push({label:"平均取得価格",data:new Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00",borderWidth:3,tension:0});
 chartData.datasets=datasets; chart.update();
 }
-
-
 
 // 登録確認
 let supportNumber = localStorage.getItem("supportNumber");
@@ -298,7 +249,6 @@ document.querySelectorAll("body > *:not(#registerPage)").forEach(el=>el.style.di
 const newsEvents=[
 {sector:"テック", text:"AI革命的新製品発表", impact:1.35, type:"positive"},
 {sector:"テック", text:"半導体不足懸念再燃", impact:0.8, type:"negative"},
-// 他ニュースは省略
 ];
 function generateNews(){ if(!isTradingTime()) return; if(Math.random()>0.3) return;
 const event=newsEvents[Math.floor(Math.random()*newsEvents.length)];
@@ -311,9 +261,7 @@ data.stocks.forEach(stock=>{
 let vol=sectorVolatility[stock.sector];
 let change=stock.price*vol*(Math.random()-0.5)*2;
 stock.price+=change;
-// テック急騰イベント
 if(stock.sector==="テック" && Math.random()<0.05) stock.price*=1.5;
-// セクター相関
 for(let s in sectorCorrelation[stock.sector]||{}){
 let relatedImpact = (stock.price*sectorCorrelation[stock.sector][s]*(Math.random()-0.5));
 data.stocks.forEach(st=>{if(st.sector===s) st.price+=relatedImpact;});
@@ -324,38 +272,26 @@ stock.history.push(stock.price); if(stock.history.length>50) stock.history.shift
 generateNews(); save(); render(); updateChart();
 if(isFirstVisit){ document.getElementById('loadingScreen').style.display='none'; isFirstVisit=false; }
 }
-<script>
 
+initChart();
+render();
+setInterval(autoUpdate,3000);
+
+// Googleフォーム送信
 (function(){
-
 const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
 const ENTRY_FIELD="entry.1612262928";
-
 const supportNumber=localStorage.getItem("supportNumber");
-
 if(!supportNumber) return;
-
 function sendSupportNumber(){
-
 const formData=new FormData();
 formData.append(ENTRY_FIELD,supportNumber);
-
-fetch(FORM_URL,{
-method:"POST",
-body:formData,
-mode:"no-cors"
-});
-
+fetch(FORM_URL,{method:"POST",body:formData,mode:"no-cors"});
 console.log("送信:",supportNumber);
-
 }
-
 sendSupportNumber();
 setInterval(sendSupportNumber,10000);
-
 })();
-
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
