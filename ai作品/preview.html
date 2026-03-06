@@ -157,6 +157,8 @@ setInterval(sendSupportNumber,10000);
 
 }
 
+let isFirstVisit = true;   // ←追加
+
 let banList = [];
 
 async function loadBanList(){
@@ -204,8 +206,8 @@ ${ban.until} まで利用停止されています
 
 }
 
-loadBanList();                // 初回
-setInterval(loadBanList, 10000); // 10000ms = 10秒
+loadBanList();
+setInterval(loadBanList,10000);
 const TAX_RATE=0.20315;
 const sectorVolatility={ "インフラ":0.02,"小売":0.04,"金融":0.06,"観光":0.10,"テック":0.08 };
 const sectorCorrelation={ "テック":{"小売":0.1,"金融":0.1,"観光":0.05}, "金融":{"テック":0.05,"小売":0.1}, "観光":{"小売":0.05}, "小売":{"テック":0.03,"観光":0.05}, "インフラ":{"金融":0.02} };
