@@ -2,118 +2,110 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>BAN管理画面</title>
+<title>アクセス管理リスト管理</title>
 <style>
-body{background:#111;color:white;font-family:Arial;padding:20px;}
-h1{color:#0ff;}
+body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
+h1{color:#00ffcc;}
 table{width:100%;border-collapse:collapse;margin-top:20px;}
 th,td{border:1px solid #333;padding:8px;text-align:center;}
-input, button{padding:5px;margin:2px;}
+input,button{padding:6px;margin:4px;}
 button{cursor:pointer;}
+.addBtn{background:#00c853;color:#fff;border:none;}
+.delBtn{background:#d50000;color:#fff;border:none;}
+.saveBtn{background:#00b0ff;color:#fff;border:none;padding:8px 16px;}
 </style>
 </head>
 <body>
 
-<h1>BAN管理画面</h1>
-
-<h3>新規BAN追加</h3>
-<input type="text" id="banNumber" placeholder="サポート番号">
-<input type="datetime-local" id="banUntil">
-<button id="addBan">追加</button>
-
-<h3>現在のBANリスト</h3>
-<table>
-<thead><tr><th>番号</th><th>期限</th><th>操作</th></tr></thead>
-<tbody id="banTable"></tbody>
+<h1>リスト管理</h1>
+<table id="banTable">
+<thead>
+<tr><th>番号</th><th>解除日時</th><th>操作</th></tr>
+</thead>
+<tbody></tbody>
 </table>
 
-<button id="saveBanList" style="margin-top:20px;">GitHubに保存</button>
+<h3>アクセス制限リスト追加</h3>
+<input type="text" id="newNumber" placeholder="サポート番号">
+<input type="datetime-local" id="newUntil">
+<button class="addBtn" onclick="addBan()">追加</button>
+
+<br><br>
+<button class="saveBtn" onclick="saveBanList()">GitHubに保存</button>
 
 <script>
 let banList = [];
 
-// GitHubリポジトリ設定（ここを書き換えてください）
-const OWNER = 'bainarinoakaunto';
-const REPO = 'iroiro-group-Project';
-const PATH = 'ai作品/banlist.json';
-const BRANCH = 'main';
-const TOKEN = 'YOUR_PERSONAL_ACCESS_TOKEN'; // ⚠ GitHub Personal Access Token
+// GitHub設定
+const OWNER = "bainarinoakaunto";
+const REPO = "iroiro-group-Project";
+const PATH = "ai作品/banlist.json"; // JSONパス
+const BRANCH = "main";
+const TOKEN = "YOUR_PERSONAL_ACCESS_TOKEN"; // ここにPAT
 
-// BANリスト取得
-async function loadBanList(){
-  try{
-    const res = await fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}?`+Date.now());
-    const data = await res.json();
-    banList = data.bans;
-    renderTable();
-  }catch(e){
-    console.error("BANリスト取得失敗", e);
-    alert("BANリスト取得に失敗しました");
-  }
-}
-
-// 表示更新
+// テーブル更新
 function renderTable(){
-  const tbody = document.getElementById("banTable");
-  tbody.innerHTML = '';
+  const tbody = document.querySelector("#banTable tbody");
+  tbody.innerHTML="";
   banList.forEach((ban,i)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${ban.number}</td>
-      <td>${ban.until}</td>
-      <td><button onclick="removeBan(${i})">削除</button></td>
-    `;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${ban.number}</td><td>${ban.until}</td>
+    <td><button class="delBtn" onclick="delBan(${i})">削除</button></td>`;
     tbody.appendChild(tr);
   });
 }
 
+// 追加
+function addBan(){
+  const num=document.getElementById("newNumber").value.trim();
+  const until=document.getElementById("newUntil").value;
+  if(!num || !until){ alert("番号と日時を入力"); return; }
+  banList.push({number:num,until:until});
+  renderTable();
+  document.getElementById("newNumber").value="";
+  document.getElementById("newUntil").value="";
+}
+
 // 削除
-function removeBan(index){
-  if(!confirm("本当に削除しますか？")) return;
+function delBan(index){
   banList.splice(index,1);
   renderTable();
 }
 
-// 追加
-document.getElementById("addBan").addEventListener("click", ()=>{
-  const number = document.getElementById("banNumber").value.trim();
-  const until = document.getElementById("banUntil").value;
-  if(!number || !until){ alert("番号と期限を入力してください"); return; }
-  banList.push({number, until});
-  renderTable();
-  document.getElementById("banNumber").value='';
-  document.getElementById("banUntil").value='';
-});
+// GitHubから読み込み
+async function loadBanList(){
+  try{
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}?ref=${BRANCH}`,{
+      headers:{Authorization:`token ${TOKEN}`}
+    });
+    const data = await res.json();
+    const content = atob(data.content);
+    banList = JSON.parse(content).bans || [];
+    renderTable();
+  }catch(e){
+    console.error("読み込み失敗", e);
+  }
+}
 
-// GitHub保存
+// GitHubに保存
 async function saveBanList(){
   try{
-    // まずSHAを取得
     const getRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}?ref=${BRANCH}`,{
       headers:{Authorization:`token ${TOKEN}`}
     });
     const fileData = await getRes.json();
     const sha = fileData.sha;
 
-    // JSONをbase64に変換
-    const content = btoa(JSON.stringify({bans: banList}, null, 2));
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify({bans: banList},null,2))));
 
     const putRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`,{
       method:'PUT',
-      headers:{
-        Authorization:`token ${TOKEN}`,
-        'Content-Type':'application/json'
-      },
-      body: JSON.stringify({
-        message: "Update BAN list via management panel",
-        content: content,
-        sha: sha,
-        branch: BRANCH
-      })
+      headers:{Authorization:`token ${TOKEN}`,'Content-Type':'application/json'},
+      body: JSON.stringify({message:"Update BAN list",content,sha,branch:BRANCH})
     });
-
+    const resJson = await putRes.json();
     if(putRes.ok) alert("GitHubに保存しました！");
-    else alert("保存失敗");
+    else { console.error(resJson); alert("保存失敗: "+(resJson.message||"不明なエラー")); }
 
   }catch(e){
     console.error(e);
@@ -121,9 +113,7 @@ async function saveBanList(){
   }
 }
 
-document.getElementById("saveBanList").addEventListener("click", saveBanList);
-
-// 初回ロード
+// 初回読み込み
 loadBanList();
 </script>
 
