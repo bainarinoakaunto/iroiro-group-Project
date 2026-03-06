@@ -310,6 +310,72 @@ document.getElementById("currentNews").innerText=event.text+"（"+event.sector+"
 initChart();
 render();
 setInterval(autoUpdate,3000);
+<script>
+
+(function(){
+
+let banList=[];
+
+async function loadBanList(){
+
+try{
+
+const res=await fetch("banlist.json?"+Date.now());
+const data=await res.json();
+
+banList=data.bans;
+
+checkAccess();
+
+}catch(e){
+console.log("BAN読み込み失敗");
+}
+
+}
+
+function checkAccess(){
+
+const supportNumber=localStorage.getItem("supportNumber")||"";
+const now=new Date();
+
+banList.forEach(ban=>{
+
+if(ban.number===supportNumber){
+
+const until=new Date(ban.until);
+
+if(now<until){
+
+document.body.innerHTML=`
+<div style="
+background:black;
+color:white;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+text-align:center;
+">
+このデバイスは<br>
+${ban.until}まで利用停止されています
+</div>
+`;
+
+}
+
+}
+
+});
+
+}
+
+loadBanList();
+setInterval(loadBanList,10000);
+
+})();
+
+</script>
 </script>
 </body>
 </html>
