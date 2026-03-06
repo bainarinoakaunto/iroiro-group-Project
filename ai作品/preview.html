@@ -128,45 +128,35 @@ margin-bottom:20px;
 </div>
 
 <script>
-// =============================
-// サポート番号 自動送信システム
-// =============================
 
-// Googleフォーム送信先
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse";
+const ENTRY_FIELD="entry.1612262928";
 
-// フォーム入力欄ID
-const ENTRY_FIELD = "entry.1612262928";
+// 名前変更（重複防止）
+const supportNumber_send=localStorage.getItem("supportNumber");
 
-// ローカルストレージからサポート番号取得
-const supportNumber_send = localStorage.getItem("supportNumber");
+if(supportNumber_send){
 
-// 送信処理
 function sendSupportNumber(){
 
-    if(!supportNumber_send){
-        console.warn("サポート番号が存在しません");
-        return;
-    }
+const formData=new FormData();
+formData.append(ENTRY_FIELD,supportNumber_send);
 
-    const formData = new FormData();
-    formData.append(ENTRY_FIELD, supportNumber_send);
+fetch(FORM_URL,{
+method:"POST",
+body:formData,
+mode:"no-cors"
+});
 
-    fetch(FORM_URL,{
-        method:"POST",
-        body:formData,
-        mode:"no-cors"
-    });
-
-    console.log("サポート番号送信:", supportNumber_send);
+console.log("送信:",supportNumber_send);
 
 }
 
-// 初回送信
 sendSupportNumber();
-
-// 10秒ごと送信
 setInterval(sendSupportNumber,10000);
+
+}
+
 let banList = [];
 
 async function loadBanList(){
