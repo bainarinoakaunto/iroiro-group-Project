@@ -11,7 +11,7 @@ button{padding:6px 12px;margin:4px;cursor:pointer;}
 .buy{background:#00c853;color:white;}
 .sell{background:#d50000;color:white;}
 button:disabled{opacity:0.5;cursor:not-allowed;}
-table{width:100%;margin-top:10px;border-collapse:collapse;}
+table{width:100%;margin-top:10px;border-collaphttps://github.com/bainarinoakaunto/iroiro-group-Project/edit/main/ai%E4%BD%9C%E5%93%81/preview.htmlse:collapse;}
 th,td{border:1px solid #333;padding:6px;text-align:center;}
 .profit{color:#00ff66;}
 .loss{color:#ff4444;}
@@ -222,9 +222,74 @@ function updateChart() {
 // 株価ランダム変動＋ニュース100件
 // ----------------------------
 const newsEvents = [
-  // ここに先ほど作成済みの100件ニュースをすべてコピー
-];
 
+{sector:"テック",impact:1.08,type:"positive",text:"AI需要急増でテック企業の受注拡大"},
+{sector:"テック",impact:1.06,type:"positive",text:"半導体不足が解消し生産回復"},
+{sector:"テック",impact:0.94,type:"negative",text:"大規模サイバー攻撃でIT企業株下落"},
+{sector:"テック",impact:1.05,type:"positive",text:"新型スマートデバイスが大ヒット"},
+{sector:"テック",impact:0.92,type:"negative",text:"IT規制強化の報道で投資家警戒"},
+{sector:"テック",impact:1.10,type:"positive",text:"AI革命でテック企業の利益急増"},
+{sector:"テック",impact:0.95,type:"negative",text:"半導体価格下落で関連株が軟調"},
+{sector:"テック",impact:1.07,type:"positive",text:"クラウド需要拡大で企業業績好調"},
+{sector:"テック",impact:0.93,type:"negative",text:"大手IT企業が人員削減を発表"},
+{sector:"テック",impact:1.09,type:"positive",text:"次世代通信技術が世界で採用"},
+
+{sector:"金融",impact:1.05,type:"positive",text:"金利上昇で銀行株に追い風"},
+{sector:"金融",impact:0.94,type:"negative",text:"金融不安広がり銀行株下落"},
+{sector:"金融",impact:1.06,type:"positive",text:"投資ブームで証券会社の利益拡大"},
+{sector:"金融",impact:0.92,type:"negative",text:"不良債権問題が報道され金融株下落"},
+{sector:"金融",impact:1.04,type:"positive",text:"中央銀行が金融緩和を発表"},
+{sector:"金融",impact:0.93,type:"negative",text:"世界市場の不安で金融株売り"},
+{sector:"金融",impact:1.07,type:"positive",text:"株式市場活況で証券会社の業績改善"},
+{sector:"金融",impact:0.95,type:"negative",text:"金融規制強化の報道"},
+{sector:"金融",impact:1.06,type:"positive",text:"投資家資金流入で金融株上昇"},
+{sector:"金融",impact:0.94,type:"negative",text:"海外金融危機の懸念が広がる"},
+
+{sector:"観光",impact:1.08,type:"positive",text:"訪日観光客が過去最高を更新"},
+{sector:"観光",impact:1.06,type:"positive",text:"大型連休で旅行需要急増"},
+{sector:"観光",impact:0.93,type:"negative",text:"台風被害で観光客減少"},
+{sector:"観光",impact:1.05,type:"positive",text:"新テーマパーク開業で観光活性化"},
+{sector:"観光",impact:0.92,type:"negative",text:"感染症拡大懸念で旅行キャンセル"},
+{sector:"観光",impact:1.07,type:"positive",text:"海外旅行ブーム再来"},
+{sector:"観光",impact:0.94,type:"negative",text:"円高で外国人観光客減少"},
+{sector:"観光",impact:1.05,type:"positive",text:"観光キャンペーンで需要増"},
+{sector:"観光",impact:0.95,type:"negative",text:"空港混雑問題で旅行客減少"},
+{sector:"観光",impact:1.09,type:"positive",text:"大型イベント開催で観光需要急増"},
+
+{sector:"小売",impact:1.06,type:"positive",text:"消費回復で小売売上増加"},
+{sector:"小売",impact:0.94,type:"negative",text:"物価高で消費者の買い控え"},
+{sector:"小売",impact:1.05,type:"positive",text:"新商品ヒットで売上急増"},
+{sector:"小売",impact:0.92,type:"negative",text:"物流コスト増で小売株下落"},
+{sector:"小売",impact:1.04,type:"positive",text:"セールイベントで売上好調"},
+{sector:"小売",impact:0.93,type:"negative",text:"大型店舗閉店が相次ぐ"},
+{sector:"小売",impact:1.07,type:"positive",text:"EC市場拡大で小売企業成長"},
+{sector:"小売",impact:0.95,type:"negative",text:"在庫過多で利益減少"},
+{sector:"小売",impact:1.06,type:"positive",text:"消費者信頼感の回復"},
+{sector:"小売",impact:0.94,type:"negative",text:"人件費高騰で小売業圧迫"},
+
+{sector:"インフラ",impact:1.05,type:"positive",text:"エネルギー需要増でインフラ株上昇"},
+{sector:"インフラ",impact:0.94,type:"negative",text:"燃料価格高騰でコスト増"},
+{sector:"インフラ",impact:1.06,type:"positive",text:"政府のインフラ投資拡大"},
+{sector:"インフラ",impact:0.93,type:"negative",text:"設備事故で企業株下落"},
+{sector:"インフラ",impact:1.04,type:"positive",text:"再生可能エネルギー投資増加"},
+{sector:"インフラ",impact:0.95,type:"negative",text:"電力需要減少で収益悪化"},
+{sector:"インフラ",impact:1.07,type:"positive",text:"電力価格上昇で利益増"},
+{sector:"インフラ",impact:0.92,type:"negative",text:"設備老朽化問題が発覚"},
+{sector:"インフラ",impact:1.05,type:"positive",text:"政府補助金でインフラ企業支援"},
+{sector:"インフラ",impact:0.94,type:"negative",text:"燃料供給問題で株価下落"},
+
+{sector:"テック",impact:1.08,type:"positive",text:"量子コンピューター開発成功"},
+{sector:"金融",impact:1.05,type:"positive",text:"世界株高で金融株上昇"},
+{sector:"観光",impact:1.07,type:"positive",text:"航空会社の新路線が人気"},
+{sector:"小売",impact:1.06,type:"positive",text:"大型ショッピングモール開業"},
+{sector:"インフラ",impact:1.05,type:"positive",text:"新発電所が稼働開始"},
+{sector:"テック",impact:0.94,type:"negative",text:"スマートフォン市場縮小"},
+{sector:"金融",impact:0.93,type:"negative",text:"株式市場の不安定化"},
+{sector:"観光",impact:0.92,type:"negative",text:"悪天候で旅行需要減少"},
+{sector:"小売",impact:0.95,type:"negative",text:"消費税増税の懸念"},
+{sector:"インフラ",impact:0.94,type:"negative",text:"エネルギー価格急落"}
+
+];
 function autoUpdate() {
   data.stocks.forEach(stock => {
     let change = (Math.random()-0.5)*10;
