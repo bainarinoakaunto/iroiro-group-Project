@@ -2,9 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+
+<!-- スマホ対応 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>リンクページ</title>
 
 <style>
+
 body{
     font-family: "Yu Gothic", sans-serif;
     background: linear-gradient(135deg,#a8e6ff,#ffffff);
@@ -15,15 +20,18 @@ body{
 h1{
     margin-top:40px;
     color:#333;
+    font-size:28px;
 }
 
 .container{
     margin-top:40px;
+    padding:0 15px;
 }
 
 .link-card{
     display:block;
-    width:320px;
+    width:90%;
+    max-width:350px;
     margin:20px auto;
     padding:20px;
     background:white;
@@ -41,6 +49,21 @@ h1{
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
     background:#f0fbff;
 }
+
+/* スマホ用 */
+@media (max-width:600px){
+
+h1{
+    font-size:24px;
+}
+
+.link-card{
+    font-size:18px;
+    padding:18px;
+}
+
+}
+
 </style>
 </head>
 
