@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>なんでも会社 卒業通信ギャラリー</title>
+<style>
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: #ffe6e6;
+    color: #333;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+header {
+    padding: 40px 20px;
+    background: #ff9999;
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header p {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+section {
+    padding: 40px 20px;
+}
+
+h2 {
+    color: #ff3366;
+    margin-bottom: 20px;
+}
+
+/* PDFギャラリー */
+.pdf-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pdf-card {
+    background: #fff0f5;
+    border-radius: 12px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pdf-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255,51,102,0.4);
+}
+
+.pdf-card img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.pdf-card h3 {
+    margin: 5px 0;
+    color: #ff3366;
+}
+
+.pdf-card a {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #ff3366;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.pdf-card a:hover {
+    background: #ff6699;
+}
+
+/* 桜アニメーション */
+.sakura {
+    position: fixed;
+    width: 15px;
+    height: 15px;
+    background: pink;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@media(max-width:600px){
+    .pdf-gallery { flex-direction: column; align-items: center; }
+    .pdf-card { width: 80%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🎓 なんでも会社 卒業通信ギャラリー</h1>
+    <p>卒業生の通信をクリックして開くことができます</p>
+</header>
+
+<section>
+    <h2>卒業通信一覧</h2>
+    <div class="pdf-gallery">
+        <div class="pdf-card">
+            <img src="https://via.placeholder.com/200x120?text=通信1" alt="通信1">
+            <h3>山田 太郎</h3>
+            <a href="sample1.pdf" target="_blank">PDFを開く</a>
+        </div>
+
+        <div class="pdf-card">
+            <img src="https://via.placeholder.com/200x120?text=通信2" alt="通信2">
+            <h3>鈴木 花子</h3>
+            <a href="sample2.pdf" target="_blank">PDFを開く</a>
+        </div>
+
+        <div class="pdf-card">
+            <img src="https://via.placeholder.com/200x120?text=通信3" alt="通信3">
+            <h3>佐藤 次郎</h3>
+            <a href="sample3.pdf" target="_blank">PDFを開く</a>
+        </div>
+
+        <!-- 追加のPDFカードもここにコピー -->
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 なんでも会社 卒業通信ギャラリー
+</footer>
+
+<script>
+// 桜を降らせる
+function createSakura(){
+    const sakura = document.createElement('div');
+    sakura.classList.add('sakura');
+    sakura.style.left = Math.random()*window.innerWidth+'px';
+    sakura.style.animationDuration = (3+Math.random()*5)+'s';
+    sakura.style.width = sakura.style.height = (10+Math.random()*15)+'px';
+    document.body.appendChild(sakura);
+    setTimeout(()=>sakura.remove(),8000);
+}
+setInterval(createSakura,300);
+</script>
+
+</body>
+</html>
