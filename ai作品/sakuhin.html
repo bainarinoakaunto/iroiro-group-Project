@@ -1,91 +1,197 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-
-<!-- スマホ対応 -->
+<title>なんでも会社 |卒業通信ギャラリー</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>リンクページ</title>
-
 <style>
-
-body{
-    font-family: "Yu Gothic", sans-serif;
-    background: linear-gradient(135deg,#a8e6ff,#ffffff);
-    margin:0;
-    text-align:center;
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: #ffe6e6;
+    color: #333;
+    text-align: center;
+    overflow-x: hidden;
 }
 
-h1{
-    margin-top:40px;
-    color:#333;
-    font-size:28px;
+/* ヘッダー */
+header {
+    padding: 30px 20px;
+    background: #ff9999;
+    color: white;
 }
 
-.container{
-    margin-top:40px;
-    padding:0 15px;
+header h1 {
+    margin: 0;
+    font-size: 2em;
 }
 
-.link-card{
-    display:block;
-    width:90%;
-    max-width:350px;
-    margin:20px auto;
-    padding:20px;
-    background:white;
-    border-radius:15px;
-    text-decoration:none;
-    color:#333;
-    font-size:20px;
-    font-weight:bold;
-    box-shadow:0 6px 15px rgba(0,0,0,0.15);
-    transition:0.2s;
+header p {
+    font-size: 1em;
+    margin-top: 5px;
 }
 
-.link-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    background:#f0fbff;
+/* セクション */
+section {
+    padding: 30px 15px;
 }
 
-/* スマホ用 */
-@media (max-width:600px){
-
-h1{
-    font-size:24px;
+h2 {
+    color: #ff3366;
+    margin-bottom: 15px;
 }
 
-.link-card{
-    font-size:18px;
-    padding:18px;
+/* ギャラリー */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
+.gallery img {
+    width: 150px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
+.gallery img:hover {
+    transform: scale(1.05);
+}
+
+/* PDFリンクカード */
+.link-card {
+    display: inline-block;
+    margin: 8px;
+    padding: 12px 18px;
+    background: #ff3366;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.link-card:hover {
+    transform: scale(1.03);
+    background: #ff6699;
+}
+
+/* モーダル */
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+#modal img {
+    max-width:90%;
+    max-height:90%;
+    border-radius: 12px;
+}
+
+/* 桜アニメーション */
+.sakura {
+    position: fixed;
+    width: 15px;
+    height: 15px;
+    background: pink;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+/* レスポンシブ調整 */
+@media(max-width:600px){
+    header h1 { font-size: 1.5em; }
+    header p { font-size: 0.9em; }
+    .gallery { flex-direction: column; align-items: center; }
+    .gallery img { width: 80%; max-width:300px; }
+    .link-card { display:block; width:80%; margin: 8px auto; font-size: 0.95em; }
+    section { padding: 20px 10px; }
+}
 </style>
 </head>
-
 <body>
 
-<h1>🌟 リンクページ 🌟</h1>
+<header>
+    <h1>🎓 なんでも会社 卒業通信ギャラリー</h1>
+    <p>いろいろ会社・何でも会社制作のwebをチェックしよう！</p>
+</header>
 
-<div class="container">
+<!-- 思い出ギャラリー -->
+<section>
+    <h2>思い出ギャラリー</h2>
+    <div class="gallery">
+        <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png" alt="いろいろ" onclick="openModal(this)">
+        <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%AA%E3%82%93%E3%81%A7%E3%82%82.png" alt="なんでも" onclick="openModal(this)">
+        <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%83%9B%E3%83%BC%E3%83%A0.png" alt="ホームページホーム" onclick="openModal(this)">
 
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html">
-🏢 なんでも会社
-</a>
+    </div>
+</section>
 
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai%E4%BD%9C%E5%93%81/Link.html">
-🛒 マーケットポータル
-</a>
+<!-- PDFリンク集 -->
+<section>
+    <h2>リンク集</h2>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">🏢 なんでも会社</a>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai%E4%BD%9C%E5%93%81/Link.html" target="_blank">🛒 マーケットポータル</a>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E6%A0%AA%E3%82%B7%E3%83%A5%E3%83%9F%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%BC%E3%82%A2%E3%83%97%E3%83%AA%E8%AA%AC%E6%98%8E%E8%B3%87%E6%96%99.pdf" target="_blank">📈 株シュミレーター紹介PDF</a>
+    <!-- 追加リンク -->
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D%E4%BC%9A%E7%A4%BE%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9.html" target="_blank">💰️通貨残高確認</a>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%83%87%E3%82%B8%E3%82%BF%E3%83%AB%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%97%E3%82%AB%E3%83%BC%E3%83%89.html" target="_blank">📄 デジスタ（デジタルスタンプカード）</a>
+    <a class="link-card" href="" target="_blank">📄 いろいろ通信最終回PDF （只今準備中）</a>
+</section>
 
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E6%A0%AA%E3%82%B7%E3%83%A5%E3%83%9F%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%BC%E3%82%A2%E3%83%97%E3%83%AA%E8%AA%AC%E6%98%8E%E8%B3%87%E6%96%99.pdf">
-📈 株シュミレーター紹介PDF
-</a>
-
+<!-- モーダル -->
+<div id="modal" onclick="closeModal()">
+    <img src="" alt="拡大写真">
 </div>
+
+<footer>
+    &copy; 2026 なんでも会社 卒業通信ギャラリー
+</footer>
+
+<script>
+// 桜アニメーション
+function createSakura(){
+    const sakura = document.createElement('div');
+    sakura.classList.add('sakura');
+    sakura.style.left = Math.random() * window.innerWidth + 'px';
+    sakura.style.top = (Math.random() * -50) + 'px';
+    const size = 10 + Math.random()*15;
+    sakura.style.width = sakura.style.height = size + 'px';
+    sakura.style.animationDuration = (3 + Math.random()*5) + 's';
+    document.body.appendChild(sakura);
+    setTimeout(()=> sakura.remove(), 8000);
+}
+setInterval(createSakura, 300);
+
+// ギャラリーモーダル
+function openModal(img){
+    const modal = document.getElementById('modal');
+    modal.style.display = 'flex';
+    modal.querySelector('img').src = img.src;
+}
+
+function closeModal(){
+    document.getElementById('modal').style.display = 'none';
+}
+</script>
 
 </body>
 </html>
