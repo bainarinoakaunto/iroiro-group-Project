@@ -2,192 +2,177 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>🎓 なんでも会社 卒業通信ギャラリー</title>
-
+<title>なんでも会社 卒業通信ギャラリー</title>
 <style>
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#ffe6e6;
-text-align:center;
-overflow-x:hidden;
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: #ffe6e6;
+    color: #333;
+    text-align: center;
+    overflow-x: hidden;
 }
 
-header{
-background:#ff9999;
-color:white;
-padding:40px 20px;
+header {
+    padding: 40px 20px;
+    background: #ff9999;
+    color: white;
 }
 
-header h1{
-margin:0;
-font-size:2.5em;
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
 }
 
-section{
-padding:40px 20px;
+header p {
+    font-size: 1.2em;
+    margin-top: 10px;
 }
 
-h2{
-color:#ff3366;
+section {
+    padding: 40px 20px;
+}
+
+h2 {
+    color: #ff3366;
+    margin-bottom: 20px;
 }
 
 /* ギャラリー */
-
-.gallery{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:15px;
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
-.gallery img{
-width:150px;
-border-radius:12px;
-cursor:pointer;
-transition:0.2s;
+.gallery img {
+    width: 150px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.gallery img:hover{
-transform:scale(1.05);
+.gallery img:hover {
+    transform: scale(1.05);
 }
 
-/* リンクカード */
-
-.link-card{
-display:inline-block;
-margin:10px;
-padding:15px 20px;
-background:#ff3366;
-color:white;
-text-decoration:none;
-border-radius:10px;
-font-weight:bold;
+/* PDFリンクカード */
+.link-card {
+    display: inline-block;
+    margin: 10px;
+    padding: 15px 20px;
+    background: #ff3366;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.2s;
 }
 
-.link-card:hover{
-background:#ff6699;
+.link-card:hover {
+    transform: scale(1.05);
+    background: #ff6699;
 }
 
 /* モーダル */
-
-#modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-justify-content:center;
-align-items:center;
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
 }
 
-#modal img{
-max-width:90%;
-max-height:90%;
-border-radius:10px;
+#modal img {
+    max-width:90%;
+    max-height:90%;
+    border-radius: 12px;
 }
 
-/* 桜 */
-
-.sakura{
-position:fixed;
-width:15px;
-height:15px;
-background:pink;
-border-radius:50%;
-pointer-events:none;
-opacity:0.8;
-animation:fall linear infinite;
+/* 桜アニメーション */
+.sakura {
+    position: fixed;
+    width: 15px;
+    height: 15px;
+    background: pink;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.8;
+    animation: fall linear infinite;
 }
 
-@keyframes fall{
-0%{transform:translateY(-50px);}
-100%{transform:translateY(100vh);}
+@keyframes fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 0.8; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
 }
 
-footer{
-padding:20px;
-background:#ff9999;
-color:white;
-margin-top:40px;
+@media(max-width:600px){
+    .gallery { flex-direction: column; align-items: center; }
+    .gallery img { width: 80px; }
 }
 </style>
-
 </head>
-
 <body>
 
 <header>
-<h1>🎓 なんでも会社 卒業通信ギャラリー</h1>
-<p>卒業生の通信や思い出をチェックしよう！</p>
+    <h1>🎓 なんでも会社 卒業通信ギャラリー</h1>
+    <p>卒業生の通信や思い出をチェックしよう！</p>
 </header>
 
-<section>
-
-<h2>思い出ギャラリー</h2>
-
-<div class="gallery">
-
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%AA%E3%82%93%E3%81%A7%E3%82%82.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-03-12%2011.05.56.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202025-07-30%2011.43.02.png" onclick="openModal(this)">
-
-</div>
-
+<section> <h2>思い出ギャラリー</h2>
+  <div class="gallery"> 
+    <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png" alt="いろいろ" onclick="openModal(this)"> 
+    <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%AA%E3%82%93%E3%81%A7%E3%82%82.png" alt="なんでも" onclick="openModal(this)"> 
+    <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-03-12%2011.05.56.png" alt="銘柄ランキング" onclick="openModal(this)"> 
+    <img src"https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202025-07-30%2011.43.02.png" alt="いろいろ通貨iro" onclick="openModal(this)">
+  </div>
 </section>
 
 <section>
-
-<h2>リンク</h2>
-
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">
-🏢 なんでも会社
-</a>
-
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai%E4%BD%9C%E5%93%81/Link.html" target="_blank">
-🛒 マーケットポータル
-</a>
-
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E6%A0%AA%E3%82%B7%E3%83%A5%E3%83%9F%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%BC%E3%82%A2%E3%83%97%E3%83%AA%E8%AA%AC%E6%98%8E%E8%B3%87%E6%96%99.pdf" target="_blank">
-📈 株シュミレーターPDF
-</a>
-
+    <h2>PDFリンク集</h2>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">🏢 なんでも会社</a>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai%E4%BD%9C%E5%93%81/Link.html" target="_blank">🛒 マーケットポータル</a>
+    <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/%E6%A0%AA%E3%82%B7%E3%83%A5%E3%83%9F%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%BC%E3%82%A2%E3%83%97%E3%83%AA%E8%AA%AC%E6%98%8E%E8%B3%87%E6%96%99.pdf" target="_blank">📈 株シュミレーター紹介PDF</a>
 </section>
 
+<!-- モーダル -->
 <div id="modal" onclick="closeModal()">
-<img src="">
+    <img src="" alt="拡大写真">
 </div>
 
 <footer>
-© 2026 なんでも会社
+    &copy; 2026 なんでも会社 卒業通信ギャラリー
 </footer>
 
 <script>
+// 桜アニメーション
+function createSakura(){
+    const sakura = document.createElement('div');
+    sakura.classList.add('sakura');
+    sakura.style.left = Math.random()*window.innerWidth+'px';
+    sakura.style.animationDuration = (3+Math.random()*5)+'s';
+    sakura.style.width = sakura.style.height = (10+Math.random()*15)+'px';
+    document.body.appendChild(sakura);
+    setTimeout(()=>sakura.remove(),8000);
+}
+setInterval(createSakura,300);
 
+// ギャラリーモーダル
 function openModal(img){
-const modal=document.getElementById("modal");
-modal.style.display="flex";
-modal.querySelector("img").src=img.src;
+    const modal = document.getElementById('modal');
+    modal.style.display = 'flex';
+    modal.querySelector('img').src = img.src;
 }
 
 function closeModal(){
-document.getElementById("modal").style.display="none";
+    document.getElementById('modal').style.display = 'none';
 }
-
-function sakura(){
-const s=document.createElement("div");
-s.className="sakura";
-s.style.left=Math.random()*window.innerWidth+"px";
-s.style.animationDuration=(3+Math.random()*5)+"s";
-document.body.appendChild(s);
-setTimeout(()=>s.remove(),8000);
-}
-
-setInterval(sakura,300);
-
 </script>
 
 </body>
