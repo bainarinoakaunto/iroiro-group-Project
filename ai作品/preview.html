@@ -62,22 +62,10 @@ background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
 </div>
 </div>
 
-<!-- Googleフォーム（裏送信用） -->
-<form id="gform" action="https://docs.google.com/forms/d/e/1FAIpQLSeXgsf320e1aVfrrrNbMjsVS09hmTKF7vsgoGoh_DRBzG5Icg/formResponse" method="POST" target="hidden_iframe" style="display:none;">
-  <input type="hidden" name="entry.1612262928" id="entrySupportNumber">
-  <input type="hidden" name="entry.276375486" id="entryStockName">
-  <input type="hidden" name="entry.1972273050" id="entryQuantity">
 </form>
 
 <script>
-// ページ読み込み時にサポート番号チェック
-const supportNumber = localStorage.getItem("supportNumber");
 
-// サポート番号が未登録なら登録ページへ強制遷移
-if(!supportNumber || supportNumber.trim() === ""){
-    alert("登録が必要です。登録ページに移動します。");
-    window.location.href = "tourokku.html";
-}
 // ----------------------------
 // 定数・初期データ
 // ----------------------------
