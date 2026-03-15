@@ -14,7 +14,7 @@ body{
   color:#333;
   text-align:center;
   overflow-x:hidden;
-  padding-bottom:180px; /* 下リンクバー用 */
+  padding-bottom:180px; /* 下リンクバーのため余裕 */
 }
 
 /* ===== ハンバーガーボタン ===== */
@@ -30,6 +30,7 @@ body{
   cursor:pointer;
   z-index:2000;
 }
+
 .menu-btn span{
   display:block;
   height:4px;
@@ -37,21 +38,26 @@ body{
   border-radius:2px;
   transition:0.3s;
 }
-.menu-btn.active span{
+
+/* アクティブ時の✕ */
+.menu-btn.active span:nth-child(1){
+  transform:rotate(45deg);
   position:absolute;
   top:50%;
   left:0;
   width:100%;
-  background:#ff3366;
-}
-.menu-btn.active span:nth-child(1){
-  transform:rotate(45deg);
+  background:#000; /* 黒色 */
 }
 .menu-btn.active span:nth-child(2){
   opacity:0;
 }
 .menu-btn.active span:nth-child(3){
   transform:rotate(-45deg);
+  position:absolute;
+  top:50%;
+  left:0;
+  width:100%;
+  background:#000; /* 黒色 */
 }
 
 /* ===== サイドメニュー ===== */
@@ -151,7 +157,7 @@ header h1{
 /* ===== 下リンク ===== */
 .link-bar{
   position:fixed;
-  bottom:10px;
+  bottom:10px; /* 画面下から少し上げて広告と重ならない */
   left:0;
   width:100%;
   background:white;
@@ -178,32 +184,35 @@ header h1{
 
 /* ===== スマホ対応 ===== */
 @media (max-width:600px){
-  header{
-    padding:25px 10px;
-  }
-  header h1{
-    font-size:20px;
-  }
-  .menu-btn{
-    top:15px;
-    right:15px;
-    width:35px;
-    height:25px;
-  }
-  .gallery{
-    flex-direction:column;
-    align-items:center;
-  }
-  .gallery img{
-    width:90%;
-    max-width:400px;
-  }
-  .side-menu{
-    width:80%;
-  }
-  body{ padding-bottom:200px; }
-  .link-bar{ bottom:12px; }
-  .link-card{ font-size:14px; padding:10px; }
+header{
+  padding:25px 10px;
+}
+header h1{
+  font-size:20px;
+}
+.menu-btn{
+  top:15px;
+  right:15px;
+  width:35px;
+  height:25px;
+}
+/* ギャラリー縦並び */
+.gallery{
+  flex-direction:column;
+  align-items:center;
+}
+.gallery img{
+  width:90%;
+  max-width:400px;
+}
+/* メニュー幅 */
+.side-menu{
+  width:80%;
+}
+/* 下リンク */
+body{ padding-bottom:200px; }
+.link-bar{ bottom:12px; }
+.link-card{ font-size:14px; padding:10px; }
 }
 </style>
 </head>
@@ -229,7 +238,7 @@ header h1{
 <header>
 <h1>🎓 なんでも会社 卒業ギャラリー</h1>
 <p>いろいろ会社・何でも会社制作のWeb作品</p>
-<h4>※Web作品(株シュミレーターを含む)は、画面下のボタンまたは右上メニューからご利用ください。</h4>
+<h4>※Web作品(株シュミレーターを含む)をご覧になる場合は、画面下のボタン（広告が表示されている場合は不可）もしくは、画面右上のメニューボタンからご利用いただけます。</h4>
 </header>
 
 <section>
@@ -243,12 +252,10 @@ header h1{
 </div>
 </section>
 
-<!-- モーダル -->
 <div id="modal" onclick="closeModal()">
   <img src="">
 </div>
 
-<!-- 下リンク -->
 <div class="link-bar">
   <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">🏢 なんでも会社</a>
   <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai作品/Link.html" target="_blank">🛒株シュミレーター</a>
