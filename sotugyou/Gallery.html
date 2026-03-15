@@ -8,200 +8,202 @@
 
 <style>
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#ffe6e6;
-color:#333;
-text-align:center;
-overflow-x:hidden;
-padding-bottom:180px; /* 下リンクバーのため余裕を増やす */
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#ffe6e6;
+  color:#333;
+  text-align:center;
+  overflow-x:hidden;
+  padding-bottom:180px; /* 下リンクバー用 */
 }
 
 /* ===== ハンバーガーボタン ===== */
 .menu-btn{
-position:fixed;
-top:20px;
-right:20px;
-width:40px;
-height:30px;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-cursor:pointer;
-z-index:2000;
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:40px;
+  height:30px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  cursor:pointer;
+  z-index:2000;
 }
-
 .menu-btn span{
-display:block;
-height:4px;
-background:#333;
-border-radius:2px;
-transition:0.3s;
+  display:block;
+  height:4px;
+  background:#333;
+  border-radius:2px;
+  transition:0.3s;
 }
-
+.menu-btn.active span{
+  position:absolute;
+  top:50%;
+  left:0;
+  width:100%;
+  background:#ff3366;
+}
 .menu-btn.active span:nth-child(1){
-transform:rotate(45deg) translate(6px,6px);
+  transform:rotate(45deg);
 }
 .menu-btn.active span:nth-child(2){
-opacity:0;
+  opacity:0;
 }
 .menu-btn.active span:nth-child(3){
-transform:rotate(-45deg) translate(7px,-7px);
+  transform:rotate(-45deg);
 }
 
 /* ===== サイドメニュー ===== */
 .side-menu{
-position:fixed;
-top:0;
-right:0;
-width:260px;
-height:100%;
-background:white;
-padding:80px 20px;
-box-shadow:-3px 0 10px rgba(0,0,0,0.2);
-transform:translateX(100%);
-transition:0.3s;
-z-index:1500;
+  position:fixed;
+  top:0;
+  right:0;
+  width:260px;
+  height:100%;
+  background:white;
+  padding:80px 20px;
+  box-shadow:-3px 0 10px rgba(0,0,0,0.2);
+  transform:translateX(100%);
+  transition:0.3s;
+  z-index:1500;
 }
 .side-menu.open{
-transform:translateX(0);
+  transform:translateX(0);
 }
 .side-menu a{
-display:block;
-padding:12px;
-margin-bottom:10px;
-background:#ff3366;
-color:white;
-border-radius:8px;
-text-decoration:none;
-font-weight:bold;
+  display:block;
+  padding:12px;
+  margin-bottom:10px;
+  background:#ff3366;
+  color:white;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
 }
 .side-menu a:hover{
-background:#ff6699;
+  background:#ff6699;
 }
 
 /* ===== ヘッダー ===== */
 header{
-padding:40px 20px;
-background:#ff9999;
-color:white;
+  padding:40px 20px;
+  background:#ff9999;
+  color:white;
 }
 header h1{
-margin:0;
+  margin:0;
 }
 
 /* ===== ギャラリー ===== */
 .gallery{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:20px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
 }
 .gallery img{
-max-width:300px;
-width:100%;
-border-radius:12px;
-cursor:pointer;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
-transition:0.2s;
+  max-width:300px;
+  width:100%;
+  border-radius:12px;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  transition:0.2s;
 }
 .gallery img:hover{
-transform:scale(1.03);
+  transform:scale(1.03);
 }
 
 /* ===== モーダル ===== */
 #modal{
-display:none;
-position:fixed;
-z-index:1000;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-justify-content:center;
-align-items:center;
+  display:none;
+  position:fixed;
+  z-index:1000;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
 }
 #modal img{
-max-width:95%;
-max-height:95%;
-border-radius:10px;
+  max-width:95%;
+  max-height:95%;
+  border-radius:10px;
 }
 
 /* ===== 桜 ===== */
 .sakura{
-position:fixed;
-width:12px;
-height:12px;
-background:pink;
-border-radius:50%;
-pointer-events:none;
-animation:fall linear infinite;
+  position:fixed;
+  width:12px;
+  height:12px;
+  background:pink;
+  border-radius:50%;
+  pointer-events:none;
+  animation:fall linear infinite;
 }
 @keyframes fall{
-0%{transform:translateY(-50px) rotate(0);}
-100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
+  0%{transform:translateY(-50px) rotate(0);}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
 /* ===== 下リンク ===== */
 .link-bar{
-position:fixed;
-bottom:10px; /* 画面下から少し上げて広告と重ならない */
-left:0;
-width:100%;
-background:white;
-border-top:3px solid #ff3366;
-padding:10px;
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:10px;
-z-index:999;
+  position:fixed;
+  bottom:10px;
+  left:0;
+  width:100%;
+  background:white;
+  border-top:3px solid #ff3366;
+  padding:10px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  z-index:999;
 }
 .link-card{
-padding:12px 16px;
-background:#ff3366;
-color:white;
-text-decoration:none;
-border-radius:10px;
-font-weight:bold;
-box-shadow:0 4px 10px rgba(0,0,0,0.25);
+  padding:12px 16px;
+  background:#ff3366;
+  color:white;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:bold;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
 }
 .link-card:hover{
-background:#ff6699;
+  background:#ff6699;
 }
 
 /* ===== スマホ対応 ===== */
 @media (max-width:600px){
-header{
-padding:25px 10px;
-}
-header h1{
-font-size:20px;
-}
-.menu-btn{
-top:15px;
-right:15px;
-width:35px;
-height:25px;
-}
-/* ギャラリー縦並び */
-.gallery{
-flex-direction:column;
-align-items:center;
-}
-.gallery img{
-width:90%;
-max-width:400px;
-}
-/* メニュー幅 */
-.side-menu{
-width:80%;
-}
-/* 下リンク */
-body{ padding-bottom:200px; } /* スマホはリンクバーが大きいので余裕を持たせる */
-.link-bar{ bottom:12px; }
-.link-card{ font-size:14px; padding:10px; }
+  header{
+    padding:25px 10px;
+  }
+  header h1{
+    font-size:20px;
+  }
+  .menu-btn{
+    top:15px;
+    right:15px;
+    width:35px;
+    height:25px;
+  }
+  .gallery{
+    flex-direction:column;
+    align-items:center;
+  }
+  .gallery img{
+    width:90%;
+    max-width:400px;
+  }
+  .side-menu{
+    width:80%;
+  }
+  body{ padding-bottom:200px; }
+  .link-bar{ bottom:12px; }
+  .link-card{ font-size:14px; padding:10px; }
 }
 </style>
 </head>
@@ -210,72 +212,74 @@ body{ padding-bottom:200px; } /* スマホはリンクバーが大きいので�
 
 <!-- ハンバーガーメニュー -->
 <div class="menu-btn" onclick="toggleMenu()">
-<span></span>
-<span></span>
-<span></span>
+  <span></span>
+  <span></span>
+  <span></span>
 </div>
 
 <!-- サイドメニュー -->
 <div class="side-menu" id="sideMenu">
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html">🏢 なんでも会社</a>
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai作品/Link.html">🛒 株シュミレーター</a>
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/株シュミレーターアプリ説明資料.pdf">📈 株PDF</a>
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/いろいろ会社サービス.html">💰 通貨残高</a>
-<a href="https://bainarinoakaunto.github.io/iroiro-group-Project/デジタルスタンプカード.html">📄 デジスタ</a>
+  <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html">🏢 なんでも会社</a>
+  <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai作品/Link.html">🛒 株シュミレーター</a>
+  <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/株シュミレーターアプリ説明資料.pdf">📈 株PDF</a>
+  <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/いろいろ会社サービス.html">💰 通貨残高</a>
+  <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/デジタルスタンプカード.html">📄 デジスタ</a>
 </div>
 
 <header>
 <h1>🎓 なんでも会社 卒業ギャラリー</h1>
 <p>いろいろ会社・何でも会社制作のWeb作品</p>
-<h4>※Web作品(株シュミレーターを含む)をご覧になる場合は、画面下のボタン（広告が表示されている場合は不可）もしくは、画面右上のメニューボタンからご利用いただけます。</h4>
+<h4>※Web作品(株シュミレーターを含む)は、画面下のボタンまたは右上メニューからご利用ください。</h4>
 </header>
 
 <section>
 <h2>📷 思い出ギャラリー</h2>
 <div class="gallery">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%AA%E3%82%93%E3%81%A7%E3%82%82.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%83%9B%E3%83%BC%E3%83%A0.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202025-07-30%2011.43.02.png" onclick="openModal(this)">
-<img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-03-12%2011.05.56.png" onclick="openModal(this)">
+  <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png" onclick="openModal(this)">
+  <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%AA%E3%82%93%E3%81%A7%E3%82%82.png" onclick="openModal(this)">
+  <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%83%9B%E3%83%BC%E3%83%A0.png" onclick="openModal(this)">
+  <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202025-07-30%2011.43.02.png" onclick="openModal(this)">
+  <img src="https://bainarinoakaunto.github.io/iroiro-group-Project/Screenshot%202026-03-12%2011.05.56.png" onclick="openModal(this)">
 </div>
 </section>
 
+<!-- モーダル -->
 <div id="modal" onclick="closeModal()">
-<img src="">
+  <img src="">
 </div>
 
+<!-- 下リンク -->
 <div class="link-bar">
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">🏢 なんでも会社</a>
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai作品/Link.html" target="_blank">🛒株シュミレーター</a>
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/株シュミレーターアプリ説明資料.pdf" target="_blank">📈 株PDF</a>
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/いろいろ会社サービス.html" target="_blank">💰 通貨残高</a>
-<a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/デジタルスタンプカード.html" target="_blank">📄 デジスタ</a>
+  <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">🏢 なんでも会社</a>
+  <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/ai作品/Link.html" target="_blank">🛒株シュミレーター</a>
+  <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/株シュミレーターアプリ説明資料.pdf" target="_blank">📈 株PDF</a>
+  <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/いろいろ会社サービス.html" target="_blank">💰 通貨残高</a>
+  <a class="link-card" href="https://bainarinoakaunto.github.io/iroiro-group-Project/デジタルスタンプカード.html" target="_blank">📄 デジスタ</a>
 </div>
 
 <script>
 function toggleMenu(){
-const menu=document.getElementById("sideMenu");
-const btn=document.querySelector(".menu-btn");
-menu.classList.toggle("open");
-btn.classList.toggle("active");
+  const menu=document.getElementById("sideMenu");
+  const btn=document.querySelector(".menu-btn");
+  menu.classList.toggle("open");
+  btn.classList.toggle("active");
 }
 function openModal(img){
-const modal=document.getElementById("modal");
-modal.style.display="flex";
-modal.querySelector("img").src=img.src;
+  const modal=document.getElementById("modal");
+  modal.style.display="flex";
+  modal.querySelector("img").src=img.src;
 }
 function closeModal(){
-document.getElementById("modal").style.display="none";
+  document.getElementById("modal").style.display="none";
 }
 function createSakura(){
-const s=document.createElement("div");
-s.className="sakura";
-s.style.left=Math.random()*window.innerWidth+"px";
-s.style.width=s.style.height=(8+Math.random()*10)+"px";
-s.style.animationDuration=(3+Math.random()*5)+"s";
-document.body.appendChild(s);
-setTimeout(()=>s.remove(),8000);
+  const s=document.createElement("div");
+  s.className="sakura";
+  s.style.left=Math.random()*window.innerWidth+"px";
+  s.style.width=s.style.height=(8+Math.random()*10)+"px";
+  s.style.animationDuration=(3+Math.random()*5)+"s";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),8000);
 }
 setInterval(createSakura,300);
 </script>
