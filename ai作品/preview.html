@@ -171,15 +171,10 @@ document.getElementById("confirmTrade").addEventListener("click", () => {
 });
 
 // ----------------------------
-// 裏送信処理
+// 裏送信処理（OFF）
 // ----------------------------
 function sendTradeToForm(stock, qty){
-  const supportNumber = localStorage.getItem("supportNumber") || "0000";
-  document.getElementById("entrySupportNumber").value = supportNumber;
-  document.getElementById("entryStockName").value = stock.name;
-  document.getElementById("entryQuantity").value = qty;
-  document.getElementById("gform").submit(); 
-  console.log("フォーム送信:", supportNumber, stock.name, qty);
+  console.log("取引:", stock.name, qty);
 }
 
 // ----------------------------
