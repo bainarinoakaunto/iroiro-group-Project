@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ボールペン追跡</title>
+</head>
+<body style="font-family:sans-serif; text-align:center; padding:50px; background:#f0f0f0;">
+
+  <div style="background:#fff; padding:20px; border-radius:10px; width:300px; margin:auto;">
+    <h2>配送状況チェック</h2>
+
+    <input 
+      type="text" 
+      id="tracking" 
+      placeholder="追跡番号を入力"
+      style="width:100%; padding:10px; margin-top:10px;"
+    >
+
+    <button 
+      onclick="check()" 
+      style="width:100%; padding:10px; margin-top:10px;"
+    >
+      確認
+    </button>
+
+    <p id="result" style="margin-top:20px; font-weight:bold;"></p>
+  </div>
+
+  <script>
+    function check() {
+      const num = document.getElementById("tracking").value;
+      const result = document.getElementById("result");
+
+      if (num === "") {
+        result.textContent = "追跡番号を入力してください";
+        return;
+      }
+
+      // 配送データ
+      let status = "";
+
+      if (num === "") {
+        status = "発送準備中";
+      } else if (num === "456") {
+        status = "配送中";
+      } else if (num === "789") {
+        status = "配達完了";
+      } else {
+        status = "該当データがありません";
+      }
+
+      result.textContent = "状況：" + status;
+    }
+  </script>
+
+</body>
+</html>
