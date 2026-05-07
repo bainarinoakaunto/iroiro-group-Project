@@ -1,0 +1,19 @@
+{
+  "system": "All Systems Operational",
+
+  "blog": {
+    "status": "Operational"
+  },
+
+  "tube": {
+    "status": "Operational"
+  },
+
+  "timer": {
+    "status": "Operational"
+  },
+
+  "project": {
+    "status": "Operational"
+  }
+}
