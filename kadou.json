@@ -2,18 +2,18 @@
   "system": "All Systems Operational",
 
   "blog": {
-    "status": "Operational"
+    "status": "正常稼働中"
   },
 
   "tube": {
-    "status": "Operational"
+    "status": "正常稼働中"
   },
 
   "timer": {
-    "status": "Operational"
+    "status": "正常稼働中"
   },
 
   "project": {
-    "status": "Operational"
+    "status": "正常稼働中"
   }
 }
