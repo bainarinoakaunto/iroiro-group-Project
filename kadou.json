@@ -1,19 +1,19 @@
 {
-  "system": "All Systems Operational",
+  "system": "Some services have failed. Maintenance work is also underway.",
 
   "blog": {
     "status": "正常稼働中"
   },
 
   "tube": {
-    "status": "正常稼働中"
+    "status": "接続不安定"
   },
 
   "timer": {
-    "status": "正常稼働中"
+    "status": "接続不安定"
   },
 
   "project": {
-    "status": "正常稼働中"
+    "status": "一部メンテナンス中"
   }
 }
