@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>移動中...</title>
+</head>
+<body>
+
+<p>スタンプページへ移動中...</p>
+
+<script>
+const now = new Date();
+
+// 今日の日付を作る
+const year = now.getFullYear();
+const month = String(now.getMonth() + 1).padStart(2, "0");
+const day = String(now.getDate()).padStart(2, "0");
+
+const date = `${year}-${month}-${day}`;
+
+// URLを作る
+const url =
+`https://bainarinoakaunto.github.io/iroiro-group-Project/スタンプ獲得.html?key=stamp-${date}`;
+
+// 即リダイレクト
+location.replace(url);
+</script>
+
+</body>
+</html>
