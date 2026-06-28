@@ -154,46 +154,49 @@ function todayDisplay(){
 /* ===== スタンプ処理 ===== */
 function startStampProcess(){
 
-  if(localStorage.getItem(dateKey)!==todayKey()){
+  // 既存スタンプ取得
+  let stamps = JSON.parse(localStorage.getItem("stamps") || "[]");
 
-    let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
+  // ★毎回追加（制限なし）
+  stamps.push({
+    img: STAMP_IMG,
+    number: STAMP_ID,
+    date: todayDisplay(),
+    used: false
+  });
 
-    stamps.push({
-      img:STAMP_IMG,
-      number:STAMP_ID,
-      date:todayDisplay(),
-      used:false
-    });
+  localStorage.setItem("stamps", JSON.stringify(stamps));
 
-    localStorage.setItem("stamps",JSON.stringify(stamps));
-    localStorage.setItem(dateKey,todayKey());
+  // UI表示
+  message.textContent = "🎉 スタンプを1個獲得しました！";
+  message.className = "status success";
 
-    message.textContent="スタンプを1個獲得しました！";
-    message.className="status success";
+  stampIcon.style.animation = "popStamp 1s forwards";
 
-    stampIcon.style.animation="popStamp 1s forwards";
+  // エフェクト（そのまま）
+  for(let i=0;i<20;i++){
+    const s = document.createElement("div");
+    s.textContent = "✨";
+    s.className = "sparkle";
+    s.style.left = Math.random() * 100 + "%";
+    s.style.animationDuration = (2 + Math.random() * 2) + "s";
+    document.body.appendChild(s);
+  }
 
-    for(let i=0;i<20;i++){
-      const s=document.createElement("div");
-      s.textContent="✨";
-      s.className="sparkle";
-      s.style.left=Math.random()*100+"%";
-      s.style.animationDuration=(2+Math.random()*2)+"s";
-      document.body.appendChild(s);
+  // カウントダウン移動
+  let seconds = 5;
+  countdownEl.textContent = `${seconds}秒後に移動します...`;
+
+  const timer = setInterval(()=>{
+    seconds--;
+    countdownEl.textContent = `${seconds}秒後に移動します...`;
+
+    if(seconds <= 0){
+      clearInterval(timer);
+      location.href = REDIRECT_URL;
     }
-
-    let seconds=5;
-    countdownEl.textContent=`${seconds}秒後に移動します...`;
-
-    const timer=setInterval(()=>{
-      seconds--;
-      countdownEl.textContent=`${seconds}秒後に移動します...`;
-      if(seconds<=0){
-        clearInterval(timer);
-        location.href=REDIRECT_URL;
-      }
-    },1000);
-
+  },1000);
+}
   }else{
     message.textContent="今日はすでに取得済みです。";
     message.className="status already";
