@@ -102,103 +102,127 @@ button:hover{opacity:0.8;}
 
 <script>
 
-
 /* ===== 設定 ===== */
 const STAMP_ID="自動UI";
 const STAMP_IMG="https://bainarinoakaunto.github.io/iroiro-group-Project/%E3%81%84%E3%82%8D%E3%81%84%E3%82%8D.png";
 const REDIRECT_URL="デジタルスタンプカード.html";
 const PASSWORD="111";
 
+/* ===== 日本時間 今日キー ===== */
+function todayKey(){
+  const d=new Date();
+  const yyyy=d.getFullYear();
+  const mm=String(d.getMonth()+1).padStart(2,"0");
+  const dd=String(d.getDate()).padStart(2,"0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/* ===== URLキー取得 ===== */
+const urlParams=new URLSearchParams(location.search);
+const key=urlParams.get("key");
+
 /* ===== 要素 ===== */
 const message=document.getElementById("message");
 const stampIcon=document.getElementById("stampIcon");
 const countdownEl=document.getElementById("countdown");
-
-/* ===== 日本時間（安定版） ===== */
-function todayKey(){
-  const now = new Date();
-  const jp = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
-
-  const yyyy = jp.getFullYear();
-  const mm = String(jp.getMonth()+1).padStart(2,"0");
-  const dd = String(jp.getDate()).padStart(2,"0");
-
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-/* ===== URLキー ===== */
-const urlParams = new URLSearchParams(location.search);
-const key = (urlParams.get("key") || "").trim();
+const dateKey="stampDate_"+STAMP_ID;
 
 /* ===== 平日判定 ===== */
 function isWeekday(){
-  const d = new Date();
-  return d.getDay() >= 1 && d.getDay() <= 5;
+  const day=new Date().getDay();
+  return (day>=1 && day<=5);
 }
 
-/* ===== 表示日付 ===== */
+/* ===== パスワード確認 ===== */
+function checkPassword(){
+  const input=document.getElementById("passwordInput").value.trim();
+  if(input===PASSWORD){
+    document.getElementById("passwordArea").style.display="none";
+    startStampProcess();
+  }else{
+    message.textContent="パスワードが違います";
+    message.className="status already";
+  }
+}
+
+/* ===== 日付表示 ===== */
 function todayDisplay(){
   const d=new Date();
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
 }
 
-/* ===== スタンプ追加（無制限） ===== */
+/* ===== スタンプ処理 ===== */
 function startStampProcess(){
 
-  let stamps = JSON.parse(localStorage.getItem("stamps") || "[]");
+  if(localStorage.getItem(dateKey)!==todayKey()){
 
-  stamps.push({
-    img: STAMP_IMG,
-    number: STAMP_ID,
-    date: todayDisplay(),
-    used: false
-  });
+    let stamps=JSON.parse(localStorage.getItem("stamps")||"[]");
 
-  localStorage.setItem("stamps", JSON.stringify(stamps));
+    stamps.push({
+      img:STAMP_IMG,
+      number:STAMP_ID,
+      date:todayDisplay(),
+      used:false
+    });
 
-  message.textContent = "🎉 スタンプを1個獲得しました！";
-  message.className = "status success";
+    localStorage.setItem("stamps",JSON.stringify(stamps));
+    localStorage.setItem(dateKey,todayKey());
 
-  stampIcon.style.animation = "popStamp 1s forwards";
+    message.textContent="スタンプを1個獲得しました！";
+    message.className="status success";
 
-  let seconds = 5;
-  countdownEl.textContent = `${seconds}秒後に移動します...`;
+    stampIcon.style.animation="popStamp 1s forwards";
 
-  const timer = setInterval(()=>{
-    seconds--;
-    countdownEl.textContent = `${seconds}秒後に移動します...`;
-
-    if(seconds <= 0){
-      clearInterval(timer);
-      location.href = REDIRECT_URL;
+    for(let i=0;i<20;i++){
+      const s=document.createElement("div");
+      s.textContent="✨";
+      s.className="sparkle";
+      s.style.left=Math.random()*100+"%";
+      s.style.animationDuration=(2+Math.random()*2)+"s";
+      document.body.appendChild(s);
     }
-  },1000);
+
+    let seconds=5;
+    countdownEl.textContent=`${seconds}秒後に移動します...`;
+
+    const timer=setInterval(()=>{
+      seconds--;
+      countdownEl.textContent=`${seconds}秒後に移動します...`;
+      if(seconds<=0){
+        clearInterval(timer);
+        location.href=REDIRECT_URL;
+      }
+    },1000);
+
+  }else{
+    message.textContent="今日はすでに取得済みです。";
+    message.className="status already";
+    stampIcon.textContent="✅";
+
+    setTimeout(()=>{
+      location.href=REDIRECT_URL;
+    },3000);
+  }
 }
 
-/* ===== 読み込み時（完全修正版） ===== */
-window.onload = function(){
+/* ===== 読み込み時 ===== */
+window.onload=function(){
 
-  const VALID_KEY = ("stamp-" + todayKey()).trim();
+  const VALID_KEY="stamp-"+todayKey(); // ←ここで生成
 
-  // ★デバッグ（ここ超重要）
-  console.log("KEY:", key);
-  console.log("VALID:", VALID_KEY);
-
-  if(!key){
-    message.textContent = "⚠️ keyなし";
+  if(key!==VALID_KEY){
+    message.textContent="⚠️読み込みエラー";
+    message.className="status already";
     return;
   }
 
-  if(key !== VALID_KEY){
-    message.textContent = "⚠️ 読み込みエラー（キー不一致）";
-    return;
+  if(isWeekday()){
+    document.getElementById("passwordArea").style.display="block";
+    message.textContent="平日はパスワードが必要です";
+  }else{
+    startStampProcess();
   }
-
-  // ★平日でも制限なし（必要ならここで変更）
-  document.getElementById("passwordArea").style.display = "none";
-
-  startStampProcess();
-};
+}
 
 </script>
 
