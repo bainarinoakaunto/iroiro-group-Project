@@ -309,17 +309,20 @@ render();
   const params = new URLSearchParams(location.search);
   const key = params.get("key");
   if(!key) return;
+
   const validKey = "stamp-" + todayKey();
   if(key !== validKey) return;
 
-  document.getElementById("stampOverlay").style.display = "flex";
+  const overlay = document.getElementById("stampOverlay");
+  const message = document.getElementById("overlayMessage");
+  const passwordArea = document.getElementById("passwordArea");
 
-  if(isWeekday()){
-    document.getElementById("passwordArea").style.display = "block";
-    document.getElementById("overlayMessage").textContent = "🔒 平日はパスワードが必要です";
-  } else {
-    addStamp();
-  }
+  overlay.style.display = "flex";
+  passwordArea.style.display = "none"; // ★完全に無効化
+
+  addStamp(); // ★平日も休日も即スタンプ（無制限）
+
+  message.textContent = "🎉 スタンプ獲得！";
 })();
 
 /* ===== スタンプ追加共通関数 ===== */
