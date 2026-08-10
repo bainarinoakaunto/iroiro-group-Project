@@ -2,152 +2,107 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>マーケットリンク集</title>
-<link rel="icon" href="アプリアイコン.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株シミュレーター｜順番待ち</title>
 <style>
+*{box-sizing:border-box;margin:0;padding:0}
 body{
-  margin:0;
-  background:#0d1117;
-  font-family:Arial, sans-serif;
-  color:#fff;
-  text-align:center;
+ min-height:100vh;font-family:"Segoe UI","Noto Sans JP",sans-serif;
+ color:#eaffff;display:flex;align-items:center;justify-content:center;
+ background:radial-gradient(circle at 50% 10%,rgba(0,220,255,.13),transparent 38%),linear-gradient(135deg,#02070b,#06151b,#02070b);
+ overflow:hidden;
 }
-
-/* ===== ヘッダー ===== */
-header{
-  padding:40px 20px;
+body::before{
+ content:"";position:fixed;inset:0;pointer-events:none;
+ background-image:linear-gradient(rgba(0,220,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,.035) 1px,transparent 1px);
+ background-size:42px 42px;
 }
-h1{
-  color:#00ffcc;
-  margin-bottom:10px;
+.wrapper{width:min(760px,94%);position:relative;z-index:1}
+.panel{
+ background:rgba(3,14,20,.92);border:1px solid rgba(0,220,255,.25);
+ border-radius:22px;padding:38px;box-shadow:0 0 50px rgba(0,220,255,.08),inset 0 0 35px rgba(0,255,190,.025);
+ backdrop-filter:blur(15px)
 }
-.subtitle{
-  color:#aaa;
-  font-size:0.9em;
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+ width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#00d9ff,#00e69a);
+ color:#001015;font-weight:900;font-size:21px;display:flex;justify-content:center;align-items:center;
+ box-shadow:0 0 22px rgba(0,230,200,.35)
 }
-
-/* ===== NEWS表示 ===== */
-.news-box{
-  width:80%;
-  margin:20px auto;
-  padding:15px;
-  background:#1c1f26;
-  border-left:6px solid #00ffcc;
-  border-radius:8px;
-  font-size:1.1em;
-  animation:fadeIn 1s ease-in-out;
+.brand-name{font-weight:800;letter-spacing:.08em}
+.brand-sub{color:#5e818a;font-size:10px;margin-top:3px}
+.connection{font-size:10px;color:#4cf3b8;border:1px solid rgba(76,243,184,.2);background:rgba(76,243,184,.05);padding:7px 10px;border-radius:20px}
+.queue-label{display:flex;align-items:center;gap:8px;color:#50f1bb;font-size:11px;font-weight:700;letter-spacing:.14em;margin-bottom:15px}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ff5b9;box-shadow:0 0 12px #4ff5b9;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h1{font-size:clamp(25px,5vw,37px);line-height:1.35;margin-bottom:12px}
+.description{color:#8aa8b0;font-size:13px;line-height:1.9}
+.queue{
+ margin-top:34px;padding:22px;border-radius:16px;
+ background:linear-gradient(180deg,rgba(0,220,255,.035),rgba(0,255,180,.015));
+ border:1px solid rgba(0,220,255,.12)
 }
-.positive{border-left-color:#00ff66;}
-.negative{border-left-color:#ff4444;}
-.neutral{border-left-color:#00ffcc;}
-
-/* ===== リンクカード ===== */
-.container{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:30px;
-  padding:40px 20px;
+.queue-title span:first-child{font-size:12px;color:#8fb5bd;letter-spacing:.08em}
+.queue-title span:last-child{font-size:11px;color:#50f1bb}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:9px}
+.progress-label span{font-size:10px;color:#658790;letter-spacing:.08em}
+.progress-label strong{font-size:10px;color:#4deec0}
+.progress-track{width:100%;height:11px;background:#06151a;border-radius:999px;overflow:hidden;border:1px solid rgba(0,220,255,.13)}
+.progress-bar{
+ width:0%;height:100%;border-radius:999px;
+ background:linear-gradient(90deg,#00cfff,#00e6b2,#61ffb9);
+ background-size:200% 100%;
+ box-shadow:0 0 14px rgba(0,230,200,.65);
+ transition:width .1s linear;
+ animation:queueFlow 1.4s linear infinite;
 }
-.card{
-  background:#1c1f26;
-  width:250px;
-  padding:25px;
-  border-radius:12px;
-  transition:0.4s;
-  box-shadow:0 0 15px rgba(0,255,204,0.1);
-  position:relative;
-  overflow:hidden;
+@keyframes queueFlow{
+ 0%{background-position:100% 0}
+ 100%{background-position:0 0}
 }
-.card::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-100%;
-  width:100%;
-  height:100%;
-  background:linear-gradient(120deg,transparent,rgba(0,255,204,0.4),transparent);
-  transition:0.6s;
-}
-.card:hover::before{
-  left:100%;
-}
-.card:hover{
-  transform:translateY(-10px) scale(1.05);
-  box-shadow:0 0 25px rgba(0,255,204,0.6);
-}
-.card a{
-  text-decoration:none;
-  color:#00ffcc;
-  font-size:1.2em;
-  display:block;
-}
-
-/* ===== アニメーション ===== */
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(-10px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
-footer{
-  margin-top:50px;
-  padding:20px;
-  font-size:0.8em;
-  color:#777;
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.info-box{padding:13px;border-radius:11px;background:rgba(0,220,255,.025);border:1px solid rgba(0,220,255,.08)}
+.info-title{color:#5d7e87;font-size:9px;margin-bottom:5px}
+.info-value{color:#b8eaf1;font-size:11px}
+.notice{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);text-align:center;color:#5e7b83;font-size:10px;line-height:1.8}
+@media(max-width:600px){
+ .panel{padding:26px 20px;border-radius:17px}
+ .header{margin-bottom:25px}.connection{display:none}
+ h1{font-size:25px}.description{font-size:12px}
+ .queue{padding:16px;margin-top:27px}    .info-box{display:flex;justify-content:space-between}
 }
 </style>
 </head>
 <body>
-
-<header>
-  <h1>🌐 マーケットポータル</h1>
-  <div class="subtitle">株シミュレーター総合ページ</div>
+<div class="wrapper">
+<main class="panel">
+<header class="header">
+<div class="brand">
+<div class="logo">株</div>
+<div><div class="brand-name">株シミュレーター</div><div class="brand-sub">KABU SIMULATOR</div></div>
+</div>
+<div class="connection">● SYSTEM ONLINE</div>
 </header>
 
-<!-- 🌍 最新NEWS表示 -->
-<div id="latestNews" class="news-box">
-  ニュースを取得中...
+<div class="queue-label"><span class="dot"></span>ACCESS QUEUE</div>
+<h1>現在、順番待ちです</h1>
+<p class="description">現在アクセスが集中しています。<br>サーバーの負荷を抑えるため、順番にご案内しています。約７分ほどでアクセスできます。ページを再読み込みすると、待機列の最初から並び直しになります。</p>
+
+<section class="queue">
+<div class="queue-title"><span>ONLINE QUEUE</span><span>順番待ち中</span></div>
+<div class="people" id="people">
+
+<div class="progress-label"><span>QUEUE PROGRESS</span><strong id="status">順番待ち中</strong></div>
+<div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+</section>
+
+<div class="info">
+<div class="info-box"><div class="info-title">SERVER</div><div class="info-value">ONLINE</div></div>
+<div class="info-box"><div class="info-title">QUEUE</div><div class="info-value">ACTIVE</div></div>
+<div class="info-box"><div class="info-title">CONNECTION</div><div class="info-value">STABLE</div></div>
 </div>
 
-<!-- 🔗 リンク一覧 -->
-<div class="container">
-
-  <div class="card">
-    <a href="preview.html">📈 株シミュレーター</a>
-  </div>
-  
-  <div class="card">
-    <a href="https://bainarinoakaunto.github.io/iroiro-group-Project/index.html" target="_blank">
-      なんでも会社トップ
-    </a>
-  </div>
-  
-  <div class="card">
-    <a href="link.html">🔗 リンク集</a>
-  </div>
-
-  <div class="card">
-    <a href="https://finance.yahoo.co.jp" target="_blank">
-      💹 Yahoo!ファイナンス
-    </a>
-  </div>
-
+<div class="notice">このページを閉じたり、再読み込みしたりせずにお待ちください。<br>順番が進むと自動的に株シミュレーターへ移動します。<br>※ページを再読み込みすると、待機列の最初から並び直しになります。</div>
+</main>
 </div>
-
-
-
-<script>
-// ===== 最新ニュース自動取得 =====
-const newsArea = document.getElementById("latestNews");
-const latest = JSON.parse(localStorage.getItem("latestNews"));
-
-if(latest){
-  newsArea.innerText = "📰 " + latest.text + "（" + latest.sector + "）";
-  newsArea.classList.add(latest.type);
-}else{
-  newsArea.innerText = "NEWSはありません";
-}
-</script>
-
-</body>
-</html>
