@@ -106,3 +106,39 @@ h1{font-size:clamp(25px,5vw,37px);line-height:1.35;margin-bottom:12px}
 <div class="notice">このページを閉じたり、再読み込みしたりせずにお待ちください。<br>順番が進むと自動的に株シミュレーターへ移動します。<br>※ページを再読み込みすると、待機列の最初から並び直しになります。</div>
 </main>
 </div>
+
+<script>
+const WAIT_TIME=300000;
+const REDIRECT_URL="https://bainarinoakaunto.github.io/kabusimyureta/";
+const progressBar=document.getElementById("progressBar");
+const status=document.getElementById("status");
+const startTime=Date.now();
+
+function updateQueue(){
+ const elapsed=Date.now()-startTime;
+ let progress=elapsed/WAIT_TIME;
+ if(progress>1)progress=1;
+ progressBar.style.width=(progress*100)+"%";
+
+ if(progress<0.25)status.textContent="順番待ち中";
+ else if(progress<0.55)status.textContent="順番を確認中";
+ else if(progress<0.80)status.textContent="まもなく接続";
+ else status.textContent="接続準備完了";
+
+ if(progress>0.25)people[3]?.classList.add("done");
+ if(progress>0.45)people[4]?.classList.add("done");
+ if(progress>0.65)people[7]?.classList.add("done");
+ if(progress>0.80)people[8]?.classList.add("done");
+
+ if(progress>=1){
+   status.textContent="接続完了";
+   window.location.href=REDIRECT_URL;
+   return;
+ }
+ requestAnimationFrame(updateQueue);
+}
+requestAnimationFrame(updateQueue);
+</script>
+</body>
+</html>
+
