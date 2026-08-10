@@ -2,350 +2,107 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>株シミュレーター</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株シミュレーター｜順番待ち</title>
 <style>
-body{background:#0d1117;color:#fff;font-family:Arial;padding:20px;}
-h1{color:#00ffcc;}
-button{padding:6px 12px;margin:4px;cursor:pointer;}
-.buy{background:#00c853;color:white;}
-.sell{background:#d50000;color:white;}
-button:disabled{opacity:0.5;cursor:not-allowed;}
-table{width:100%;margin-top:10px;border-collaphttps://github.com/bainarinoakaunto/iroiro-group-Project/edit/main/ai%E4%BD%9C%E5%93%81/preview.htmlse:collapse;}
-th,td{border:1px solid #333;padding:6px;text-align:center;}
-.profit{color:#00ff66;}
-.loss{color:#ff4444;}
-canvas{background:#111;margin-top:20px;}
-.news{background:#1c1f26;padding:10px;margin:8px 0;border-left:5px solid #00ffcc;border-radius:6px;}
-.positive{border-left-color:#00ff66;}
-.negative{border-left-color:#ff4444;}
-.neutral{border-left-color:#00ffcc;}
-.modal{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.7);display:none;
-justify-content:center;align-items:center;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ min-height:100vh;font-family:"Segoe UI","Noto Sans JP",sans-serif;
+ color:#eaffff;display:flex;align-items:center;justify-content:center;
+ background:radial-gradient(circle at 50% 10%,rgba(0,220,255,.13),transparent 38%),linear-gradient(135deg,#02070b,#06151b,#02070b);
+ overflow:hidden;
 }
-.modal-content{
-background:#1c1f26;padding:20px;border-radius:10px;text-align:center;
+body::before{
+ content:"";position:fixed;inset:0;pointer-events:none;
+ background-image:linear-gradient(rgba(0,220,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,.035) 1px,transparent 1px);
+ background-size:42px 42px;
 }
-#tradeQty{width:60px;padding:4px;font-size:16px;text-align:center;margin:10px 0;}
+.wrapper{width:min(760px,94%);position:relative;z-index:1}
+.panel{
+ background:rgba(3,14,20,.92);border:1px solid rgba(0,220,255,.25);
+ border-radius:22px;padding:38px;box-shadow:0 0 50px rgba(0,220,255,.08),inset 0 0 35px rgba(0,255,190,.025);
+ backdrop-filter:blur(15px)
+}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+ width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#00d9ff,#00e69a);
+ color:#001015;font-weight:900;font-size:21px;display:flex;justify-content:center;align-items:center;
+ box-shadow:0 0 22px rgba(0,230,200,.35)
+}
+.brand-name{font-weight:800;letter-spacing:.08em}
+.brand-sub{color:#5e818a;font-size:10px;margin-top:3px}
+.connection{font-size:10px;color:#4cf3b8;border:1px solid rgba(76,243,184,.2);background:rgba(76,243,184,.05);padding:7px 10px;border-radius:20px}
+.queue-label{display:flex;align-items:center;gap:8px;color:#50f1bb;font-size:11px;font-weight:700;letter-spacing:.14em;margin-bottom:15px}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ff5b9;box-shadow:0 0 12px #4ff5b9;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h1{font-size:clamp(25px,5vw,37px);line-height:1.35;margin-bottom:12px}
+.description{color:#8aa8b0;font-size:13px;line-height:1.9}
+.queue{
+ margin-top:34px;padding:22px;border-radius:16px;
+ background:linear-gradient(180deg,rgba(0,220,255,.035),rgba(0,255,180,.015));
+ border:1px solid rgba(0,220,255,.12)
+}
+.queue-title span:first-child{font-size:12px;color:#8fb5bd;letter-spacing:.08em}
+.queue-title span:last-child{font-size:11px;color:#50f1bb}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:9px}
+.progress-label span{font-size:10px;color:#658790;letter-spacing:.08em}
+.progress-label strong{font-size:10px;color:#4deec0}
+.progress-track{width:100%;height:11px;background:#06151a;border-radius:999px;overflow:hidden;border:1px solid rgba(0,220,255,.13)}
+.progress-bar{
+ width:0%;height:100%;border-radius:999px;
+ background:linear-gradient(90deg,#00cfff,#00e6b2,#61ffb9);
+ background-size:200% 100%;
+ box-shadow:0 0 14px rgba(0,230,200,.65);
+ transition:width .1s linear;
+ animation:queueFlow 1.4s linear infinite;
+}
+@keyframes queueFlow{
+ 0%{background-position:100% 0}
+ 100%{background-position:0 0}
+}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.info-box{padding:13px;border-radius:11px;background:rgba(0,220,255,.025);border:1px solid rgba(0,220,255,.08)}
+.info-title{color:#5d7e87;font-size:9px;margin-bottom:5px}
+.info-value{color:#b8eaf1;font-size:11px}
+.notice{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06);text-align:center;color:#5e7b83;font-size:10px;line-height:1.8}
+@media(max-width:600px){
+ .panel{padding:26px 20px;border-radius:17px}
+ .header{margin-bottom:25px}.connection{display:none}
+ h1{font-size:25px}.description{font-size:12px}
+ .queue{padding:16px;margin-top:27px}    .info-box{display:flex;justify-content:space-between}
+}
 </style>
 </head>
 <body>
-
-<h1>📈 株シミュレーター10.3</h1>
-<div id="tradingNotice"></div>
-<h3>所持金: <span id="cash"></span> 円</h3>
-<h3>📰 マーケットNEWS</h3>
-<div id="newsArea">
-  <div id="currentNews" class="news">待機中...</div>
+<div class="wrapper">
+<main class="panel">
+<header class="header">
+<div class="brand">
+<div class="logo">株</div>
+<div><div class="brand-name">株シミュレーター</div><div class="brand-sub">KABU SIMULATOR</div></div>
 </div>
-<table>
-<thead>
-<tr>
-<th>コード</th><th>銘柄</th><th>業種</th><th>価格</th><th>保有</th><th>損益</th><th>操作</th>
-</tr>
-</thead>
-<tbody id="stockTable"></tbody>
-</table>
-<canvas id="chart" height="100"></canvas>
+<div class="connection">● SYSTEM ONLINE</div>
+</header>
 
-<!-- 取引モーダル -->
-<div class="modal" id="tradeModal">
-<div class="modal-content">
-<h3 id="modalTitle"></h3>
-<p id="modalInfo"></p>
-<input type="number" id="tradeQty" min="1" value="1">
-<br>
-<button class="buy" id="confirmTrade">確定</button>
-<button class="sell" onclick="closeModal()">キャンセル</button>
+<div class="queue-label"><span class="dot"></span>ACCESS QUEUE</div>
+<h1>現在、順番待ちです</h1>
+<p class="description">現在アクセスが集中しています。<br>サーバーの負荷を抑えるため、順番にご案内しています。約７分ほどでアクセスできます。ページを再読み込みすると、待機列の最初から並び直しになります。</p>
+
+<section class="queue">
+<div class="queue-title"><span>ONLINE QUEUE</span><span>順番待ち中</span></div>
+<div class="people" id="people">
+
+<div class="progress-label"><span>QUEUE PROGRESS</span><strong id="status">順番待ち中</strong></div>
+<div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+</section>
+
+<div class="info">
+<div class="info-box"><div class="info-title">SERVER</div><div class="info-value">ONLINE</div></div>
+<div class="info-box"><div class="info-title">QUEUE</div><div class="info-value">ACTIVE</div></div>
+<div class="info-box"><div class="info-title">CONNECTION</div><div class="info-value">STABLE</div></div>
 </div>
 
-<script>
-
-// ----------------------------
-// 定数・初期データ
-// ----------------------------
-const TAX_RATE = 0.20315;
-
-let data = JSON.parse(localStorage.getItem("sectorStockData")) || {
-  cash: 90000,
-  selected: 0,
-  stocks: [
-    {code:"001",name:"何でも会社",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"002",name:"警備会社",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"003",name:"証券会社",sector:"金融",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"004",name:"ガソリンスタンド",sector:"インフラ",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"005",name:"外食チェーン",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"006",name:"スーパーマーケット",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"007",name:"観光運営",sector:"観光",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"008",name:"半導",sector:"テック",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"009",name:"時計のとんけい",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]},
-    {code:"010",name:"いろいろ電気",sector:"小売",price:500,quantity:0,avgPrice:0,history:[500]}
-  ]
-};
-
-let currentTrade = {type:null,index:null};
-let chart, chartData = {labels:[], datasets:[]};
-
-// ----------------------------
-// 保存
-// ----------------------------
-function save() {
-  localStorage.setItem("sectorStockData", JSON.stringify(data));
-}
-
-// ----------------------------
-// 株テーブル描画
-// ----------------------------
-function render() {
-  document.getElementById("cash").innerText = data.cash.toLocaleString();
-  let table = document.getElementById("stockTable");
-  table.innerHTML = "";
-
-  data.stocks.forEach((stock, i) => {
-    let profit = (stock.price - stock.avgPrice) * stock.quantity;
-    table.innerHTML += `
-      <tr onclick="selectStock(${i})">
-        <td>${stock.code}</td>
-        <td>${stock.name}</td>
-        <td>${stock.sector}</td>
-        <td>${stock.price.toFixed(2)}</td>
-        <td>${stock.quantity}</td>
-        <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit.toLocaleString()}</td>
-        <td>
-          <button class="buy" onclick="openModal('buy',${i});event.stopPropagation();">買</button>
-          <button class="sell" onclick="openModal('sell',${i});event.stopPropagation();">売</button>
-        </td>
-      </tr>`;
-  });
-
-  updateChart();
-}
-
-// ----------------------------
-// モーダル表示
-// ----------------------------
-function openModal(type, index) {
-  currentTrade = {type, index};
-  let stock = data.stocks[index];
-  document.getElementById("modalTitle").innerText = type === "buy" ? "購入" : "売却";
-  document.getElementById("modalInfo").innerText = `${stock.name}（保有: ${stock.quantity}）`;
-  document.getElementById("tradeQty").value = 1;
-  document.getElementById("tradeModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("tradeModal").style.display = "none";
-}
-
-// ----------------------------
-// 取引確定
-// ----------------------------
-document.getElementById("confirmTrade").addEventListener("click", () => {
-  let qty = parseInt(document.getElementById("tradeQty").value);
-  if(!qty || qty <= 0) return;
-
-  let stock = data.stocks[currentTrade.index];
-
-  if(currentTrade.type === "buy") {
-    let cost = qty * stock.price;
-    if(cost > data.cash){ alert("資金不足"); return; }
-    stock.avgPrice = (stock.avgPrice * stock.quantity + cost) / (stock.quantity + qty);
-    stock.quantity += qty;
-    data.cash -= cost;
-  } else {
-    if(qty > stock.quantity){ alert("保有不足"); return; }
-    let gain = (stock.price - stock.avgPrice) * qty;
-    let tax = gain > 0 ? gain * TAX_RATE : 0;
-    data.cash += qty * stock.price - tax;
-    stock.quantity -= qty;
-    if(stock.quantity == 0) stock.avgPrice = 0;
-  }
-
-  sendTradeToForm(stock, qty);
-
-  save();
-  render();
-  closeModal();
-});
-
-// ----------------------------
-// 裏送信処理（OFF）
-// ----------------------------
-function sendTradeToForm(stock, qty){
-  console.log("取引:", stock.name, qty);
-}
-
-// ----------------------------
-// 株選択＆Chart.js
-// ----------------------------
-function selectStock(i){ data.selected=i; updateChart(); }
-
-function initChart() {
-  chart = new Chart(document.getElementById("chart"), {
-    type: "line",
-    data: chartData
-  });
-}
-
-function updateChart() {
-  let stock = data.stocks[data.selected||0];
-  chartData.labels = stock.history.map((_,i)=>i);
-  let datasets = [{label:"株価",data:stock.history,borderColor:"#00ffcc",tension:0.2}];
-  if(stock.quantity>0) datasets.push({label:"平均取得価格",data:new Array(stock.history.length).fill(stock.avgPrice),borderColor:"#ffcc00",borderWidth:3,tension:0});
-  chartData.datasets = datasets;
-  chart.update();
-}
-
-// ----------------------------
-// 株価ランダム変動＋ニュース100件
-// ----------------------------
-const newsEvents = [
-
-{sector:"テック",impact:1.08,type:"positive",text:"AI需要急増でテック企業の受注拡大"},
-{sector:"テック",impact:1.06,type:"positive",text:"半導体不足が解消し生産回復"},
-{sector:"テック",impact:0.94,type:"negative",text:"大規模サイバー攻撃でIT企業株下落"},
-{sector:"テック",impact:1.05,type:"positive",text:"新型スマートデバイスが大ヒット"},
-{sector:"テック",impact:0.92,type:"negative",text:"IT規制強化の報道で投資家警戒"},
-{sector:"テック",impact:1.10,type:"positive",text:"AI革命でテック企業の利益急増"},
-{sector:"テック",impact:0.95,type:"negative",text:"半導体価格下落で関連株が軟調"},
-{sector:"テック",impact:1.07,type:"positive",text:"クラウド需要拡大で企業業績好調"},
-{sector:"テック",impact:0.93,type:"negative",text:"大手IT企業が人員削減を発表"},
-{sector:"テック",impact:1.09,type:"positive",text:"次世代通信技術が世界で採用"},
-
-{sector:"金融",impact:1.05,type:"positive",text:"金利上昇で銀行株に追い風"},
-{sector:"金融",impact:0.94,type:"negative",text:"金融不安広がり銀行株下落"},
-{sector:"金融",impact:1.06,type:"positive",text:"投資ブームで証券会社の利益拡大"},
-{sector:"金融",impact:0.92,type:"negative",text:"不良債権問題が報道され金融株下落"},
-{sector:"金融",impact:1.04,type:"positive",text:"中央銀行が金融緩和を発表"},
-{sector:"金融",impact:0.93,type:"negative",text:"世界市場の不安で金融株売り"},
-{sector:"金融",impact:1.07,type:"positive",text:"株式市場活況で証券会社の業績改善"},
-{sector:"金融",impact:0.95,type:"negative",text:"金融規制強化の報道"},
-{sector:"金融",impact:1.06,type:"positive",text:"投資家資金流入で金融株上昇"},
-{sector:"金融",impact:0.94,type:"negative",text:"海外金融危機の懸念が広がる"},
-
-{sector:"観光",impact:1.08,type:"positive",text:"訪日観光客が過去最高を更新"},
-{sector:"観光",impact:1.06,type:"positive",text:"大型連休で旅行需要急増"},
-{sector:"観光",impact:0.93,type:"negative",text:"台風被害で観光客減少"},
-{sector:"観光",impact:1.05,type:"positive",text:"新テーマパーク開業で観光活性化"},
-{sector:"観光",impact:0.92,type:"negative",text:"感染症拡大懸念で旅行キャンセル"},
-{sector:"観光",impact:1.07,type:"positive",text:"海外旅行ブーム再来"},
-{sector:"観光",impact:0.94,type:"negative",text:"円高で外国人観光客減少"},
-{sector:"観光",impact:1.05,type:"positive",text:"観光キャンペーンで需要増"},
-{sector:"観光",impact:0.95,type:"negative",text:"空港混雑問題で旅行客減少"},
-{sector:"観光",impact:1.09,type:"positive",text:"大型イベント開催で観光需要急増"},
-
-{sector:"小売",impact:1.06,type:"positive",text:"消費回復で小売売上増加"},
-{sector:"小売",impact:0.94,type:"negative",text:"物価高で消費者の買い控え"},
-{sector:"小売",impact:1.05,type:"positive",text:"新商品ヒットで売上急増"},
-{sector:"小売",impact:0.92,type:"negative",text:"物流コスト増で小売株下落"},
-{sector:"小売",impact:1.04,type:"positive",text:"セールイベントで売上好調"},
-{sector:"小売",impact:0.93,type:"negative",text:"大型店舗閉店が相次ぐ"},
-{sector:"小売",impact:1.07,type:"positive",text:"EC市場拡大で小売企業成長"},
-{sector:"小売",impact:0.95,type:"negative",text:"在庫過多で利益減少"},
-{sector:"小売",impact:1.06,type:"positive",text:"消費者信頼感の回復"},
-{sector:"小売",impact:0.94,type:"negative",text:"人件費高騰で小売業圧迫"},
-
-{sector:"インフラ",impact:1.05,type:"positive",text:"エネルギー需要増でインフラ株上昇"},
-{sector:"インフラ",impact:0.94,type:"negative",text:"燃料価格高騰でコスト増"},
-{sector:"インフラ",impact:1.06,type:"positive",text:"政府のインフラ投資拡大"},
-{sector:"インフラ",impact:0.93,type:"negative",text:"設備事故で企業株下落"},
-{sector:"インフラ",impact:1.04,type:"positive",text:"再生可能エネルギー投資増加"},
-{sector:"インフラ",impact:0.95,type:"negative",text:"電力需要減少で収益悪化"},
-{sector:"インフラ",impact:1.07,type:"positive",text:"電力価格上昇で利益増"},
-{sector:"インフラ",impact:0.92,type:"negative",text:"設備老朽化問題が発覚"},
-{sector:"インフラ",impact:1.05,type:"positive",text:"政府補助金でインフラ企業支援"},
-{sector:"インフラ",impact:0.94,type:"negative",text:"燃料供給問題で株価下落"},
-
-{sector:"テック",impact:1.08,type:"positive",text:"量子コンピューター開発成功"},
-{sector:"金融",impact:1.05,type:"positive",text:"世界株高で金融株上昇"},
-{sector:"観光",impact:1.07,type:"positive",text:"航空会社の新路線が人気"},
-{sector:"小売",impact:1.06,type:"positive",text:"大型ショッピングモール開業"},
-{sector:"インフラ",impact:1.05,type:"positive",text:"新発電所が稼働開始"},
-{sector:"テック",impact:0.94,type:"negative",text:"スマートフォン市場縮小"},
-{sector:"金融",impact:0.93,type:"negative",text:"株式市場の不安定化"},
-{sector:"観光",impact:0.92,type:"negative",text:"悪天候で旅行需要減少"},
-{sector:"小売",impact:0.95,type:"negative",text:"消費税増税の懸念"},
-{sector:"インフラ",impact:0.94,type:"negative",text:"エネルギー価格急落"}
-
-];
-function autoUpdate() {
-  data.stocks.forEach(stock => {
-    let change = (Math.random()-0.5)*10;
-    stock.price += change;
-    if(stock.price<10) stock.price=10;
-    if(stock.price>2000) stock.price=2000;
-    stock.history.push(stock.price);
-    if(stock.history.length>50) stock.history.shift();
-  });
-  generateNews();
-  save();
-  render();
-}
-
-function generateNews() {
-  if(Math.random()>0.3) return;
-  const event = newsEvents[Math.floor(Math.random()*newsEvents.length)];
-  data.stocks.forEach(stock => {
-    if(stock.sector === event.sector) {
-      stock.price *= event.impact;
-      if(stock.price < 10) stock.price = 10;
-      if(stock.price > 2000) stock.price = 2000;
-      stock.history.push(stock.price);
-    }
-  });
-  document.getElementById("currentNews").className = "news " + event.type;
-  document.getElementById("currentNews").innerText = event.text + "（" + event.sector + "）";
-}
-
-// ----------------------------
-// 初期化
-// ----------------------------
-initChart();
-render();
-setInterval(autoUpdate,3000);
-</script>
-
-<!-- ----------------------------
-BANチェックスクリプト
----------------------------- -->
-<script>
-(function(){
-  let banList=[];
-  async function loadBanList(){
-    try{
-      const res = await fetch("banlist.json?"+Date.now());
-      const data = await res.json();
-      banList = data.bans;
-      checkAccess();
-    } catch(e){
-      console.log("BAN読み込み失敗");
-    }
-  }
-
-  function checkAccess(){
-    const supportNumber = localStorage.getItem("supportNumber")||"";
-    const now = new Date();
-    banList.forEach(ban => {
-      if(ban.number === supportNumber){
-        const until = new Date(ban.until);
-        if(now < until){
-          document.body.innerHTML = `
-            <div style="
-              background:black;color:white;height:100vh;
-              display:flex;align-items:center;justify-content:center;
-              font-size:28px;text-align:center;">
-              このデバイスは<br>${ban.until}まで利用停止されています
-            </div>`;
-        }
-      }
-    });
-  }
-
-  loadBanList();
-  setInterval(loadBanList,10000);
-})();
-</script>
-</body>
-</html>
+<div class="notice">このページを閉じたり、再読み込みしたりせずにお待ちください。<br>順番が進むと自動的に株シミュレーターへ移動します。<br>※ページを再読み込みすると、待機列の最初から並び直しになります。</div>
+</main>
+</div>
