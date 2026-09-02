@@ -87,7 +87,7 @@ h1{font-size:clamp(25px,5vw,37px);line-height:1.35;margin-bottom:12px}
 
 <div class="queue-label"><span class="dot"></span>ACCESS QUEUE</div>
 <h1>現在、順番待ちです</h1>
-<p class="description">現在アクセスが集中しています。<br>サーバーの負荷を抑えるため、順番にご案内しています。約７分ほどでアクセスできます。ページを再読み込みすると、待機列の最初から並び直しになります。</p>
+<p class="description">現在アクセスが集中しています。<br>サーバーの負荷を抑えるため、順番にご案内しています。約？分ほどでアクセスできます。ページを再読み込みすると、待機列の最初から並び直しになります。</p>
 
 <section class="queue">
 <div class="queue-title"><span>ONLINE QUEUE</span><span>順番待ち中</span></div>
@@ -108,7 +108,7 @@ h1{font-size:clamp(25px,5vw,37px);line-height:1.35;margin-bottom:12px}
 </div>
 
 <script>
-const WAIT_TIME=300000;
+const WAIT_TIME=10;
 const REDIRECT_URL="https://bainarinoakaunto.github.io/kabusimyureta/";
 const progressBar=document.getElementById("progressBar");
 const status=document.getElementById("status");
